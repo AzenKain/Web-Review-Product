@@ -40,7 +40,7 @@ import { User } from './types/user';
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('MYSQL_DATABASE'),
         entities: [User],
-        synchronize: true,
+        synchronize: true, // Chỉ dùng trong môi trường phát triển
       }),
       inject: [ConfigService],
     }),

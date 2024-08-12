@@ -5,7 +5,7 @@ const nextConfig = {
       NEXTAUTH_SECRET:"the-king-also-has-to-cum",
     },
     images: {
-        domains: ['localhost', 'anhvienpiano.com',]
+        domains: ['localhost', domains: ['anhvienpiano.com'],]
     },
     async headers() {
         return [

@@ -1,11 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-    env: {
-      NEXTAUTH_SECRET:"the-king-also-has-to-cum",
-    },
     images: {
-        domains: ['localhost', 'anhvienpiano.com',]
+        domains: ['localhost']
     },
     async headers() {
         return [

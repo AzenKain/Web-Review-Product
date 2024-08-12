@@ -2,10 +2,10 @@
 const nextConfig = {
     reactStrictMode: true,
     env: {
-      NEXTAUTH_SECRET:"the-king-also-has-to-cum",
+      NEXTAUTH_SECRET:"YOUR_KEY_HERE",
     },
     images: {
-        domains: ['localhost', 'anhvienpiano.com',]
+        domains: ['localhost']
     },
     async headers() {
         return [
