@@ -1,0 +1,21 @@
+{
+  "name": "web_review",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix packages/next-app run dev\" \"npm --prefix packages/nest-app run start:dev\"",
+    "build": "npm --prefix packages/next-app run build && npm --prefix packages/nest-app run build"
+  },
+
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
