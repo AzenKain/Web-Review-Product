@@ -1,14 +1,170 @@
 ﻿import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 export default function Header() {
+    const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+    const detailsRef = useRef<HTMLLIElement>(null);
+    const ulRef = useRef<HTMLUListElement>(null); 
+
+    const [brandName, setBrandName] = useState<string[]>([])
+
     const openNavbarOption = useCallback((e: React.MouseEvent<HTMLElement>) => {
         const targetElement: HTMLElement = e.currentTarget
         targetElement.hasAttribute('open') ? targetElement.removeAttribute('open') : targetElement.setAttribute('open', '')
     }, [])
 
+    const openNavbarOptionLg = useCallback(() => {
+        if (detailsRef.current) {
+            detailsRef.current.setAttribute('open', '');
+        }
+        if (ulRef.current) {
+            ulRef.current.style.display = 'flex';
+        }
+    }, []);
+
+    const closeNavbarOptionLg = useCallback(() => {
+        if (detailsRef.current && ulRef.current) {
+            detailsRef.current.removeAttribute('open');
+            ulRef.current.style.display = 'none';
+        }
+    }, []);
+
+    const handleSummaryClick = (event: Event) => {
+        if ((event.target as HTMLElement).tagName !== 'A') {
+            event.preventDefault();
+        }
+    }
+
+    useEffect(() => {
+        const summaries = document.querySelectorAll('.header-option summary');
+        summaries.forEach((summary) => {
+            summary.addEventListener('click', handleSummaryClick);
+        });
+        return () => {
+            summaries.forEach((summary) => {
+                summary.removeEventListener('click', handleSummaryClick);
+            });
+        };
+    }, []);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setBrandName(["Afnan",
+                "Al Haramain",
+                "Alaia",
+                "Alexandria Fragrances",
+                "Amouage",
+                "Argos Fragrances",
+                "Armaf",
+                "Astrophil Stella",
+                "Atelier Cologne",
+                "ATELIER MATERI",
+                "Attar Collection",
+                "Azzaro",
+                "BDK Parfums",
+                "BORNTOSTANDOUT",
+                "Burberry",
+                "Butterfly Thai Perfume",
+                "Bvlgari",
+                "Byredo",
+                "Calvin Klein",
+                "Carner Barcelona",
+                "Carolina Herrera",
+                "Chabaud",
+                "Chanel",
+                "Chasing Scents",
+                "Chlóe",
+                "Christian Louboutin",
+                "City Rhythm",
+                "Clive Christian",
+                "Creed",
+                "Dame Perfumery",
+                "Dior",
+                "Diptyque",
+                "Dolce & Gabbana",
+                "Dsquared2",
+                "Elie Saab",
+                "Elizabeth Arden",
+                "Escentric Molecules",
+                "Etat Libre d'Orange",
+                "Ex Nihilo",
+                "Franck Boclet",
+                "Frederic Malle",
+                "Giardini Di Toscana",
+                "Giorgio Armani",
+                "Gritti",
+                "Gucci",
+                "Guerlain",
+                "Hermes",
+                "Imaginary Authors",
+                "Initio Parfums Prives",
+                "Jean Paul Gaultier",
+                "Jimmy Choo",
+                "Jo Malone",
+                "Juliette Has A Gun",
+                "Jusbox Perfumes",
+                "Kilian",
+                "L'Orchestre",
+                "Lalique",
+                "Lanvin",
+                "Le Galion",
+                "Le Labo",
+                "Liquides Imaginaires",
+                "Loewe",
+                "Louis Vuitton",
+                "Mad et Len",
+                "Maison Francis Kurkdjian",
+                "Maison Margiela",
+                "Maison Matine",
+                "Maison Violet",
+                "Mancera",
+                "Manos Gerakinis",
+                "Marc Jacobs",
+                "Marc-Antoine Barrois",
+                "Marie Jeanne",
+                "Matiere Premiere",
+                "MCM",
+                "Memo Paris",
+                "Meo Fusciuni",
+                "Missoni",
+                "MITH Bangkok",
+                "Montale",
+                "Montblanc",
+                "Moschino",
+                "Narciso Rodriguez",
+                "Nasomatto",
+                "Nautica",
+                "Nishane",
+                "Once Perfume",
+                "Orto Parisi",
+                "Paco Rabanne",
+                "Parfums de Marly",
+                "Parfums MDCI",
+                "Penhaligon's",
+                "Prada",
+                "Ralph Lauren",
+                "Rasasi",
+                "Roja Parfums",
+                "Salvatore Ferragamo",
+                "Serge Lutens",
+                "Strangers Parfumerie",
+                "The Merchant of Venice",
+                "Thierry Mugler",
+                "Tom Ford",
+                "Trussardi",
+                "Valentino",
+                "Van Cleef & Arpels",
+                "Versace",
+                "Victoria's Secret",
+                "Viktor & Rolf",
+                "Xerjoff",
+                "Yves Saint Laurent"])
+        }, 2000)
+    })
+
+
     return (
-        <div className="z-50 absolute top-0 left-0 w-screen flex flex-col">
-            <header className="navbar bg-base-100 border-b h-14" style={{
+        <div className="top-0 left-0 absolute z-50 flex w-screen flex-col">
+            <header className="navbar bg-base-100 border-b h-14 px-60" style={{
                 minHeight: '0px'
             }}>
                 <div className="flex-1">
@@ -83,19 +239,73 @@ export default function Header() {
                     </div>
                 </div>
             </header>
-            <header className="navbar bg-base-100 flex justify-center h-10 border-b" style={{
+            <header className="navbar bg-base-100 flex h-10 border-b px-60 header-option relative" style={{
                 minHeight: '0px'
             }}>
-                <ul className="menu menu-horizontal px-1 navbar-option">
+                <ul className="menu menu-horizontal px-1 navbar-option w-full justify-around">
                     <li><a>Home</a></li>
                     <li><a>About ĐunKain</a></li>
-                    <li>
-                        <details onMouseOver={openNavbarOption} onMouseOut={openNavbarOption}>
+                    <li className="pesudo-class" style={{ position: "static" }}
+                        ref={detailsRef}
+                        onMouseOver={openNavbarOptionLg}
+                        onMouseOut={closeNavbarOptionLg}
+                    >
+                        <details>
                             <summary><a href="/done">Trademark</a></summary>
-                            <ul>
-                                <h2>done?</h2>
-                            </ul>
                         </details>
+                        <ul
+                            ref={ulRef}
+                            onMouseOver={openNavbarOptionLg}
+                            onMouseOut={closeNavbarOptionLg}
+                            className="menu xl:menu-horizontal bg-base-200"
+                            style={{
+                                display: 'none',
+                                position: "absolute",
+                                top: "50px",
+                                left: 0,
+                                maxWidth: "70vw",
+                                maxHeight: "70vh",
+                                marginLeft: "15vw",
+                                marginRight: "15vw",
+                                flexDirection: "row",
+                                boxSizing: "border-box",
+                                overflowY: "scroll"
+                            }}>
+                            <div className="w-1/3">
+                                <h2 className="uppercase text-lg" style={{
+                                    marginInlineStart: "1rem",
+                                    paddingInlineStart: "0.5rem"
+                                }}>Best selling brand</h2>
+                                <ul className="steps steps-vertical">
+                                    <li className="step">Roja Parfums</li>
+                                    <li className="step">Atelier Mater</li>
+                                    <li className="step">Liquides Imaginaires</li>
+                                    <li className="step">Argos Fragrances</li>
+                                    <li className="step">Clive Christian</li>
+                                </ul>
+                            </div>
+                            <div className="w-2/3">
+                                <h2 className="uppercase text-center text-lg" style={{
+                                    marginInlineStart: "1rem",
+                                    paddingInlineStart: "0.5rem"
+                                }}>Perfume brand</h2>
+                                <div className="flex flex-wrap justify-center">
+                                    <button className="btn btn-square btn-outline m-px w-8 h-8 min-h-0 w-24 mr-6">All</button>
+                                    {alphabet.map((letter) => (
+                                        <button key={letter} className="btn btn-square btn-outline m-px w-8 h-8 min-h-0">
+                                            {letter}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div>
+                                    <ul className="brand-item flex flex-row flex-wrap">
+                                        {brandName.map((brand, index) => (
+                                            <li key={index} className="w-1/3">{brand}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        </ul>
                     </li>
                     <li>
                         <details onMouseOver={openNavbarOption} onMouseOut={openNavbarOption}>
@@ -124,11 +334,25 @@ export default function Header() {
                     background-color: transparent;
                     color: gray
                 }
-                .navbar-option li summary + ul::after {
-                    display: block;
+                .header-option .menu :where(li ul)::before {
+                    width: 0px
+                }
+                .navbar-option li:hover details + ul::after {
+                    background-color: red
+                }
+                .navbar-option .pesudo-class::after {
+                    content: '';
+                    display: none;
                     position: absolute;
-                    width: 100px;
-                    height: 100px;
+                    bottom: -15px;
+                    left: 0;
+                    width: 70%;
+                    margin-left: 15%;
+                    margin-right: 15%;
+                    height: 30px;
+                }
+                .navbar-option .pesudo-class:hover::after {
+                    display: block;
                 }
             `}</style>
         </div>
