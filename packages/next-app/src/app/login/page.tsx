@@ -104,7 +104,7 @@ export default function Login(props: any) {
               /> */}
               <Image
                 layout="fill"
-                src="/image/image-collection.svg"
+                src="https://anhvienpiano.com/wp-content/uploads/2018/08/dich-vu-chup-anh-thoi-trang-cho-shop-quan-ao-dep-gia-re.jpg"
                 alt="Studio Collection"
                 className="relative z-10 w-full h-full object-cover"
               />
