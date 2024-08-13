@@ -1,5 +1,7 @@
 ﻿import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
+
 export default function Header() {
     const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
@@ -76,12 +78,30 @@ export default function Header() {
 
     return (
         <div className="top-0 left-0 absolute z-50 flex w-full flex-col">
-            <header className="navbar bg-base-100 border-b h-14 px-60" style={{
+            <header className="navbar bg-base-100 border-b h-18 px-60" style={{
                 minHeight: '0px'
             }}>
-                <div className="flex-1">
-                    <a className="btn btn-ghost text-xl">daisyUI</a>
-                </div>
+                <a href="/"><div className="flex relative"
+                    style={{
+                        width: '50px',
+                        height: '50px',
+                        WebkitMask: 'url(/images/logo-full.png) no-repeat center',
+                        mask: 'url(/images/logo-full.png) no-repeat center',
+                        backgroundColor: 'white',
+                        transition: 'background-color 0.3s ease',
+                        boxShadow: '3px 3px 5px rgba(100,100,100,0.5)',
+                    }}
+                >
+                    <Image
+                        src="/images/logo-full.png"
+                        alt="Logo"
+                        layout="fill"
+                        objectFit="contain"
+                        style={{ visibility: 'hidden' }}
+                    />
+                </div></a>
+                <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up">ĐK Perfume</h1></a>
+                <div className="flex-1"></div>
                 <div className="product-search">
                     <label className="input input-bordered flex items-center gap-2 h-10">
                         <input type="text" className="grow" placeholder="What do you need?" />

@@ -11,4 +11,14 @@
     * {
         scrollbar-width: thin;
     }
+
+    .hover-up {
+        transition: transform 0.5s ease;
+        transform: translateY(0);
+    }
+
+        .hover-up:hover {
+            transform: translateY(-3px) translateX(-1px);
+            filter: drop-shadow(2px 2px 3px #E7E7E7);
+        }
 }
