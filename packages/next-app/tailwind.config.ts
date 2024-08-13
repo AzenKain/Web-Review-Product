@@ -11,7 +11,7 @@ const config: Config = {
   ],
   darkMode: 'selector',
   daisyui: {
-    themes: ["light", "dark", "cupcake"],
+      themes: ["light", "dark", "cupcake", "luxury", "coffee"],
   },
   plugins: [
     require("daisyui"),

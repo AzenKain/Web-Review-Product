@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html data-theme="light"  lang="en">
+      <html data-theme="luxury" lang="en">
       <head>
         <title>Glamify Shop</title>
         <meta name='description' content='Description' />
@@ -25,11 +25,11 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/logo.svg" />
         <link rel="manifest" href="/site.webmanifest"></link>
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} selection:bg-base-content selection:text-base-100`}>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
         <Providers>
           <StoreProvider>
-            <Header />
+            <Header/>
             {children}
             <ToastContainer />
 {/*            <Footer />*/}

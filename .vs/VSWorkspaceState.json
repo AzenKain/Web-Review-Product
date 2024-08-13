@@ -5,10 +5,8 @@
     "\\packages\\next-app",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
-    "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Header",
-    "\\packages\\next-app\\src\\lib"
+    "\\packages\\next-app\\src\\components"
   ],
-  "SelectedNode": "\\packages\\next-app\\tsconfig.json",
+  "SelectedNode": "\\packages\\next-app\\src\\app\\globals.css",
   "PreviewInSolutionExplorer": false
 }

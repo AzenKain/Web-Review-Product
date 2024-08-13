@@ -6,6 +6,7 @@ export default function Header() {
     const ulRef = useRef<HTMLUListElement>(null); 
 
     const [brandName, setBrandName] = useState<string[]>([])
+    const [topBrandName, setTopBrandName] = useState<string[]>([])
 
     const openNavbarOption = useCallback((e: React.MouseEvent<HTMLElement>) => {
         const targetElement: HTMLElement = e.currentTarget
@@ -158,12 +159,19 @@ export default function Header() {
                 "Viktor & Rolf",
                 "Xerjoff",
                 "Yves Saint Laurent"])
+            setTopBrandName([
+                "Thierry Mugler",
+                "Tom Ford",
+                "Trussardi",
+                "Valentino",
+                "Van Cleef & Arpels"
+            ])
         }, 2000)
     })
 
 
     return (
-        <div className="top-0 left-0 absolute z-50 flex w-screen flex-col">
+        <div className="top-0 left-0 absolute z-50 flex w-full flex-col">
             <header className="navbar bg-base-100 border-b h-14 px-60" style={{
                 minHeight: '0px'
             }}>
@@ -257,7 +265,7 @@ export default function Header() {
                             ref={ulRef}
                             onMouseOver={openNavbarOptionLg}
                             onMouseOut={closeNavbarOptionLg}
-                            className="menu xl:menu-horizontal bg-base-200"
+                            className="menu xl:menu-horizontal bg-base-200 scrollbar"
                             style={{
                                 display: 'none',
                                 position: "absolute",
@@ -269,7 +277,9 @@ export default function Header() {
                                 marginRight: "15vw",
                                 flexDirection: "row",
                                 boxSizing: "border-box",
-                                overflowY: "scroll"
+                                overflowY: "scroll",
+                                animationName: "popup-ani",
+                                animationDuration: "1s",
                             }}>
                             <div className="w-1/3">
                                 <h2 className="uppercase text-lg" style={{
@@ -277,30 +287,28 @@ export default function Header() {
                                     paddingInlineStart: "0.5rem"
                                 }}>Best selling brand</h2>
                                 <ul className="steps steps-vertical">
-                                    <li className="step">Roja Parfums</li>
-                                    <li className="step">Atelier Mater</li>
-                                    <li className="step">Liquides Imaginaires</li>
-                                    <li className="step">Argos Fragrances</li>
-                                    <li className="step">Clive Christian</li>
+                                    {topBrandName.map((brand, index) => (
+                                        <li key={index} className="step uppercase"><a>{brand}</a></li>
+                                    ))}
                                 </ul>
                             </div>
                             <div className="w-2/3">
-                                <h2 className="uppercase text-center text-lg" style={{
+                                <h2 className="uppercase text-center text-lg mb-5" style={{
                                     marginInlineStart: "1rem",
                                     paddingInlineStart: "0.5rem"
                                 }}>Perfume brand</h2>
                                 <div className="flex flex-wrap justify-center">
-                                    <button className="btn btn-square btn-outline m-px w-8 h-8 min-h-0 w-24 mr-6">All</button>
+                                    <button className="btn btn-square btn-outline m-px h-8 min-h-0 w-20 mr-6">All</button>
                                     {alphabet.map((letter) => (
                                         <button key={letter} className="btn btn-square btn-outline m-px w-8 h-8 min-h-0">
                                             {letter}
                                         </button>
                                     ))}
                                 </div>
-                                <div>
+                                <div className="mt-5">
                                     <ul className="brand-item flex flex-row flex-wrap">
                                         {brandName.map((brand, index) => (
-                                            <li key={index} className="w-1/3">{brand}</li>
+                                            <li key={index} className="w-1/3 uppercase mt-1"><a>{brand}</a></li>
                                         ))}
                                     </ul>
                                 </div>
@@ -332,14 +340,12 @@ export default function Header() {
                 .navbar-option li a:hover,
                 .navbar-option li summary:hover {
                     background-color: transparent;
-                    color: gray
+                    color: #E7E7E7
                 }
                 .header-option .menu :where(li ul)::before {
                     width: 0px
                 }
-                .navbar-option li:hover details + ul::after {
-                    background-color: red
-                }
+
                 .navbar-option .pesudo-class::after {
                     content: '';
                     display: none;
@@ -351,8 +357,23 @@ export default function Header() {
                     margin-right: 15%;
                     height: 30px;
                 }
+                .navbar-option li[open] summary::after{
+                    transform: rotate(225deg);
+                    margin-top: 0;
+                }
                 .navbar-option .pesudo-class:hover::after {
                     display: block;
+                }
+                .navbar-option>li {
+                    font-weight: bold;
+                }
+                @keyframes popup-ani {
+                  from {
+                      opacity: 0;
+                  }
+                  to {
+                      opacity: 1;
+                  }
                 }
             `}</style>
         </div>
