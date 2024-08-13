@@ -2,30 +2,31 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 export default function Header() {
     const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
-    const detailsRef = useRef<HTMLLIElement>(null);
-    const ulRef = useRef<HTMLUListElement>(null); 
 
     const [brandName, setBrandName] = useState<string[]>([])
     const [topBrandName, setTopBrandName] = useState<string[]>([])
+    const [perfumeType, setPerfumeType] = useState<{
+        role: string;
+        type: string[];
+    }[]>([])
 
-    const openNavbarOption = useCallback((e: React.MouseEvent<HTMLElement>) => {
-        const targetElement: HTMLElement = e.currentTarget
-        targetElement.hasAttribute('open') ? targetElement.removeAttribute('open') : targetElement.setAttribute('open', '')
-    }, [])
-
-    const openNavbarOptionLg = useCallback(() => {
-        if (detailsRef.current) {
-            detailsRef.current.setAttribute('open', '');
+    const openNavbarOptionLg = useCallback((e: React.MouseEvent<HTMLElement>) => {
+        const detailsRef: HTMLElement = e.currentTarget
+        if (detailsRef) {
+            detailsRef.setAttribute('open', '');
         }
-        if (ulRef.current) {
-            ulRef.current.style.display = 'flex';
+        const ulRef: HTMLElement | null = detailsRef?.querySelector('ul')
+        if (ulRef) {
+            ulRef.style.display = 'flex';
         }
     }, []);
 
-    const closeNavbarOptionLg = useCallback(() => {
-        if (detailsRef.current && ulRef.current) {
-            detailsRef.current.removeAttribute('open');
-            ulRef.current.style.display = 'none';
+    const closeNavbarOptionLg = useCallback((e: React.MouseEvent<HTMLElement>) => {
+        const detailsRef: HTMLElement = e.currentTarget
+        const ulRef: HTMLElement | null = detailsRef.querySelector('ul')
+        if (detailsRef && ulRef) {
+            detailsRef.removeAttribute('open');
+            ulRef.style.display = 'none';
         }
     }, []);
 
@@ -49,122 +50,25 @@ export default function Header() {
 
     useEffect(() => {
         setTimeout(() => {
-            setBrandName(["Afnan",
-                "Al Haramain",
-                "Alaia",
-                "Alexandria Fragrances",
-                "Amouage",
-                "Argos Fragrances",
-                "Armaf",
-                "Astrophil Stella",
-                "Atelier Cologne",
-                "ATELIER MATERI",
-                "Attar Collection",
-                "Azzaro",
-                "BDK Parfums",
-                "BORNTOSTANDOUT",
-                "Burberry",
-                "Butterfly Thai Perfume",
-                "Bvlgari",
-                "Byredo",
-                "Calvin Klein",
-                "Carner Barcelona",
-                "Carolina Herrera",
-                "Chabaud",
-                "Chanel",
-                "Chasing Scents",
-                "Chlóe",
-                "Christian Louboutin",
-                "City Rhythm",
-                "Clive Christian",
-                "Creed",
-                "Dame Perfumery",
-                "Dior",
-                "Diptyque",
-                "Dolce & Gabbana",
-                "Dsquared2",
-                "Elie Saab",
-                "Elizabeth Arden",
-                "Escentric Molecules",
-                "Etat Libre d'Orange",
-                "Ex Nihilo",
-                "Franck Boclet",
-                "Frederic Malle",
-                "Giardini Di Toscana",
-                "Giorgio Armani",
-                "Gritti",
-                "Gucci",
-                "Guerlain",
-                "Hermes",
-                "Imaginary Authors",
-                "Initio Parfums Prives",
-                "Jean Paul Gaultier",
-                "Jimmy Choo",
-                "Jo Malone",
-                "Juliette Has A Gun",
-                "Jusbox Perfumes",
-                "Kilian",
-                "L'Orchestre",
-                "Lalique",
-                "Lanvin",
-                "Le Galion",
-                "Le Labo",
-                "Liquides Imaginaires",
-                "Loewe",
-                "Louis Vuitton",
-                "Mad et Len",
-                "Maison Francis Kurkdjian",
-                "Maison Margiela",
-                "Maison Matine",
-                "Maison Violet",
-                "Mancera",
-                "Manos Gerakinis",
-                "Marc Jacobs",
-                "Marc-Antoine Barrois",
-                "Marie Jeanne",
-                "Matiere Premiere",
-                "MCM",
-                "Memo Paris",
-                "Meo Fusciuni",
-                "Missoni",
-                "MITH Bangkok",
-                "Montale",
-                "Montblanc",
-                "Moschino",
-                "Narciso Rodriguez",
-                "Nasomatto",
-                "Nautica",
-                "Nishane",
-                "Once Perfume",
-                "Orto Parisi",
-                "Paco Rabanne",
-                "Parfums de Marly",
-                "Parfums MDCI",
-                "Penhaligon's",
-                "Prada",
-                "Ralph Lauren",
-                "Rasasi",
-                "Roja Parfums",
-                "Salvatore Ferragamo",
-                "Serge Lutens",
-                "Strangers Parfumerie",
-                "The Merchant of Venice",
-                "Thierry Mugler",
-                "Tom Ford",
-                "Trussardi",
-                "Valentino",
-                "Van Cleef & Arpels",
-                "Versace",
-                "Victoria's Secret",
-                "Viktor & Rolf",
-                "Xerjoff",
-                "Yves Saint Laurent"])
-            setTopBrandName([
-                "Thierry Mugler",
-                "Tom Ford",
-                "Trussardi",
-                "Valentino",
-                "Van Cleef & Arpels"
+            setBrandName(["Afnan", "Al Haramain", "Alaia", "Alexandria Fragrances", "Amouage", "Argos Fragrances", "Armaf", "Astrophil Stella", "Atelier Cologne", "ATELIER MATERI", "Attar Collection", "Azzaro", "BDK Parfums", "BORNTOSTANDOUT", "Burberry", "Butterfly Thai Perfume", "Bvlgari", "Byredo", "Calvin Klein", "Carner Barcelona", "Carolina Herrera", "Chabaud", "Chanel", "Chasing Scents", "Chlóe", "Christian Louboutin", "City Rhythm", "Clive Christian", "Creed", "Dame Perfumery", "Dior", "Diptyque", "Dolce & Gabbana", "Dsquared2", "Elie Saab", "Elizabeth Arden", "Escentric Molecules", "Etat Libre d'Orange", "Ex Nihilo", "Franck Boclet", "Frederic Malle", "Giardini Di Toscana", "Giorgio Armani", "Gritti", "Gucci", "Guerlain", "Hermes", "Imaginary Authors", "Initio Parfums Prives", "Jean Paul Gaultier", "Jimmy Choo", "Jo Malone", "Juliette Has A Gun", "Jusbox Perfumes", "Kilian", "L'Orchestre", "Lalique", "Lanvin", "Le Galion", "Le Labo", "Liquides Imaginaires", "Loewe", "Louis Vuitton", "Mad et Len", "Maison Francis Kurkdjian", "Maison Margiela", "Maison Matine", "Maison Violet", "Mancera", "Manos Gerakinis", "Marc Jacobs", "Marc-Antoine Barrois", "Marie Jeanne", "Matiere Premiere", "MCM", "Memo Paris", "Meo Fusciuni", "Missoni", "MITH Bangkok", "Montale", "Montblanc", "Moschino", "Narciso Rodriguez", "Nasomatto", "Nautica", "Nishane", "Once Perfume", "Orto Parisi", "Paco Rabanne", "Parfums de Marly", "Parfums MDCI", "Penhaligon's", "Prada", "Ralph Lauren", "Rasasi", "Roja Parfums", "Salvatore Ferragamo", "Serge Lutens", "Strangers Parfumerie", "The Merchant of Venice", "Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels", "Versace", "Victoria's Secret", "Viktor & Rolf", "Xerjoff", "Yves Saint Laurent"]);
+            setTopBrandName(["Thierry Mugler","Tom Ford","Trussardi","Valentino","Van Cleef & Arpels"])
+            setPerfumeType([
+                {
+                    role: "Perfume",
+                    type: ["Unisex Perfume", "Women's Perfume", "Men's Perfume"]
+                },
+                {
+                    role: "FRAGRANCE GROUP",
+                    type: ["Floral", "Floral Fruity", "Woody"]
+                },
+                {
+                    role: "Concentration",
+                    type: ["Eau de Cologne", "Eau De Parfum", "Toilet Eau", "Fragrant", "Parfum Extract", "Perfume", "Perfume Enfant"]
+                },
+                {
+                    role: "CAPACITY",
+                    type: ["100ml", "10ml", "125 ml", "35ml", "50ml", "5ml", "75ml", "78 ml", "80ml", "90ml"]
+                }
             ])
         }, 2000)
     })
@@ -253,8 +157,7 @@ export default function Header() {
                 <ul className="menu menu-horizontal px-1 navbar-option w-full justify-around">
                     <li><a>Home</a></li>
                     <li><a>About ĐunKain</a></li>
-                    <li className="pesudo-class" style={{ position: "static" }}
-                        ref={detailsRef}
+                    <li className="pesudo-class  remove-li-before" style={{ position: "static" }}
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}
                     >
@@ -262,10 +165,7 @@ export default function Header() {
                             <summary><a href="/done">Trademark</a></summary>
                         </details>
                         <ul
-                            ref={ulRef}
-                            onMouseOver={openNavbarOptionLg}
-                            onMouseOut={closeNavbarOptionLg}
-                            className="menu xl:menu-horizontal bg-base-200 scrollbar"
+                            className="menu xl:menu-horizontal bg-base-200"
                             style={{
                                 display: 'none',
                                 position: "absolute",
@@ -280,9 +180,10 @@ export default function Header() {
                                 overflowY: "scroll",
                                 animationName: "popup-ani",
                                 animationDuration: "1s",
+                                boxShadow: "0px 2px 3px"
                             }}>
                             <div className="w-1/3">
-                                <h2 className="uppercase text-lg" style={{
+                                <h2 className="uppercase text-lg my-3" style={{
                                     marginInlineStart: "1rem",
                                     paddingInlineStart: "0.5rem"
                                 }}>Best selling brand</h2>
@@ -293,7 +194,7 @@ export default function Header() {
                                 </ul>
                             </div>
                             <div className="w-2/3">
-                                <h2 className="uppercase text-center text-lg mb-5" style={{
+                                <h2 className="uppercase text-center text-lg my-3" style={{
                                     marginInlineStart: "1rem",
                                     paddingInlineStart: "0.5rem"
                                 }}>Perfume brand</h2>
@@ -315,23 +216,66 @@ export default function Header() {
                             </div>
                         </ul>
                     </li>
-                    <li>
-                        <details onMouseOver={openNavbarOption} onMouseOut={openNavbarOption}>
+                    <li className="pesudo-class" style={{ position: "static" }}
+                        onMouseOver={openNavbarOptionLg}
+                        onMouseOut={closeNavbarOptionLg}>
+                        <details>
                             <summary>Perfume</summary>
-                            <ul className="p-2">
-                                <li><a>Submenu 1</a></li>
-                                <li><a>Submenu 2</a></li>
-                            </ul>
                         </details>
+                        <ul className="menu xl:menu-horizontal bg-base-200 lg:min-w-max w-full"
+                            style={{
+                                display: 'none',
+                                position: "absolute",
+                                top: "50px",
+                                left: 0,
+                                maxWidth: "50vw",
+                                maxHeight: "70vh",
+                                marginLeft: "25vw",
+                                marginRight: "25vw",
+                                flexDirection: "row",
+                                justifyContent: "space-around",
+                                boxSizing: "border-box",
+                                animationName: "popup-ani",
+                                animationDuration: "1s",
+                                boxShadow: "0px 2px 3px"
+                            }}>
+                            {perfumeType.map((item, index) => (
+                                <li key={index} className="uppercase">
+                                    <h2><a>{item.role}</a></h2>
+                                    {item.type && (
+                                        <ul>
+                                            {item.type.map((subItem, subIndex) => (
+                                                <li key={subIndex} className="uppercase">
+                                                    <a>{subItem}</a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
                     </li>
-                    <li>
-                        <details onMouseOver={openNavbarOption} onMouseOut={openNavbarOption}>
+                    <li className="pesudo-class relative"
+                        onMouseOver={openNavbarOptionLg}
+                        onMouseOut={closeNavbarOptionLg}>
+                        <details>
                             <summary>News</summary>
-                            <ul className="p-2">
-                                <li><a>Submenu 1</a></li>
-                                <li><a>Submenu 2</a></li>
-                            </ul>
                         </details>
+                        <ul className="menu xl:menu-horizontal bg-base-200 lg:min-w-max w-full"
+                            style={{
+                                display: 'none',
+                                position: "absolute",
+                                top: "50px",
+                                left: 0,
+                                flexDirection: "column",
+                                boxSizing: "border-box",
+                                animationName: "popup-ani",
+                                animationDuration: "1s",
+                                boxShadow: "0px 2px 3px"
+                            }}>
+                            <li><a>Perfume review</a></li>
+                            <li><a>Experience in choosing perfume</a></li>
+                        </ul>
                     </li>
                     <li><a>Contact</a></li>
                 </ul>
@@ -342,10 +286,9 @@ export default function Header() {
                     background-color: transparent;
                     color: #E7E7E7
                 }
-                .header-option .menu :where(li ul)::before {
+                .remove-li-before :where(li ul)::before {
                     width: 0px
                 }
-
                 .navbar-option .pesudo-class::after {
                     content: '';
                     display: none;
@@ -355,7 +298,7 @@ export default function Header() {
                     width: 70%;
                     margin-left: 15%;
                     margin-right: 15%;
-                    height: 30px;
+                    height: 22px;
                 }
                 .navbar-option li[open] summary::after{
                     transform: rotate(225deg);
