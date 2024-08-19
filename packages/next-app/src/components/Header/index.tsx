@@ -1,8 +1,12 @@
 ﻿import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import Image from 'next/image';
 
-export default function Header() {
+
+const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
+    const internalRef = useRef<HTMLDivElement | null>(null);
+    useImperativeHandle(ref, () => internalRef.current);
+
     const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
     const [brandName, setBrandName] = useState<string[]>([])
@@ -53,7 +57,7 @@ export default function Header() {
     useEffect(() => {
         setTimeout(() => {
             setBrandName(["Afnan", "Al Haramain", "Alaia", "Alexandria Fragrances", "Amouage", "Argos Fragrances", "Armaf", "Astrophil Stella", "Atelier Cologne", "ATELIER MATERI", "Attar Collection", "Azzaro", "BDK Parfums", "BORNTOSTANDOUT", "Burberry", "Butterfly Thai Perfume", "Bvlgari", "Byredo", "Calvin Klein", "Carner Barcelona", "Carolina Herrera", "Chabaud", "Chanel", "Chasing Scents", "Chlóe", "Christian Louboutin", "City Rhythm", "Clive Christian", "Creed", "Dame Perfumery", "Dior", "Diptyque", "Dolce & Gabbana", "Dsquared2", "Elie Saab", "Elizabeth Arden", "Escentric Molecules", "Etat Libre d'Orange", "Ex Nihilo", "Franck Boclet", "Frederic Malle", "Giardini Di Toscana", "Giorgio Armani", "Gritti", "Gucci", "Guerlain", "Hermes", "Imaginary Authors", "Initio Parfums Prives", "Jean Paul Gaultier", "Jimmy Choo", "Jo Malone", "Juliette Has A Gun", "Jusbox Perfumes", "Kilian", "L'Orchestre", "Lalique", "Lanvin", "Le Galion", "Le Labo", "Liquides Imaginaires", "Loewe", "Louis Vuitton", "Mad et Len", "Maison Francis Kurkdjian", "Maison Margiela", "Maison Matine", "Maison Violet", "Mancera", "Manos Gerakinis", "Marc Jacobs", "Marc-Antoine Barrois", "Marie Jeanne", "Matiere Premiere", "MCM", "Memo Paris", "Meo Fusciuni", "Missoni", "MITH Bangkok", "Montale", "Montblanc", "Moschino", "Narciso Rodriguez", "Nasomatto", "Nautica", "Nishane", "Once Perfume", "Orto Parisi", "Paco Rabanne", "Parfums de Marly", "Parfums MDCI", "Penhaligon's", "Prada", "Ralph Lauren", "Rasasi", "Roja Parfums", "Salvatore Ferragamo", "Serge Lutens", "Strangers Parfumerie", "The Merchant of Venice", "Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels", "Versace", "Victoria's Secret", "Viktor & Rolf", "Xerjoff", "Yves Saint Laurent"]);
-            setTopBrandName(["Thierry Mugler","Tom Ford","Trussardi","Valentino","Van Cleef & Arpels"])
+            setTopBrandName(["Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels"])
             setPerfumeType([
                 {
                     role: "Perfume",
@@ -77,7 +81,7 @@ export default function Header() {
 
 
     return (
-        <div className="top-0 left-0 absolute z-50 flex w-full flex-col">
+        <div className="top-0 left-0 fixed z-50 flex w-full flex-col" ref={internalRef}>
             <header className="navbar bg-base-100 border-b h-18 px-60" style={{
                 minHeight: '0px'
             }}>
@@ -100,7 +104,7 @@ export default function Header() {
                         style={{ visibility: 'hidden' }}
                     />
                 </div></a>
-                <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up">ĐK Perfume</h1></a>
+                <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
                 <div className="flex-1"></div>
                 <div className="product-search">
                     <label className="input input-bordered flex items-center gap-2 h-10">
@@ -176,7 +180,7 @@ export default function Header() {
             }}>
                 <ul className="menu menu-horizontal px-1 navbar-option w-full justify-around">
                     <li><a>Home</a></li>
-                    <li><a>About ĐunKain</a></li>
+                    <li><a>About DK</a></li>
                     <li className="pesudo-class  remove-li-before" style={{ position: "static" }}
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}
@@ -341,4 +345,6 @@ export default function Header() {
             `}</style>
         </div>
     )
-}
+})
+
+export default Header;

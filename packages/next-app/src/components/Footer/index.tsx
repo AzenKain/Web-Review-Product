@@ -1,6 +1,6 @@
 ﻿export default function Footer() {
     return (
-        <div className="absolute top-0 left-0 w-screen h-screen flex flex-col text-6xl z-0">
+        <div className="top-0 left-0 fixed z-0 flex h-screen w-screen flex-col text-6xl">
             <div className="bg-black text-neutral-content text-center flex-grow flex justify-center items-center">
                 <h1 className="my-auto text-white">ĐunKain PARFUMS</h1>
             </div>
