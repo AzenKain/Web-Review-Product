@@ -9,7 +9,7 @@ import { Autoplay, EffectFade } from 'swiper/modules';
 
 export default () => {
     return (
-        <>
+        <div className="overflow-hidden">
             <div className="top-[20%] h-[70%] absolute z-20 block flex w-full flex-col text-center">
                 <h2 className="dancingScript text-8xl">DunKain Perfume</h2>
                 <p className="text-3xl inline expand-background">“DunKain Pefume : For the Modern Gentleman and the Elegant Lady”</p>
@@ -40,7 +40,7 @@ export default () => {
                 <SwiperSlide>
                     <img src="images/C5.jpg" alt="Slide 3" style={{ width: '100%', height: '100%' }} />
                 </SwiperSlide>
-        </Swiper>
-        </>
+            </Swiper>
+        </div>
     );
 };

@@ -1,10 +1,10 @@
 ﻿export default function Footer() {
     return (
         <div className="top-0 left-0 fixed z-0 flex h-screen w-screen flex-col text-6xl">
-            <div className="bg-black text-neutral-content text-center flex-grow flex justify-center items-center">
+            <div className="base-100 text-neutral-content text-center flex-grow flex justify-center items-center">
                 <h1 className="my-auto text-white">ĐunKain PARFUMS</h1>
             </div>
-            <footer className="footer bg-black text-neutral-content text-base-content p-10">
+            <footer className="footer base-100 text-neutral-content text-base-content p-10">
                 <nav>
                     <h6 className="footer-title">Services</h6>
                     <a className="link link-hover">Branding</a>
@@ -41,7 +41,7 @@
                     </fieldset>
                 </form>
             </footer>
-            <footer className="footer footer-center bg-black text-neutral-content rounded p-10 flex-shrink">
+            <footer className="footer footer-center base-100 text-neutral-content rounded p-10 flex-shrink">
                 <nav className="grid grid-flow-col gap-4">
                     <a className="link link-hover">About us</a>
                     <a className="link link-hover">Contact</a>

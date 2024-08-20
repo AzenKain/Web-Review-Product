@@ -4,13 +4,12 @@
     "\\packages",
     "\\packages\\next-app",
     "\\packages\\next-app\\public",
-    "\\packages\\next-app\\public\\images",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
     "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Carousel",
-    "\\packages\\next-app\\src\\components\\Header"
+    "\\packages\\next-app\\src\\components\\Card",
+    "\\packages\\next-app\\src\\components\\Carousel"
   ],
-  "SelectedNode": "\\packages\\next-app\\src\\app\\globals.css",
+  "SelectedNode": "\\packages\\next-app\\public\\images",
   "PreviewInSolutionExplorer": false
 }
