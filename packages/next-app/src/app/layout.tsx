@@ -35,6 +35,7 @@ export default function RootLayout({
         if (headerRef.current) { setHeaderHeight(headerRef.current.clientHeight); }
     }, []);
 
+
   return (
       <html data-theme="luxury" lang="en">
       <head>
@@ -48,8 +49,8 @@ export default function RootLayout({
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
         <Providers>
           <StoreProvider>
-                      <Header ref={headerRef} /> {/*z-index: 50*/}
-                      <div style={{ marginTop: headerHeight, width: "100%", height: screenHeight - headerHeight }}><Carousel></Carousel></div>
+            <Header ref={headerRef} /> {/*z-index: 50*/}
+            <div style={{ marginTop: headerHeight, width: "100%", height: screenHeight - headerHeight }}><Carousel></Carousel></div>
             <main style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
                 {children}
             </main>
