@@ -3,12 +3,12 @@
     "",
     "\\packages",
     "\\packages\\next-app",
-    "\\packages\\next-app\\public",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
     "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Card",
-    "\\packages\\next-app\\src\\components\\Carousel"
+    "\\packages\\next-app\\src\\components\\Carousel",
+    "\\packages\\next-app\\src\\components\\Header"
   ],
+  "SelectedNode": "\\packages\\next-app\\public",
   "PreviewInSolutionExplorer": false
 }

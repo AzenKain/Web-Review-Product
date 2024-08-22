@@ -1,22 +1,24 @@
-﻿import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import React, { useCallback, useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import Image from 'next/image';
+﻿'use client'
+import React from 'react';
+
+interface PerfumeType {
+    role: string;
+    type: string[];
+}
+
+interface HeaderProps {
+    brandName?: string[];
+    topBrandName?: string[];
+    perfumeType?: PerfumeType[];
+}
 
 
-const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
-    const internalRef = useRef<HTMLDivElement | null>(null);
-    useImperativeHandle(ref, () => internalRef.current);
+const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType }) => {
 
     const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
-    const [brandName, setBrandName] = useState<string[]>([])
-    const [topBrandName, setTopBrandName] = useState<string[]>([])
-    const [perfumeType, setPerfumeType] = useState<{
-        role: string;
-        type: string[];
-    }[]>([])
 
-    const openNavbarOptionLg = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const openNavbarOptionLg = (e: React.MouseEvent<HTMLElement>) => {
         const detailsRef: HTMLElement = e.currentTarget
         if (detailsRef) {
             detailsRef.setAttribute('open', '');
@@ -25,16 +27,16 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
         if (ulRef) {
             ulRef.style.display = 'flex';
         }
-    }, []);
+    };
 
-    const closeNavbarOptionLg = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    const closeNavbarOptionLg = (e: React.MouseEvent<HTMLElement>) => {
         const detailsRef: HTMLElement = e.currentTarget
         const ulRef: HTMLElement | null = detailsRef.querySelector('ul')
         if (detailsRef && ulRef) {
             detailsRef.removeAttribute('open');
             ulRef.style.display = 'none';
         }
-    }, []);
+    }
 
     const handleSummaryClick = (event: Event) => {
         if ((event.target as HTMLElement).tagName !== 'A') {
@@ -42,46 +44,9 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
         }
     }
 
-    useEffect(() => {
-        const summaries = document.querySelectorAll('.header-option summary');
-        summaries.forEach((summary) => {
-            summary.addEventListener('click', handleSummaryClick);
-        });
-        return () => {
-            summaries.forEach((summary) => {
-                summary.removeEventListener('click', handleSummaryClick);
-            });
-        };
-    }, []);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setBrandName(["Afnan", "Al Haramain", "Alaia", "Alexandria Fragrances", "Amouage", "Argos Fragrances", "Armaf", "Astrophil Stella", "Atelier Cologne", "ATELIER MATERI", "Attar Collection", "Azzaro", "BDK Parfums", "BORNTOSTANDOUT", "Burberry", "Butterfly Thai Perfume", "Bvlgari", "Byredo", "Calvin Klein", "Carner Barcelona", "Carolina Herrera", "Chabaud", "Chanel", "Chasing Scents", "Chlóe", "Christian Louboutin", "City Rhythm", "Clive Christian", "Creed", "Dame Perfumery", "Dior", "Diptyque", "Dolce & Gabbana", "Dsquared2", "Elie Saab", "Elizabeth Arden", "Escentric Molecules", "Etat Libre d'Orange", "Ex Nihilo", "Franck Boclet", "Frederic Malle", "Giardini Di Toscana", "Giorgio Armani", "Gritti", "Gucci", "Guerlain", "Hermes", "Imaginary Authors", "Initio Parfums Prives", "Jean Paul Gaultier", "Jimmy Choo", "Jo Malone", "Juliette Has A Gun", "Jusbox Perfumes", "Kilian", "L'Orchestre", "Lalique", "Lanvin", "Le Galion", "Le Labo", "Liquides Imaginaires", "Loewe", "Louis Vuitton", "Mad et Len", "Maison Francis Kurkdjian", "Maison Margiela", "Maison Matine", "Maison Violet", "Mancera", "Manos Gerakinis", "Marc Jacobs", "Marc-Antoine Barrois", "Marie Jeanne", "Matiere Premiere", "MCM", "Memo Paris", "Meo Fusciuni", "Missoni", "MITH Bangkok", "Montale", "Montblanc", "Moschino", "Narciso Rodriguez", "Nasomatto", "Nautica", "Nishane", "Once Perfume", "Orto Parisi", "Paco Rabanne", "Parfums de Marly", "Parfums MDCI", "Penhaligon's", "Prada", "Ralph Lauren", "Rasasi", "Roja Parfums", "Salvatore Ferragamo", "Serge Lutens", "Strangers Parfumerie", "The Merchant of Venice", "Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels", "Versace", "Victoria's Secret", "Viktor & Rolf", "Xerjoff", "Yves Saint Laurent"]);
-            setTopBrandName(["Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels"])
-            setPerfumeType([
-                {
-                    role: "Perfume",
-                    type: ["Unisex Perfume", "Women's Perfume", "Men's Perfume"]
-                },
-                {
-                    role: "FRAGRANCE GROUP",
-                    type: ["Floral", "Floral Fruity", "Woody"]
-                },
-                {
-                    role: "Concentration",
-                    type: ["Eau de Cologne", "Eau De Parfum", "Toilet Eau", "Fragrant", "Parfum Extract", "Perfume", "Perfume Enfant"]
-                },
-                {
-                    role: "CAPACITY",
-                    type: ["100ml", "10ml", "125 ml", "35ml", "50ml", "5ml", "75ml", "78 ml", "80ml", "90ml"]
-                }
-            ])
-        }, 2000)
-    })
-
 
     return (
-        <div className="top-0 left-0 fixed z-50 flex w-full flex-col" ref={internalRef}>
+        <div className="top-0 left-0 fixed z-50 flex w-full flex-col" id="header">
             <header className="navbar bg-base-100 border-b h-18 px-60" style={{
                 minHeight: '0px'
             }}>
@@ -96,12 +61,15 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
                         boxShadow: '3px 3px 5px rgba(100,100,100,0.5)',
                     }}
                 >
-                    <Image
+                    <img
                         src="/images/logo-full.png"
                         alt="Logo"
-                        layout="fill"
-                        objectFit="contain"
-                        style={{ visibility: 'hidden' }}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                            visibility: 'hidden',
+                        }}
                     />
                 </div></a>
                 <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
@@ -212,9 +180,9 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
                                     paddingInlineStart: "0.5rem"
                                 }}>Best selling brand</h2>
                                 <ul className="steps steps-vertical">
-                                    {topBrandName.map((brand, index) => (
+                                    {topBrandName ? topBrandName.map((brand: string, index: number) => (
                                         <li key={index} className="step uppercase"><a>{brand}</a></li>
-                                    ))}
+                                    )) : null}
                                 </ul>
                             </div>
                             <div className="w-2/3">
@@ -232,9 +200,9 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
                                 </div>
                                 <div className="mt-5">
                                     <ul className="brand-item flex flex-row flex-wrap">
-                                        {brandName.map((brand, index) => (
+                                        {brandName ? brandName.map((brand: string, index: number) => (
                                             <li key={index} className="w-1/3 uppercase mt-1"><a>{brand}</a></li>
-                                        ))}
+                                        )) : null}
                                     </ul>
                                 </div>
                             </div>
@@ -263,7 +231,7 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
                                 animationDuration: "1s",
                                 boxShadow: "0px 2px 3px"
                             }}>
-                            {perfumeType.map((item, index) => (
+                            {perfumeType ? perfumeType.map((item, index) => (
                                 <li key={index} className="uppercase">
                                     <h2><a>{item.role}</a></h2>
                                     {item.type && (
@@ -276,7 +244,7 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
                                         </ul>
                                     )}
                                 </li>
-                            ))}
+                            )) : null}
                         </ul>
                     </li>
                     <li className="pesudo-class relative"
@@ -345,6 +313,6 @@ const Header = forwardRef<HTMLDivElement | any>((props, ref) => {
             `}</style>
         </div>
     )
-})
+}
 
 export default Header;
