@@ -6,9 +6,8 @@
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
     "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Carousel",
     "\\packages\\next-app\\src\\components\\Header"
   ],
-  "SelectedNode": "\\packages\\next-app\\public",
+  "SelectedNode": "\\packages\\next-app\\src\\components\\Header\\index.tsx",
   "PreviewInSolutionExplorer": false
 }

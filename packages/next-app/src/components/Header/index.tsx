@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
 
     return (
         <div className="top-0 left-0 fixed z-50 flex w-full flex-col" id="header">
-            <header className="navbar bg-base-100 border-b h-18 px-60" style={{
+            <header className="navbar bg-base-100 border-b h-18 px-60 hideable" style={{
                 minHeight: '0px'
             }}>
                 <a href="/"><div className="flex relative"
@@ -309,6 +309,13 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                   to {
                       opacity: 1;
                   }
+                }
+                #header {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    z-index: 1000;
                 }
             `}</style>
         </div>

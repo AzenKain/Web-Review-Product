@@ -1,10 +1,12 @@
 ﻿import { Dancing_Script, Inter, Luxurious_Roman, Nanum_Gothic } from "next/font/google";
+import React from 'react'
 import "./globals.css";
 import $ from 'jquery';
 import Providers from "@/components/Providers/Providers";
 import StoreProvider from "./StoreProvider";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Page from "./page"
 import Footer from "../components/Footer/index";
 import Header from "../components/Header";
 import Carousel from '../components/Carousel';
@@ -14,12 +16,18 @@ const luxuriousRoman = Luxurious_Roman({ weight: '400', subsets: ['latin'] })
 const nanumGothic = Nanum_Gothic({ weight: '400', subsets: ["latin"] })
 const dancingScript = Dancing_Script({ weight: '700', subsets: ["latin"] })
 
-export default async function RootLayout({
-    children
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+type Perfume = {
+    img?: string;
+    name: string;
+    description: string;
+    href?: string;
+    cost: string;
+}
+
+export default async function RootLayout() {
+
     const { brandName, topBrandName, perfumeType } = await getBrandData()
+    const { topUnisexPerfume, topManPerfume, topWomanPerfume } = await getTopPerfume()
 
     return (
         <html data-theme="luxury" lang="en">
@@ -38,7 +46,7 @@ export default async function RootLayout({
                         <Header brandName={brandName} topBrandName={topBrandName} perfumeType={perfumeType} /> {/*z-index: 50*/}
                         <div id="main-carousel"><Carousel></Carousel></div>
                         <main style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
-                            {children}
+                            <Page topUnisexPerfume={topUnisexPerfume} topManPerfume={topManPerfume} topWomanPerfume={topWomanPerfume} /> {/*children*/}
                         </main>
                         <ToastContainer />
                         <Footer /> {/*z-index: 0*/}
@@ -74,8 +82,30 @@ export default async function RootLayout({
                               `,
                     }}
                 ></script>
-
-
+                <script
+                    id="hide-header"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                                  function handleScroll() {
+                                      const header = $('#header');
+                                      const headerHideable = $('#header>.hideable').outerHeight();
+                                      $(window).on('scroll', function() {
+                                        const st = $(this).scrollTop();
+                                        if (st < headerHideable) {
+                                          header.css({
+                                            'top': '-' + (st + 3) + 'px'
+                                          });
+                                        } else {
+                                           header.css({
+                                            'top': '-' + (headerHideable + 3) + 'px'
+                                          });
+                                        }
+                                      });
+                                    }
+                                    handleScroll();
+                              `,
+                    }}
+                ></script>
             </body>
         </html>
     );
@@ -108,4 +138,45 @@ function getBrandData() {
     ];
 
     return { brandName, topBrandName, perfumeType };
+}
+
+function getTopPerfume() {
+    const topUnisexPerfume: Perfume[] = (
+        [
+            {
+                "img": "/images/atelier.png",
+                "name": "ATELIER MATERI",
+                "description": "Atelier Materi Santal Blond EDP",
+                "cost": "6,500,000 VND"
+            },
+            {
+                "img": "/images/clive.png",
+                "name": "CLIVE CHRISTIAN",
+                "description": "Clive Christian E Cashmere Musk",
+                "cost": "12,200,000 VND"
+            },
+            {
+                "img": "/images/borntostandout.png",
+                "name": "BORNTOSTANDOUT",
+                "description": "BTSO Dirty Rice EDP",
+                "cost": "5,330,000 VND"
+            },
+            {
+                "img": "/images/gritti.png",
+                "name": "GRITTI",
+                "description": "Neroli Extreme Gritti",
+                "cost": "5,500,000 VND"
+            },
+            {
+                "img": "/images/fusciuni.png",
+                "name": "FUSCIUNI CAT",
+                "description": "Fusciuni Little Song",
+                "cost": "6,900,000 VND"
+            }
+        ])
+
+
+    const topManPerfume: Perfume[] = [...topUnisexPerfume]
+    const topWomanPerfume: Perfume[] = [ ...topUnisexPerfume ]
+    return { topUnisexPerfume, topManPerfume, topWomanPerfume }
 }

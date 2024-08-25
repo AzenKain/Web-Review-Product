@@ -4,28 +4,20 @@ interface Perfume {
     img?: string;
     name: string;
     description: string;
-    tags: string[];
     href?: string;
     cost: string;
 }
 
 const MainCard: React.FC<{ item: Perfume }> = ({ item }) => {
     return (
-        <div className="card glass h-[500px] max-h-[80vh] w-full shadow-xl">
-            <figure>
-                <img src={item.img} alt={item.name} className="bg-white" />
+        <div className="card glass h-[450px] max-h-[80vh] w-full shadow-xl">
+            <figure className="w-full h-[60%]">
+                <img src={item.img} alt={item.name} className="bg-white w-full" style={{aspectRatio: 1}} />
             </figure>
             <div className="card-body">
-                <h2 className="card-title">{item.name}</h2>
-                <p>{item.description}</p>
-                {item.tags ? (
-                    <div className="card-actions justify-end">
-                        {item.tags.map((key, index) => (
-                            <div key={index} className="badge badge-outline">{key}</div>
-                        ))}
-                    </div>
-                ) : null} 
-                <h2>{item.cost}</h2>
+                <h2 className="card-title text-center block">{item.name}</h2>
+                <p className="text-center">{item.description}</p>
+                <h2 className="text-center">{item.cost}</h2>
             </div>
         </div>
     );
