@@ -3,35 +3,23 @@ import React from 'react'
 import "./globals.css";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Page from "./page"
 import Footer from "@/components/Footer/index";
 import Header from "@/components/Header";
-import Carousel from '@/components/Carousel';
 
-const inter = Inter({ subsets: ["latin"] });
-const luxuriousRoman = Luxurious_Roman({ weight: '400', subsets: ['latin'] })
-const nanumGothic = Nanum_Gothic({ weight: '400', subsets: ["latin"] })
-const dancingScript = Dancing_Script({ weight: '700', subsets: ["latin"] })
 
-type Perfume = {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
-
-export default async function HomeLayout() {
+export default async function HomeLayout({
+    children
+}: {
+    children: React.ReactNode
+}) {
 
     const { brandName, topBrandName, perfumeType } = await getBrandData()
-    const { topUnisexPerfume, topManPerfume, topWomanPerfume } = await getTopPerfume()
 
     return (
         <div className="relative">
             <Header brandName={brandName} topBrandName={topBrandName} perfumeType={perfumeType} /> {/*z-index: 50*/}
-            <div id="main-carousel" className="overflow-hidden"><Carousel></Carousel></div>
-            <main style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
-                <Page topUnisexPerfume={topUnisexPerfume} topManPerfume={topManPerfume} topWomanPerfume={topWomanPerfume} /> {/*children*/}
+            <main id="main-content" style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
+                {children}
             </main>
             <ToastContainer />
             <Footer /> {/*z-index: 0*/}
@@ -42,20 +30,14 @@ export default async function HomeLayout() {
                               $(document).ready(function() {
                                 function adjustCarouselHeight() {
                                   const header = $('#header');
-                                  const body = $('#main-carousel');
-
+                                  const body = $('#main-content');
                                   if (header.length && body.length) {
                                     const headerHeight = header.outerHeight();
-                                    const viewportHeight = $(window).height();
-                                    const carouselHeight = viewportHeight - headerHeight;
-
                                     body.css({
                                       'margin-top': headerHeight + 'px',
-                                      'height': carouselHeight + 'px'
                                     });
                                   }
                                 }
-
                                 // Set initial height and margin
                                 adjustCarouselHeight();
 
@@ -94,9 +76,6 @@ export default async function HomeLayout() {
 }
 
 function getBrandData() {
-    /*const res = await fetch('https://api.example.com/data', { cache: 'force-cache' });*/
-    // Cache response to ensure it's static
-    /*const data = await res.json();*/
 
     const brandName = ["Afnan", "Al Haramain", "Alaia", "Alexandria Fragrances", "Amouage", "Argos Fragrances", "Armaf", "Astrophil Stella", "Atelier Cologne", "ATELIER MATERI", "Attar Collection", "Azzaro", "BDK Parfums", "BORNTOSTANDOUT", "Burberry", "Butterfly Thai Perfume", "Bvlgari", "Byredo", "Calvin Klein", "Carner Barcelona", "Carolina Herrera", "Chabaud", "Chanel", "Chasing Scents", "Chlóe", "Christian Louboutin", "City Rhythm", "Clive Christian", "Creed", "Dame Perfumery", "Dior", "Diptyque", "Dolce & Gabbana", "Dsquared2", "Elie Saab", "Elizabeth Arden", "Escentric Molecules", "Etat Libre d'Orange", "Ex Nihilo", "Franck Boclet", "Frederic Malle", "Giardini Di Toscana", "Giorgio Armani", "Gritti", "Gucci", "Guerlain", "Hermes", "Imaginary Authors", "Initio Parfums Prives", "Jean Paul Gaultier", "Jimmy Choo", "Jo Malone", "Juliette Has A Gun", "Jusbox Perfumes", "Kilian", "L'Orchestre", "Lalique", "Lanvin", "Le Galion", "Le Labo", "Liquides Imaginaires", "Loewe", "Louis Vuitton", "Mad et Len", "Maison Francis Kurkdjian", "Maison Margiela", "Maison Matine", "Maison Violet", "Mancera", "Manos Gerakinis", "Marc Jacobs", "Marc-Antoine Barrois", "Marie Jeanne", "Matiere Premiere", "MCM", "Memo Paris", "Meo Fusciuni", "Missoni", "MITH Bangkok", "Montale", "Montblanc", "Moschino", "Narciso Rodriguez", "Nasomatto", "Nautica", "Nishane", "Once Perfume", "Orto Parisi", "Paco Rabanne", "Parfums de Marly", "Parfums MDCI", "Penhaligon's", "Prada", "Ralph Lauren", "Rasasi", "Roja Parfums", "Salvatore Ferragamo", "Serge Lutens", "Strangers Parfumerie", "The Merchant of Venice", "Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels", "Versace", "Victoria's Secret", "Viktor & Rolf", "Xerjoff", "Yves Saint Laurent"]
     const topBrandName = ["Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels"];
@@ -120,45 +99,4 @@ function getBrandData() {
     ];
 
     return { brandName, topBrandName, perfumeType };
-}
-
-function getTopPerfume() {
-    const topUnisexPerfume: Perfume[] = (
-        [
-            {
-                "img": "/images/atelier.png",
-                "name": "ATELIER MATERI",
-                "description": "Atelier Materi Santal Blond EDP",
-                "cost": "6,500,000 VND"
-            },
-            {
-                "img": "/images/clive.png",
-                "name": "CLIVE CHRISTIAN",
-                "description": "Clive Christian E Cashmere Musk",
-                "cost": "12,200,000 VND"
-            },
-            {
-                "img": "/images/borntostandout.png",
-                "name": "BORNTOSTANDOUT",
-                "description": "BTSO Dirty Rice EDP",
-                "cost": "5,330,000 VND"
-            },
-            {
-                "img": "/images/gritti.png",
-                "name": "GRITTI",
-                "description": "Neroli Extreme Gritti",
-                "cost": "5,500,000 VND"
-            },
-            {
-                "img": "/images/fusciuni.png",
-                "name": "FUSCIUNI CAT",
-                "description": "Fusciuni Little Song",
-                "cost": "6,900,000 VND"
-            }
-        ])
-
-
-    const topManPerfume: Perfume[] = [...topUnisexPerfume]
-    const topWomanPerfume: Perfume[] = [...topUnisexPerfume]
-    return { topUnisexPerfume, topManPerfume, topWomanPerfume }
 }

@@ -5,10 +5,10 @@
     "\\packages\\next-app",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
-    "\\packages\\next-app\\src\\app\\showroom",
-    "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Header"
+    "\\packages\\next-app\\src\\app\\(Home)",
+    "\\packages\\next-app\\src\\app\\(Showroom)",
+    "\\packages\\next-app\\src\\components"
   ],
-  "SelectedNode": "\\packages\\next-app\\src\\app\\showroom\\page.tsx",
+  "SelectedNode": "\\packages\\next-app\\src\\app\\(Showroom)\\product",
   "PreviewInSolutionExplorer": false
 }
