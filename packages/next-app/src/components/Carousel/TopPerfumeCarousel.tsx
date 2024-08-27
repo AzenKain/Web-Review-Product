@@ -25,7 +25,6 @@ export default function TopPerfumeCarousel({ Perfume, reverse }: { Perfume: Perf
                 disableOnInteraction: false,
                 reverseDirection: reverse
             }}
-            onSwiper={(swiper) => console.log(swiper)}
             allowTouchMove={true}
             breakpoints={{
                 320: {

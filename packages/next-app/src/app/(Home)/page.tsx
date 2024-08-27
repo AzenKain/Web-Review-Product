@@ -5,8 +5,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
-import MainCard from "../components/Card/MainCard";
-import TopPerfumeCarousel from "../components/Carousel/TopPerfumeCarousel"
+import MainCard from "@/components/Card/MainCard";
+import TopPerfumeCarousel from "@/components/Carousel/TopPerfumeCarousel"
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';

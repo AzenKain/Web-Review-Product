@@ -7,9 +7,9 @@ import 'swiper/css/navigation';
 
 import { Autoplay, EffectFade } from 'swiper/modules';
 
-export default () => {
+export default function Carousel () {
     return (
-        <div className="overflow-hidden">
+        <div className="relative h-full w-full overflow-hidden">
             <div className="top-[20%] h-[70%] absolute z-20 block flex w-full flex-col text-center">
                 <h2 className="dancingScript text-8xl">DunKain Perfume</h2>
                 <p className="text-3xl inline expand-background">“DunKain Pefume : For the Modern Gentleman and the Elegant Lady”</p>
@@ -27,8 +27,6 @@ export default () => {
                     delay: 10000,
                     disableOnInteraction: false,
                 }}
-                onSlideChange={() => console.log('slide change')}
-                onSwiper={(swiper) => console.log(swiper)}
                 allowTouchMove={true}
             >
                 <SwiperSlide>
