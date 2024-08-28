@@ -17,6 +17,7 @@
     "@react-spring/web": "^9.7.4",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/jquery": "^3.5.30",
+    "antd": "^5.20.3",
     "axios": "^1.7.3",
     "core-js": "^3.38.0",
     "jquery": "^3.7.1",
