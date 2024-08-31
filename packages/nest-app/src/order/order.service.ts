@@ -1,26 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { OrderEntity } from 'src/types/order';
 import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class UserService {
+export class OrderService {
     constructor(
-        private jwt: JwtService,
         private config: ConfigService,
+        @InjectRepository(OrderEntity) private orderRepository: Repository<OrderEntity>,
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
-
     ) { }
-    async getUser(userId: string): Promise<UserEntity> {
-        const user = await this.userRepository.findOne({
-            where: {
-                secretKey: userId
-            }
-        });
-        delete user.hash;
-        delete user.refreshToken;
-        return user;
-    }
 }

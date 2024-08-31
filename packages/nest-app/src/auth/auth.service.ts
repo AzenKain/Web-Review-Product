@@ -2,23 +2,24 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/types/user';
+import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
 import { LoginDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { v5 as uuidv5 } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
+import { JwtPayload } from './interfaces/jwt-payload.interfaces';
 
 @Injectable()
 export class AuthService {
     constructor(
         private jwt: JwtService,
         private config: ConfigService,
-        @InjectRepository(User) private userRespository: Repository<User>,
+        @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
        
     ) { }
     async validateUser(id: string, email: string): Promise<any> {
-        const user = await this.userRespository.findOne({
+        const user = await this.userRepository.findOne({
             where: {
                 email: email,
                 secretKey: id
@@ -29,11 +30,24 @@ export class AuthService {
         }
         return null;
       }
-
-    async LoginService(userDto: LoginDto) {
-        const userLogin = await this.userRespository.findOne({
+      async validateJwtPayload(
+        payload: JwtPayload,
+      ): Promise<any> {
+        const user = await this.userRepository.findOne({
             where: {
-                email: userDto.email
+                email: payload.email,
+                secretKey: payload.id
+            }
+        })
+        if (user) {
+          return user
+        }
+        return null;
+      }
+    async LoginService(dto: LoginDto) {
+        const userLogin = await this.userRepository.findOne({
+            where: {
+                email: dto.email
             }
         });
         if (!userLogin)
@@ -43,7 +57,7 @@ export class AuthService {
 
         const pwMatches = await argon.verify(
             userLogin.hash,
-            userDto.password,
+            dto.password,
         );
 
         if (!pwMatches)
@@ -54,10 +68,10 @@ export class AuthService {
         await this.updateRefreshToken(userLogin.secretKey, token.refresh_token)
         return token;
     }
-    async SignupService(userDto: SignUpDto) {
-        const checkMail = await this.userRespository.findOne({
+    async SignupService(dto: SignUpDto) {
+        const checkMail = await this.userRepository.findOne({
             where: {
-                email: userDto.email,
+                email: dto.email,
             }
         })
 
@@ -68,18 +82,23 @@ export class AuthService {
         }
 
 
-        const hash = await argon.hash(userDto.password);
+        const hash = await argon.hash(dto.password);
         
-        const UserCre = this.userRespository.create({
-            secretKey: uuidv5(userDto.email, uuidv5.URL),
-            email: userDto.email,
+        const UserCre = this.userRepository.create({
+            secretKey: uuidv5(dto.email, uuidv5.URL),
+            email: dto.email,
             hash: hash,
             refreshToken: uuidv4(),
-            firstName: userDto.firstName,
-            lastName: userDto.lastName
+            details: {
+                firstName: dto.firstName,
+                lastName: dto.lastName
+            },
+            actionLog: [],
+            role: [],
+            username: dto.username
         })
 
-        const newUser = await this.userRespository.save(UserCre);
+        const newUser = await this.userRepository.save(UserCre);
         const token = await this.signToken(newUser.secretKey, newUser.email)
         await this.updateRefreshToken(newUser.secretKey, token.refresh_token)
         return token;
@@ -118,13 +137,13 @@ export class AuthService {
     }
 
     async updateRefreshToken(userId: string, refreshToken: string) {
-        const user  = await this.userRespository.findOne({
+        const user  = await this.userRepository.findOne({
             where: {
                 secretKey: userId,
             }
         })
         user.refreshToken = refreshToken
-        await this.userRespository.save(user)
+        await this.userRepository.save(user)
     }
 
 }

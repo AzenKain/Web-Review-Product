@@ -10,6 +10,10 @@ export class SignUpDto {
 
     @IsString()
     @IsNotEmpty()
+    username: string;
+
+    @IsString()
+    @IsNotEmpty()
     password: string;
 
     @IsString()

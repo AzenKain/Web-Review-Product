@@ -6,7 +6,13 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './types/user';
+import { UserDetailEntity, UserEntity } from './types/user';
+import { ProductModule } from './product/product.module';
+import { ActionLogModule } from './action-log/action-log.module';
+import { OrderModule } from './order/order.module';
+import { ImageDetailEntity, ProductDetailEntity, ProductEntity } from './types/product';
+import { CustomerInfoEntity, DeliveryInfoEntity, OrderEntity, OrderProductEntity } from './types/order';
+import { ActionLogEntity } from './types/actionlog';
 
 @Module({
   imports: [    
@@ -39,11 +45,26 @@ import { User } from './types/user';
         username: configService.get<string>('MYSQL_USERNAME'),
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('MYSQL_DATABASE'),
-        entities: [User],
+        entities: [
+          UserEntity, 
+          UserDetailEntity,
+          ProductEntity, 
+          ProductDetailEntity,
+          ImageDetailEntity,
+          OrderEntity, 
+          CustomerInfoEntity,
+          DeliveryInfoEntity,
+          OrderProductEntity,
+          ActionLogEntity, 
+
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
+    ProductModule,
+    ActionLogModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],

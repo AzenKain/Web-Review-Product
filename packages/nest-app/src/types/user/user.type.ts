@@ -1,31 +1,68 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ActionLogType } from '../actionlog';
 
-@ObjectType("User")
+@ObjectType("UserDetail")
+export class UserDetailType {
+  @Field(() => ID)
+  id: number;
+
+  @Field({ nullable: true })
+  firstName: string;
+
+  @Field({ nullable: true })
+  lastName: string;
+
+  @Field({ nullable: true })
+  phoneNumber: string;
+
+  @Field({ nullable: true })
+  birthday?: Date;
+
+  @Field({ nullable: true })
+  address?: string;
+
+  @Field({ nullable: true })
+  gender?: string;
+
+  @Field({ nullable: true, defaultValue: "http://localhost:3434/media/file/user.png" })
+  imgDisplay?: string;
+}
+
+@ObjectType()
 export class UserType {
-    @Field()
-    id: string;
+  @Field(() => ID)
+  id: number;
 
-    @Field()
-    email: string;
+  @Field()
+  email: string;
 
-    @Field({nullable: true})
-    secretKey: string;
+  @Field()
+  secretKey: string;
 
-    @Field()
-    firstName: string;
+  @Field()
+  isDisplay: boolean;
 
-    @Field()
-    lastName: string;
+  @Field()
+  username: string;
 
-    @Field({nullable: true})
-    hash: string;
+  @Field(() => [String])
+  role: string[];
 
-    @Field({nullable: true})
-    refreshToken: string;
-    
-    @Field()
-    created_at: Date;
+  @Field(() => UserDetailType, { nullable: true })
+  details: UserDetailType;
 
-    @Field()
-    updated_at: Date;
+  @Field()
+  hash: string;
+
+  @Field({ nullable: true })
+  refreshToken: string;
+
+  @Field(() => [ActionLogType], { nullable: true })
+  actionLog: ActionLogType[];
+
+  @Field()
+  created_at: Date;
+
+  @Field()
+  updated_at: Date;
 }
