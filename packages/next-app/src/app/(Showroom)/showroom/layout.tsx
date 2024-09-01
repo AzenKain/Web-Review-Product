@@ -1,5 +1,6 @@
 ﻿import React from 'react'
-import FilterSidebar from '@/components/FillterSidebar'
+import FilterSidebar from '@/components/Fillter/sidebar'
+import FilterNavbar from '@/components/Fillter/navbar'
 
 export default async function HomeLayout({
     children,
@@ -22,7 +23,8 @@ export default async function HomeLayout({
                 }}>
                     <FilterSidebar brand={brand} perfumeType={perfumeType} />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 p-4">
+                    <FilterNavbar />
                     {children}
                 </div>
             </div>
