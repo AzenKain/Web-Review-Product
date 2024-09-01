@@ -10,7 +10,7 @@ import { AuthGuard } from "@nestjs/passport";
 
 
 @Injectable()
-export class JwtGuardRestApi extends AuthGuard('jwt') {
+export class JwtGuardRestApi extends AuthGuard('jwt-rest') {
     constructor(
         private readonly jwtService: JwtService,
         private config: ConfigService,
