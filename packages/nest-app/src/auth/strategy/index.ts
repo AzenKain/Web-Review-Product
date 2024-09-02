@@ -1,3 +1,3 @@
-export * from './auth.strategy'
+export * from './authAccess.strategy'
 export * from './authRefresh.strategy'
 export * from './authGraphql.strategy'

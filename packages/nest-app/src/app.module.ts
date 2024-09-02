@@ -10,9 +10,11 @@ import { UserDetailEntity, UserEntity } from './types/user';
 import { ProductModule } from './product/product.module';
 import { ActionLogModule } from './action-log/action-log.module';
 import { OrderModule } from './order/order.module';
-import { ImageDetailEntity, ProductDetailEntity, ProductEntity } from './types/product';
+import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } from './types/product';
 import { CustomerInfoEntity, DeliveryInfoEntity, OrderEntity, OrderProductEntity } from './types/order';
 import { ActionLogEntity } from './types/actionlog';
+import { BlogModule } from './blog/blog.module';
+import { BlogEntity } from './types/blog';
 
 @Module({
   imports: [    
@@ -56,7 +58,8 @@ import { ActionLogEntity } from './types/actionlog';
           DeliveryInfoEntity,
           OrderProductEntity,
           ActionLogEntity, 
-
+          TagsEntity,
+          BlogEntity
         ],
         synchronize: true,
       }),
@@ -65,6 +68,7 @@ import { ActionLogEntity } from './types/actionlog';
     ProductModule,
     ActionLogModule,
     OrderModule,
+    BlogModule,
   ],
   controllers: [],
   providers: [],

@@ -1,6 +1,18 @@
 import { Field, Float, ID, Int, ObjectType } from "@nestjs/graphql";
 import { OrderProductType } from "../order";
 
+@ObjectType('TagsDetail')
+export class TagsDetailType {
+    @Field(() => ID)
+    id: number;
+
+    @Field()
+    type: string;
+
+    @Field()
+    value: string;
+}
+
 @ObjectType('ProductDetail')
 export class ProductDetailType {
     @Field(() => ID)
@@ -9,17 +21,20 @@ export class ProductDetailType {
     @Field(() => [ImageDetailType])
     imgDisplay: ImageDetailType[];
 
-    @Field()
-    size: string;
+    @Field(()=>TagsDetailType)
+    size: TagsDetailType;
 
-    @Field()
-    brand: string;
+    @Field(()=>TagsDetailType)
+    brand: TagsDetailType;
 
-    @Field(() => [String], { nullable: true })
-    tags?: string[];
+    @Field(()=>TagsDetailType)
+    fragranceNotes: TagsDetailType;
+    
+    @Field(()=>TagsDetailType)
+    concentration: TagsDetailType;
 
-    @Field(() => [String], { nullable: true })
-    fragranceNotes?: string[];
+    @Field(()=>TagsDetailType)
+    sex: TagsDetailType;
 
     @Field({ nullable: true })
     description?: string;
@@ -59,8 +74,8 @@ export class ProductType {
     @Field(() => Int)
     stockQuantity: number;
 
-    @Field()
-    category: string;
+    @Field({ nullable: true})
+    category?: string;
 
     @Field({ nullable: true, defaultValue: 0 })
     buyCount?: number;

@@ -1,21 +1,21 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { JwtGuardRestApi } from './guard';
+import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import { JwtGuardRestApiRefresh } from './guard';
 import { AuthService } from './auth.service';
 import { LoginDto, SignUpDto } from './dto';
-
+import { JwtPayload } from './interfaces/jwt-payload.interfaces';
+import { CurrentUserRest } from 'src/decorators';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private authService: AuthService,
     ){}
-    // @UseGuards(JwtGuardRestApi)
+
     @Post('login')
     async LoginController(
         @Body() dto : LoginDto,
     ) {
-        console.log(dto);
-        return this.authService.LoginService(dto)
+        return await this.authService.LoginService(dto)
     }
 
 
@@ -23,8 +23,13 @@ export class AuthController {
     async SignUpController(
         @Body() dto : SignUpDto,
     ) {
-        console.log(dto);
-        return this.authService.SignupService(dto)
+        return await this.authService.SignupService(dto)
     }
-
+    @UseGuards(JwtGuardRestApiRefresh)
+    @Post('refresh')
+    async RefreshController(
+        @CurrentUserRest() user: JwtPayload
+    ) {
+        return await this,this.authService.RefreshService(user)
+    }
 }

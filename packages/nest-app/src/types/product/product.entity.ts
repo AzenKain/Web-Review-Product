@@ -1,6 +1,20 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany, ManyToOne } from "typeorm";
 import { OrderProductEntity } from "../order";
 
+
+@Entity({ name: 'TagsDetail' })
+export class TagsEntity {
+    @PrimaryGeneratedColumn({ type: 'bigint' })
+    id: number;
+
+    @Column()
+    type: string;
+
+    @Column()
+    value: string;
+}
+
+
 @Entity({ name: 'ProductDetail' })
 export class ProductDetailEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -9,21 +23,30 @@ export class ProductDetailEntity {
     @OneToMany(() => ImageDetailEntity, (img) => img.productDetail)
     imgDisplay: ImageDetailEntity[];
 
-    @Column()
-    size: string;
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    size: TagsEntity;
 
-    @Column()
-    brand: string;
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    brand: TagsEntity;
 
-    @Column({ type: 'simple-array', nullable: true })
-    tags?: string[];
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    fragranceNotes: TagsEntity;
+    
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    concentration: TagsEntity;
 
-    @Column({ type: 'simple-array', nullable: true })
-    fragranceNotes?: string[];
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    sex: TagsEntity;
 
     @Column({ nullable: true })
     description?: string;
 }
+
 @Entity({ name: 'ImageDetail' })
 export class ImageDetailEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -38,6 +61,7 @@ export class ImageDetailEntity {
     @ManyToOne(() => ProductDetailEntity, (pd) => pd.imgDisplay, { nullable: true })
     productDetail: ProductDetailEntity;
 }
+
 @Entity({ name: 'Product' })
 export class ProductEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -58,8 +82,8 @@ export class ProductEntity {
     @Column({ type: 'bigint' })
     stockQuantity: number;
 
-    @Column()
-    category: string;
+    @Column({ nullable: true})
+    category?: string;
 
     @Column({ type: 'bigint', nullable: true, default: 0 })
     buyCount?: number;
