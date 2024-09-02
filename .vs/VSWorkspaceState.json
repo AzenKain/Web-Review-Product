@@ -5,12 +5,16 @@
     "\\packages\\next-app",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
+    "\\packages\\next-app\\src\\app\\(Home)",
     "\\packages\\next-app\\src\\app\\(Showroom)",
     "\\packages\\next-app\\src\\app\\(Showroom)\\showroom",
     "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]",
     "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]",
-    "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]\\[id]"
+    "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]\\[id]",
+    "\\packages\\next-app\\src\\components",
+    "\\packages\\next-app\\src\\components\\Card",
+    "\\packages\\next-app\\src\\components\\Fillter"
   ],
-  "SelectedNode": "\\packages\\next-app\\src\\app\\api",
+  "SelectedNode": "\\packages\\next-app\\src\\components\\Card\\MainCard.tsx",
   "PreviewInSolutionExplorer": false
 }
