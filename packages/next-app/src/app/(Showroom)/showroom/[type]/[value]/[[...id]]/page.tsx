@@ -1,6 +1,7 @@
 ﻿'use client'
 import React, { useState, useEffect } from 'react'
 import ShapeCard from '@/components/Card/ShapeCard'
+import Pagination from '@/components/Footer/Pagination'
 
 type Perfume = {
     img?: string;
@@ -51,25 +52,22 @@ export default function Page() {
     }, [])
 
     return (
-        <div className="flex w-full flex-row flex-wrap justify-between">
-            {perfumes ? perfumes.map((perfume, index) => (
-                <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost}  />
-            )) : null}
-            {perfumes ? perfumes.map((perfume, index) => (
-                <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
-            )) : null}
-            {perfumes ? perfumes.map((perfume, index) => (
-                <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
-            )) : null}
-            {perfumes ? perfumes.map((perfume, index) => (
-                <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
-            )) : null}
-            {perfumes ? perfumes.map((perfume, index) => (
-                <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
-            )) : null}
-            {perfumes ? perfumes.map((perfume, index) => (
-                <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
-            )) : null}
-        </div>
+        <>
+            <div className="flex w-full flex-row flex-wrap justify-between">
+                {perfumes ? perfumes.map((perfume, index) => (
+                    <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost}  />
+                )) : null}
+                {perfumes ? perfumes.map((perfume, index) => (
+                    <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
+                )) : null}
+                {perfumes ? perfumes.map((perfume, index) => (
+                    <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
+                )) : null}
+                {perfumes ? perfumes.map((perfume, index) => (
+                    <ShapeCard key={index} name={perfume.name} description={perfume.description} img={perfume.img} cost={perfume.cost} />
+                )) : null}
+            </div>
+            <div className="flex flex-row justify-center mt-10"><Pagination /></div>
+        </>
     )
 }

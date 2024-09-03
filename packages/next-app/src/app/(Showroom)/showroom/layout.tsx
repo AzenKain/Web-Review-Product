@@ -4,17 +4,10 @@ import FilterNavbar from '@/components/Fillter/navbar'
 
 export default async function HomeLayout({
     children,
-    params
 }: {
     children: React.ReactNode,
-    params: {
-        type: string,
-        value: string,
-        id: string
-    };
 }) {
     const { brand, perfumeType } = await getBrandData();
-
     return (
         <>
             <div className="p-2 z-[10] bg-base-100 flex flex-row">
@@ -30,7 +23,6 @@ export default async function HomeLayout({
             </div>
             <div className="h-10 bg-neutral w-full glass"></div>
         </>
-
     );
 }
 
