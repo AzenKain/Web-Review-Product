@@ -1,31 +1,47 @@
-import { Field, Float, InputType, Int } from "@nestjs/graphql";
+import { Field, Float, ID, InputType, Int } from "@nestjs/graphql";
 import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 @InputType()
+export class TagsDetailInp {
+    @IsOptional()
+    @IsString()
+    @Field()
+    type: string;
+
+    @IsOptional()
+    @IsString()
+    @Field()
+    value: string;
+
+}
+
+@InputType()
 export class ProductDetailInp {
-    @IsOptional() 
-    @Field(() => [ImageDetailInp])
+    @IsOptional()
+    @Field(() => [ImageDetailInp], { nullable: true })
     imgDisplay?: ImageDetailInp[];
 
-    @IsOptional() 
-    @IsString()
-    @Field()
-    size?: string;
+    @IsOptional()
+    @Field(() => TagsDetailInp, { nullable: true })
+    brand?: TagsDetailInp;
 
-    @IsOptional() 
-    @IsString()
-    @Field()
-    brand?: string;
+    @IsOptional()
+    @Field(() => TagsDetailInp, { nullable: true })
+    size?: TagsDetailInp;
 
-    @IsOptional() 
-    @Field(() => [String], { nullable: true })
-    tags?: string[];
+    @IsOptional()
+    @Field(() => TagsDetailInp, { nullable: true })
+    fragranceNotes?: TagsDetailInp;
 
-    @IsOptional() 
-    @Field(() => [String], { nullable: true })
-    fragranceNotes?: string[];
+    @IsOptional()
+    @Field(() => TagsDetailInp, { nullable: true })
+    concentration?: TagsDetailInp;
 
-    @IsOptional() 
+    @IsOptional()
+    @Field(() => TagsDetailInp, { nullable: true })
+    sex?: TagsDetailInp;
+
+    @IsOptional()
     @Field({ nullable: true })
     description?: string;
 }
@@ -33,49 +49,49 @@ export class ProductDetailInp {
 @InputType()
 export class ImageDetailInp {
 
-    @IsOptional() 
+    @IsOptional()
     @IsString()
-    @Field()
+    @Field({ nullable: true })
     url?: string;
 
-    @IsOptional() 
+    @IsOptional()
     @Field(() => [String], { nullable: true })
     link?: string[];
 }
 
 @InputType()
 export class CreateProductDto {
-  @IsOptional()
-  @IsString()
-  @Field()
-  public userId?: string;
-  
-  @IsNotEmpty()
-  @IsString()
-  @Field()
-  name: string;
+    @IsOptional()
+    @IsString()
+    @Field({ nullable: true })
+    public userId?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Float)
-  originCost: number;
+    @IsNotEmpty()
+    @IsString()
+    @Field()
+    name: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Float)
-  displayCost: number;
+    @IsNotEmpty()
+    @IsNumber()
+    @Field(() => Float)
+    originCost: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Int)
-  stockQuantity: number;
+    @IsNotEmpty()
+    @IsNumber()
+    @Field(() => Float)
+    displayCost: number;
 
-  @IsNotEmpty()
-  @IsString()
-  @Field()
-  category: string;
+    @IsNotEmpty()
+    @IsNumber()
+    @Field(() => Int)
+    stockQuantity: number;
 
-  @IsNotEmpty()
-  @Field(() => ProductDetailInp)
-  details: ProductDetailInp;
+    @IsOptional()
+    @IsString()
+    @Field({ nullable: true })
+    category?: string;
+
+    @IsNotEmpty()
+    @Field(() => ProductDetailInp)
+    details: ProductDetailInp;
 }

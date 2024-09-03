@@ -12,14 +12,31 @@ type ActionLog {
   userId: UserType!
 }
 
+type Blog {
+  content: String!
+  created_at: DateTime!
+  id: ID!
+  isDisplay: Boolean!
+  title: String!
+  typeBlog: String!
+  updated_at: DateTime!
+}
+
+input CreateBlogDto {
+  content: String!
+  title: String!
+  typeBlog: String!
+  userId: String
+}
+
 input CreateProductDto {
-  category: String!
+  category: String
   details: ProductDetailInp!
   displayCost: Float!
   name: String!
   originCost: Float!
   stockQuantity: Int!
-  userId: String!
+  userId: String
 }
 
 type CustomerInfo {
@@ -30,16 +47,39 @@ type CustomerInfo {
   phoneNumber: String!
 }
 
+input CustomerInfoInp {
+  email: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input DeleteBlogDto {
+  blogId: ID!
+  userId: String
+}
+
+input DeleteProductDto {
+  productId: ID!
+  userId: String
+}
 
 type DeliveryInfo {
   address: String!
   city: String
   district: String
   id: ID!
+}
+
+input DeliveryInfoInp {
+  address: String!
+  city: String
+  district: String
 }
 
 type ImageDetail {
@@ -51,12 +91,18 @@ type ImageDetail {
 
 input ImageDetailInp {
   link: [String!]
-  url: String!
+  url: String
 }
 
 type Mutation {
+  CreateBlog(CreateBlog: CreateBlogDto!): Blog!
+  CreateOrder(CreateOrder: createOrderDto!): Order!
   CreateProduct(CreateProduct: CreateProductDto!): Product!
-  GetProductById(productId: Float!): Product!
+  DeleteBlog(DeleteBlog: DeleteBlogDto!): ResponseType!
+  DeleteProduct(DeleteProduct: DeleteProductDto!): ResponseType!
+  UpdateBlog(UpdateBlog: UpdateBlogDto!): Blog!
+  UpdateOrder(UpdateOrder: updateOrderDto!): Order!
+  UpdateProduct(UpdateProduct: UpdateProductDto!): Product!
 }
 
 type Order {
@@ -65,6 +111,7 @@ type Order {
   deliveryInfo: DeliveryInfo!
   id: ID!
   isDisplay: Boolean!
+  isPaid: Boolean!
   notes: String
   orderProducts: [OrderProduct!]!
   status: String!
@@ -83,9 +130,15 @@ type OrderProduct {
   unitPrice: Float!
 }
 
+input OrderProductInp {
+  discount: Float
+  productId: ID!
+  quantity: Float!
+}
+
 type Product {
   buyCount: Float
-  category: String!
+  category: String
   created_at: DateTime!
   details: ProductDetail!
   displayCost: Float!
@@ -100,26 +153,94 @@ type Product {
 }
 
 type ProductDetail {
-  brand: String!
+  brand: TagsDetail!
+  concentration: TagsDetail!
   description: String
-  fragranceNotes: [String!]
+  fragranceNotes: TagsDetail!
   id: ID!
   imgDisplay: [ImageDetail!]!
-  size: String!
-  tags: [String!]
+  sex: TagsDetail!
+  size: TagsDetail!
 }
 
 input ProductDetailInp {
-  brand: String!
+  brand: TagsDetailInp
+  concentration: TagsDetailInp
   description: String
-  fragranceNotes: [String!]
-  imgDisplay: [ImageDetailInp!]!
-  size: String!
-  tags: [String!]
+  fragranceNotes: TagsDetailInp
+  imgDisplay: [ImageDetailInp!]
+  sex: TagsDetailInp
+  size: TagsDetailInp
 }
 
 type Query {
+  GetBlogById(blogId: Float!): Blog!
+  GetOrderById(orderId: Float!): Order!
+  GetProductById(productId: Float!): Product!
+  SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
+  SearchOrderWithOption(SearchOrder: SearchOrderDto!): [Order!]!
+  SearchProductWithOptions(SearchProduct: SearchProductDto!): [Product!]!
   getUser(id: String!): UserType!
+}
+
+type ResponseType {
+  message: String!
+}
+
+input SearchBlogDto {
+  blogId: ID
+  title: String
+  typeBlog: String
+}
+
+input SearchOrderDto {
+  email: String
+  firstName: String
+  lastName: String
+  orderId: ID
+  phoneNumber: String
+}
+
+input SearchProductDto {
+  brand: [TagsDetailInp!]
+  concentration: [TagsDetailInp!]
+  fragranceNotes: [TagsDetailInp!]
+  name: String!
+  rangeMoney: [Float!]
+  sex: [TagsDetailInp!]
+  size: [TagsDetailInp!]
+}
+
+type TagsDetail {
+  id: ID!
+  type: String!
+  value: String!
+}
+
+input TagsDetailInp {
+  type: String!
+  value: String!
+}
+
+input UpdateBlogDto {
+  blogId: ID!
+  content: String!
+  title: String
+  typeBlog: String
+  userId: String
+}
+
+input UpdateProductDto {
+  buyCount: Float
+  category: String
+  details: ProductDetailInp
+  displayCost: Float
+  name: String
+  originCost: Float
+  productId: ID!
+  rating: Float
+  stockQuantity: Int
+  userId: String
 }
 
 type UserDetail {
@@ -146,4 +267,20 @@ type UserType {
   secretKey: String!
   updated_at: DateTime!
   username: String!
+}
+
+input createOrderDto {
+  customerInfo: CustomerInfoInp!
+  deliveryInfo: DeliveryInfoInp!
+  notes: String
+  orderProducts: [OrderProductInp!]!
+  status: String!
+  userId: String
+}
+
+input updateOrderDto {
+  isPaid: Boolean
+  orderId: ID!
+  status: String
+  userId: String
 }

@@ -5,8 +5,8 @@ import { IsString, IsNotEmpty, IsOptional, IsNumber } from "class-validator";
 export class updateOrderDto {
   @IsOptional()
   @IsString()
-  @Field()
-  public userId?: string;
+  @Field({ nullable: true })
+  userId?: string;
   
   @IsNotEmpty()
   @IsNumber()
@@ -15,11 +15,11 @@ export class updateOrderDto {
 
   @IsOptional()
   @IsString()
-  @Field()
-  public status?: string;
+  @Field({ nullable: true })
+  status?: string;
 
   @IsOptional()
-  @Field()
-  public isPaid?: boolean;
+  @Field({ nullable: true })
+  isPaid?: boolean;
 
 }

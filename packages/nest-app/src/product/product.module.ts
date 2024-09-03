@@ -3,10 +3,10 @@ import { ProductResolver } from './product.resolver';
 import { ProductService } from './product.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/types/user';
-import { ImageDetailEntity, ProductDetailEntity, ProductEntity } from 'src/types/product';
+import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } from 'src/types/product';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, ProductEntity, ProductDetailEntity, ImageDetailEntity]),],
+  imports: [TypeOrmModule.forFeature([UserEntity, ProductEntity, ProductDetailEntity, ImageDetailEntity, TagsEntity]),],
   providers: [ProductResolver, ProductService]
 })
 export class ProductModule {}

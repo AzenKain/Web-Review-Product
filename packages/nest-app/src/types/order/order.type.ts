@@ -44,7 +44,10 @@ export class OrderType {
   
     @Field()
     isDisplay: boolean;
-  
+    
+    @Field()
+    isPaid: boolean;
+
     @Field(() => Float)
     totalAmount: number;
   

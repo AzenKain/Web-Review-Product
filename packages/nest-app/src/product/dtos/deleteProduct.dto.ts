@@ -6,10 +6,10 @@ export class DeleteProductDto {
   @IsNotEmpty()
   @IsNumber()
   @Field(() => ID)
-  public productId : number;
+  productId : number;
 
   @IsOptional()
   @IsString()
-  @Field()
-  public userId?: string;
+  @Field({ nullable: true })
+  userId?: string;
 }

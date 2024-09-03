@@ -10,7 +10,7 @@ import { AuthGuard } from "@nestjs/passport";
 
 
 @Injectable()
-export class JwtGuardRestApiRefresh extends AuthGuard('jwt-rest-refresh') {
+export class JwtGuardRestApiRefresh extends AuthGuard(['jwt-refresh']) {
     constructor(
         private readonly jwtService: JwtService,
         private config: ConfigService,
@@ -30,7 +30,7 @@ export class JwtGuardRestApiRefresh extends AuthGuard('jwt-rest-refresh') {
                     secret: this.config.get('JWT_REFRESH_SECRET')
                 }
             );
-
+  
             request['user'] = payload;
         } catch {
             throw new UnauthorizedException();

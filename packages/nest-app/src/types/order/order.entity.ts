@@ -51,6 +51,9 @@ export class OrderEntity {
     @Column({ type: 'boolean' })
     isDisplay: boolean;
 
+    @Column({ type: 'boolean', default: false })
+    isPaid: boolean;
+    
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     totalAmount: number;
 

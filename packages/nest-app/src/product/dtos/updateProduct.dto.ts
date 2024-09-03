@@ -7,49 +7,49 @@ export class UpdateProductDto {
   @IsNotEmpty()
   @IsNumber()
   @Field(() => ID)
-  public productId: number;
+  productId: number;
 
   @IsOptional()
   @IsString()
-  @Field()
-  public userId?: string;
+  @Field({ nullable: true })
+  userId?: string;
 
   @IsOptional()
   @IsString()
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 
   @IsOptional()
   @IsNumber()
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true })
   originCost?: number;
 
   @IsOptional()
   @IsNumber()
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true })
   displayCost?: number;
 
   @IsOptional()
   @IsNumber()
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   stockQuantity?: number;
 
   @IsOptional()
   @IsString()
-  @Field()
+  @Field({ nullable: true })
   category?: string;
 
-  @IsOptional() 
+  @IsOptional()
   @IsNumber()
-  @Field({ nullable: true, defaultValue: 0 })
+  @Field({ nullable: true })
   buyCount?: number;
 
-  @IsOptional() 
+  @IsOptional()
   @IsNumber()
-  @Field(() => Float, { nullable: true, defaultValue: 0 })
+  @Field(() => Float, { nullable: true })
   rating?: number;
 
   @IsOptional()
-  @Field(() => ProductDetailInp)
+  @Field(() => ProductDetailInp, { nullable: true })
   details?: ProductDetailInp;
 }

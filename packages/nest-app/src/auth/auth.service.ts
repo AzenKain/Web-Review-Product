@@ -8,7 +8,7 @@ import { LoginDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
 import { v5 as uuidv5 } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
-import { JwtPayload } from './interfaces/jwt-payload.interfaces';
+import { JwtPayload } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -16,9 +16,10 @@ export class AuthService {
         private jwt: JwtService,
         private config: ConfigService,
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
-       
+
     ) { }
     async validateUser(id: string, email: string): Promise<any> {
+        console.log(id)
         const user = await this.userRepository.findOne({
             where: {
                 email: email,
@@ -26,13 +27,13 @@ export class AuthService {
             }
         })
         if (user) {
-          return user
+            return user
         }
         return null;
-      }
-      async validateJwtPayload(
+    }
+    async validateJwtPayload(
         payload: JwtPayload,
-      ): Promise<any> {
+    ): Promise<any> {
         const user = await this.userRepository.findOne({
             where: {
                 email: payload.email,
@@ -40,10 +41,11 @@ export class AuthService {
             }
         })
         if (user) {
-          return user
+            return user
         }
         return null;
-      }
+    }
+
     async LoginService(dto: LoginDto) {
         const userLogin = await this.userRepository.findOne({
             where: {
@@ -68,6 +70,23 @@ export class AuthService {
         await this.updateRefreshToken(userLogin.secretKey, token.refresh_token)
         return token;
     }
+    async RefreshService(dto: JwtPayload) {
+        const userLogin = await this.userRepository.findOne({
+            where: {
+                email: dto.email,
+                secretKey: dto.id,
+            }
+        });
+        if (!userLogin)
+            throw new ForbiddenException(
+                'This user does not exist',
+            );
+
+ 
+        const token = await this.signToken(userLogin.secretKey, userLogin.email)
+        await this.updateRefreshToken(userLogin.secretKey, token.refresh_token)
+        return token;
+    }
     async SignupService(dto: SignUpDto) {
         const checkMail = await this.userRepository.findOne({
             where: {
@@ -81,9 +100,8 @@ export class AuthService {
             );
         }
 
-
         const hash = await argon.hash(dto.password);
-        
+
         const UserCre = this.userRepository.create({
             secretKey: uuidv5(dto.email, uuidv5.URL),
             email: dto.email,
@@ -103,6 +121,7 @@ export class AuthService {
         await this.updateRefreshToken(newUser.secretKey, token.refresh_token)
         return token;
     }
+
     async signToken(
         id: string,
         email: string,
@@ -137,7 +156,7 @@ export class AuthService {
     }
 
     async updateRefreshToken(userId: string, refreshToken: string) {
-        const user  = await this.userRepository.findOne({
+        const user = await this.userRepository.findOne({
             where: {
                 secretKey: userId,
             }
