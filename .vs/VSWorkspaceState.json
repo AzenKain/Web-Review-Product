@@ -9,8 +9,8 @@
     "\\packages\\next-app\\src\\app\\(Showroom)\\showroom",
     "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]",
     "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]",
-    "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]\\[[...id]]"
+    "\\packages\\next-app\\src\\components",
+    "\\packages\\next-app\\src\\components\\Tab"
   ],
-  "SelectedNode": "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]",
   "PreviewInSolutionExplorer": false
 }
