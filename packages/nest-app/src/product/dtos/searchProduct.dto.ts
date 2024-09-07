@@ -33,4 +33,5 @@ export class SearchProductDto {
     @Field(()=>[TagsDetailInp], { nullable: true })
     sex?: TagsDetailInp[];
 
+
 }

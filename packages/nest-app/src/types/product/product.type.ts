@@ -10,7 +10,7 @@ export class TagsDetailType {
     type: string;
 
     @Field()
-    value: string;
+    value?: string;
 }
 
 @ObjectType('ProductDetail')
@@ -18,26 +18,35 @@ export class ProductDetailType {
     @Field(() => ID)
     id: number;
 
-    @Field(() => [ImageDetailType])
-    imgDisplay: ImageDetailType[];
+    @Field(() => [ImageDetailType], { nullable: true })
+    imgDisplay?: ImageDetailType[];
 
-    @Field(()=>TagsDetailType)
-    size: TagsDetailType;
+    @Field(()=>TagsDetailType, { nullable: true })
+    size?: TagsDetailType;
 
-    @Field(()=>TagsDetailType)
-    brand: TagsDetailType;
-
-    @Field(()=>TagsDetailType)
-    fragranceNotes: TagsDetailType;
+    @Field(()=>TagsDetailType, { nullable: true })
+    brand?: TagsDetailType;
     
-    @Field(()=>TagsDetailType)
-    concentration: TagsDetailType;
+    @Field(()=>TagsDetailType, { nullable: true })
+    sillage?: TagsDetailType;
 
-    @Field(()=>TagsDetailType)
-    sex: TagsDetailType;
+    @Field(()=>TagsDetailType, { nullable: true })
+    longevity?: TagsDetailType;
+
+    @Field(()=>TagsDetailType, { nullable: true })
+    fragranceNotes?: TagsDetailType;
+    
+    @Field(()=>TagsDetailType, { nullable: true })
+    concentration?: TagsDetailType;
+
+    @Field(()=>TagsDetailType, { nullable: true })
+    sex?: TagsDetailType;
 
     @Field({ nullable: true })
     description?: string;
+
+    @Field({ nullable: true })
+    tutorial?: string
 }
 
 @ObjectType("ImageDetail")
@@ -72,7 +81,7 @@ export class ProductType {
     displayCost: number;
 
     @Field(() => Int)
-    stockQuantity: number;
+    stockQuantity?: number;
 
     @Field({ nullable: true})
     category?: string;

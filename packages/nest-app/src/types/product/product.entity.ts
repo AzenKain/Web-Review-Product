@@ -34,7 +34,15 @@ export class ProductDetailEntity {
     @OneToOne(() => TagsEntity)
     @JoinColumn()
     fragranceNotes: TagsEntity;
-    
+
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    sillage : TagsEntity;
+
+    @OneToOne(() => TagsEntity)
+    @JoinColumn()
+    longevity : TagsEntity;
+
     @OneToOne(() => TagsEntity)
     @JoinColumn()
     concentration: TagsEntity;
@@ -45,6 +53,9 @@ export class ProductDetailEntity {
 
     @Column({ nullable: true })
     description?: string;
+
+    @Column({ nullable: true })
+    tutorial?: string
 }
 
 @Entity({ name: 'ImageDetail' })
@@ -79,10 +90,10 @@ export class ProductEntity {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     displayCost: number;
 
-    @Column({ type: 'bigint' })
-    stockQuantity: number;
+    @Column({ type: 'bigint', nullable: true, default: 0 })
+    stockQuantity?: number;
 
-    @Column({ nullable: true})
+    @Column({ nullable: true, default: 'perfume'})
     category?: string;
 
     @Column({ type: 'bigint', nullable: true, default: 0 })
