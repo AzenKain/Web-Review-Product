@@ -1,5 +1,6 @@
 ﻿'use client'
-import React from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link'
 
 interface PerfumeType {
     role: string;
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 
 const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType }) => {
+
 
     const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
@@ -147,14 +149,14 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                 minHeight: '0px'
             }}>
                 <ul className="menu menu-horizontal px-1 navbar-option w-full justify-around">
-                    <li><a>Home</a></li>
-                    <li><a>About DK</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About DK</a></li>
                     <li className="pesudo-class  remove-li-before" style={{ position: "static" }}
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}
                     >
                         <details>
-                            <summary><a href="/done">Trademark</a></summary>
+                            <summary>Trademark</summary>
                         </details>
                         <ul
                             className="menu xl:menu-horizontal bg-base-200"
@@ -212,7 +214,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}>
                         <details>
-                            <summary>Perfume</summary>
+                            <summary><a href="/showroom">Perfume</a></summary>
                         </details>
                         <ul className="menu xl:menu-horizontal bg-base-200 lg:min-w-max w-full"
                             style={{
@@ -233,7 +235,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                             }}>
                             {perfumeType ? perfumeType.map((item, index) => (
                                 <li key={index} className="uppercase">
-                                    <h2><a>{item.role}</a></h2>
+                                    <h2 className="removeHoverBG">{item.role}</h2>
                                     {item.type && (
                                         <ul>
                                             {item.type.map((subItem, subIndex) => (
@@ -251,7 +253,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}>
                         <details>
-                            <summary>News</summary>
+                            <summary><a href="/news">News</a></summary>
                         </details>
                         <ul className="menu xl:menu-horizontal bg-base-200 lg:min-w-max w-full"
                             style={{
@@ -269,7 +271,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                             <li><a>Experience in choosing perfume</a></li>
                         </ul>
                     </li>
-                    <li><a>Contact</a></li>
+                    <li><a href="/#contact">Contact</a></li>
                 </ul>
             </header>
             <style jsx>{`
@@ -277,6 +279,10 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                 .navbar-option li summary:hover {
                     background-color: transparent;
                     color: #E7E7E7
+                }
+                .removeHoverBG {
+                    background-color: transparent;
+                    cursor: auto
                 }
                 .remove-li-before :where(li ul)::before {
                     width: 0px

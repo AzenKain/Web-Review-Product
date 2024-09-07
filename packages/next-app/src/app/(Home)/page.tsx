@@ -1,11 +1,8 @@
 ﻿"use client"
 import { FC } from 'react';
-import React, { useEffect, useState } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
+import React from 'react'
 import 'swiper/css';
 import 'swiper/css/autoplay';
-import MainCard from "@/components/Card/MainCard";
 import TopPerfumeCarousel from "@/components/Carousel/TopPerfumeCarousel"
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
@@ -31,7 +28,7 @@ const Page: FC<PageProps> = ({
     topWomanPerfume
 }) => {
     return (
-        <main id="main-content" className="min-h-[190vh] bg-base-100 z-1 relative">
+        <main id="main-content" className="min-h-[190vh] bg-base-100 z-1 relative m-auto xl:container">
             <div className="divider-page h-[200px] w-full text-3xl text-center flex justify-center flex-col"><a>UNISEX PERFUME</a></div>
             <div className="box-border p-[1%]">
                 <TopPerfumeCarousel Perfume={topUnisexPerfume} />
@@ -44,10 +41,10 @@ const Page: FC<PageProps> = ({
             <div className="box-border p-[1%]">
                 <TopPerfumeCarousel Perfume={topWomanPerfume} />
             </div>
-            <div className="add-contact h-64 flex justify-center flex-col">
+            <div className="add-contact h-64 flex justify-center flex-col py-16" id="contact">
                 <form className="flex flex-row justify-between mx-[10%]">
                     <div className="contact-info max-w-[50%]">
-                        <h6 className="footer-title">ConTact DunKain Perfume</h6>
+                        <h2 className="footer-title font-bold text-2xl">ConTact DunKain Perfume</h2>
                         <p>Thank you for your interest in DunKain Perfume, where passion and the art of fragrance come together to create unique experiences. We’re always here to listen and assist you. Whether you’re seeking advice on the perfect scent, want to learn more about our products, or have any other inquiries, don’t hesitate to reach out to us. Your satisfaction is our top priority at DunKain Perfume.</p>
                     </div>
                     <fieldset className="form-control w-80">
@@ -93,7 +90,6 @@ const Page: FC<PageProps> = ({
                     </div>
                 </div>
             </div>
-            <div className="end h-10 bg-neutral w-full"></div>
         </main>
     );
 }
