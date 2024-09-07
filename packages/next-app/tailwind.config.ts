@@ -14,7 +14,8 @@ const config: Config = {
       themes: ["light", "dark", "cupcake", "luxury", "coffee"],
   },
   plugins: [
-    require("daisyui"),
+      require("daisyui"),
+      require('@tailwindcss/line-clamp'),
     ],
 };
 

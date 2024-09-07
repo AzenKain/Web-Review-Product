@@ -16,6 +16,7 @@
     "@mui/material": "^5.16.7",
     "@react-spring/web": "^9.7.4",
     "@reduxjs/toolkit": "^2.2.7",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/jquery": "^3.5.30",
     "antd": "^5.20.3",
     "axios": "^1.7.3",
