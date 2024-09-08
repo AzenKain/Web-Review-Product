@@ -8,12 +8,6 @@ export class UpdateBlogDto {
     @Field(() => ID)
     blogId: number;
 
-
-    @IsOptional()
-    @IsString()
-    @Field({ nullable: true })
-    userId?: string;
-
     @IsOptional()
     @IsString()
     @Field({ nullable: true })

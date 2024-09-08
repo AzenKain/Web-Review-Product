@@ -12,11 +12,6 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   @Field({ nullable: true })
-  userId?: string;
-
-  @IsOptional()
-  @IsString()
-  @Field({ nullable: true })
   name?: string;
 
   @IsOptional()
@@ -41,7 +36,7 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsNumber()
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   buyCount?: number;
 
   @IsOptional()

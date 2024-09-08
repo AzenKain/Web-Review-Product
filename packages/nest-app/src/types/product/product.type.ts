@@ -80,13 +80,13 @@ export class ProductType {
     @Field(() => Float)
     displayCost: number;
 
-    @Field(() => Int)
+    @Field(() => Int, { nullable: true, defaultValue: 0 })
     stockQuantity?: number;
 
     @Field({ nullable: true})
     category?: string;
 
-    @Field({ nullable: true, defaultValue: 0 })
+    @Field(() => Int, { nullable: true, defaultValue: 0 })
     buyCount?: number;
 
     @Field(() => Float, { nullable: true, defaultValue: 0 })

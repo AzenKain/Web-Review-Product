@@ -71,11 +71,6 @@ export class ImageDetailInp {
 
 @InputType()
 export class CreateProductDto {
-    @IsOptional()
-    @IsString()
-    @Field({ nullable: true })
-    public userId?: string;
-
     @IsNotEmpty()
     @IsString()
     @Field()
@@ -91,9 +86,9 @@ export class CreateProductDto {
     @Field(() => Float)
     displayCost: number;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
-    @Field(() => Int)
+    @Field(() => Int, { nullable: true })
     stockQuantity?: number;
 
     @IsOptional()
