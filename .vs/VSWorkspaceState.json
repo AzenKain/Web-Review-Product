@@ -3,13 +3,13 @@
     "",
     "\\packages",
     "\\packages\\next-app",
+    "\\packages\\next-app\\public",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
-    "\\packages\\next-app\\src\\app\\(Showroom)",
-    "\\packages\\next-app\\src\\app\\(Showroom)\\product\\[slug]",
+    "\\packages\\next-app\\src\\app\\redux",
     "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Header"
+    "\\packages\\next-app\\src\\components\\Header",
+    "\\packages\\next-app\\src\\lib"
   ],
-  "SelectedNode": "\\packages\\next-app\\src\\app\\news",
   "PreviewInSolutionExplorer": false
 }

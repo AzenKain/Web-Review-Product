@@ -1,7 +1,4 @@
-﻿import { Dancing_Script, Inter, Luxurious_Roman, Nanum_Gothic } from "next/font/google";
-import React from 'react'
-import "./globals.css";
-import { ToastContainer } from 'react-toastify';
+﻿import React from 'react'
 import 'react-toastify/dist/ReactToastify.css';
 import Footer from "@/components/Footer/index";
 import Header from "@/components/Header";
@@ -21,7 +18,6 @@ export default async function HomeLayout({
             <main id="main-content" style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
                 {children}
             </main>
-            <ToastContainer />
             <Footer /> {/*z-index: 0*/}
             <script
                 id="margin-header"

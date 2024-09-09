@@ -1,6 +1,7 @@
 ﻿'use client'
 import React, { useState } from 'react';
 import Link from 'next/link'
+import ListIcon from '@mui/icons-material/List';
 
 interface PerfumeType {
     role: string;
@@ -40,16 +41,10 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
         }
     }
 
-    const handleSummaryClick = (event: Event) => {
-        if ((event.target as HTMLElement).tagName !== 'A') {
-            event.preventDefault();
-        }
-    }
-
 
     return (
-        <div className="top-0 left-0 fixed z-50 flex w-full flex-col" id="header">
-            <header className="navbar bg-base-100 border-b h-18 px-60 hideable" style={{
+        <div className="top-0 left-0 bg-base-100 fixed z-50 flex w-full flex-col border-b" id="header">
+            <header className="navbar bg-base-100 border-b h-18 m-auto xl:container hideable" style={{
                 minHeight: '0px'
             }}>
                 <a href="/"><div className="flex relative"
@@ -76,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                 </div></a>
                 <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
                 <div className="flex-1"></div>
-                <div className="product-search">
+                <div className="product-search sm:block hidden">
                     <label className="input input-bordered flex items-center gap-2 h-10">
                         <input type="text" className="grow" placeholder="What do you need?" />
                         <svg
@@ -92,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                     </label>
                 </div>
                 <div className="flex-none">
-                    <div className="dropdown dropdown-end">
+                    <div className="dropdown dropdown-end flex flex row">
                         <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
                             <div className="indicator">
                                 <svg
@@ -110,6 +105,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 <span className="badge badge-sm indicator-item">8</span>
                             </div>
                         </div>
+                        <div className="flex flex-col justify-center"><ListIcon /></div>
                         <div
                             tabIndex={0}
                             className="card card-compact dropdown-content bg-base-100 z-[1] mt-3 w-52 shadow">
@@ -122,30 +118,9 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                             </div>
                         </div>
                     </div>
-                    <div className="dropdown dropdown-end">
-                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                            <div className="w-10 rounded-full">
-                                <img
-                                    alt="Tailwind CSS Navbar component"
-                                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-                            </div>
-                        </div>
-                        <ul
-                            tabIndex={0}
-                            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                            <li>
-                                <a className="justify-between">
-                                    Profile
-                                    <span className="badge">New</span>
-                                </a>
-                            </li>
-                            <li><a>Settings</a></li>
-                            <li><a>Logout</a></li>
-                        </ul>
-                    </div>
                 </div>
             </header>
-            <header className="navbar bg-base-100 flex h-10 border-b px-60 header-option relative" style={{
+            <header className="sm:block hidden navbar bg-base-100 flex h-10 m-auto xl:container header-option relative" style={{
                 minHeight: '0px'
             }}>
                 <ul className="menu menu-horizontal px-1 navbar-option w-full justify-around">
