@@ -37,7 +37,6 @@
 
 
     .expand-background {
-        display: inline-block;
         position: relative;
         z-index: 1;
     }

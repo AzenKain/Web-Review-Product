@@ -5,12 +5,10 @@
     "\\packages\\next-app",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
-    "\\packages\\next-app\\src\\app\\(Showroom)",
-    "\\packages\\next-app\\src\\app\\(Showroom)\\product\\[slug]",
-    "\\packages\\next-app\\src\\app\\(Showroom)\\showroom",
-    "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Tab"
+    "\\packages\\next-app\\src\\app\\api",
+    "\\packages\\next-app\\src\\app\\api\\auth",
+    "\\packages\\next-app\\src\\app\\api\\auth\\[...nextauth]"
   ],
-  "SelectedNode": "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]\\[[...id]]\\layout.tsx",
+  "SelectedNode": "\\packages\\next-app\\tsconfig.json",
   "PreviewInSolutionExplorer": false
 }

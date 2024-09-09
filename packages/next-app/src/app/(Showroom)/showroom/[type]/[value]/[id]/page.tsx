@@ -7,7 +7,6 @@ type Perfume = {
     img?: string;
     name: string;
     description: string;
-    href?: string;
     cost: string;
 }
 
