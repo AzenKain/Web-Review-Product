@@ -1,62 +1,17 @@
-﻿'use client'
-import Link from 'next/link'
+﻿"use client"
 import ImageGallery from '@/components/Gallery'
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import TabContent from '@/components/Tab'
 import TopPerfumeCarousel from '@/components/Carousel/TopPerfumeCarousel'
-import { useState, useEffect } from 'react'
 
-type Perfume = {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
-
-export default function Page() {
+export default async function Page() {
     const imageUrls = [
         '/images/C2.jpg',
         '/images/C4.jpg',
         '/images/C5.jpg',
     ];
 
-    const [linkedPerfume, setLinkedPerfume] = useState <Perfume[]>([])
-
-    useEffect(() => {
-        setLinkedPerfume([
-            {
-                "img": "/images/atelier.png",
-                "name": "ATELIER MATERI",
-                "description": "Atelier Materi Santal Blond EDP",
-                "cost": "6,500,000 VND"
-            },
-            {
-                "img": "/images/clive.png",
-                "name": "CLIVE CHRISTIAN",
-                "description": "Clive Christian E Cashmere Musk",
-                "cost": "12,200,000 VND"
-            },
-            {
-                "img": "/images/borntostandout.png",
-                "name": "BORNTOSTANDOUT",
-                "description": "BTSO Dirty Rice EDP",
-                "cost": "5,330,000 VND"
-            },
-            {
-                "img": "/images/gritti.png",
-                "name": "GRITTI",
-                "description": "Neroli Extreme Gritti",
-                "cost": "5,500,000 VND"
-            },
-            {
-                "img": "/images/fusciuni.png",
-                "name": "FUSCIUNI CAT",
-                "description": "Fusciuni Little Song",
-                "cost": "6,900,000 VND"
-            }
-        ])
-    }, [])
+    const linkedPerfume = await getLinkedPerfume()
 
     return (
         <div className="bg-base-100">
@@ -238,5 +193,41 @@ export default function Page() {
                 }
             `}</style>
         </div>
+    )
+}
+
+function getLinkedPerfume() {
+    return ([
+            {
+                "img": "/images/atelier.png",
+                "name": "ATELIER MATERI",
+                "description": "Atelier Materi Santal Blond EDP",
+                "cost": "6,500,000 VND"
+            },
+            {
+                "img": "/images/clive.png",
+                "name": "CLIVE CHRISTIAN",
+                "description": "Clive Christian E Cashmere Musk",
+                "cost": "12,200,000 VND"
+            },
+            {
+                "img": "/images/borntostandout.png",
+                "name": "BORNTOSTANDOUT",
+                "description": "BTSO Dirty Rice EDP",
+                "cost": "5,330,000 VND"
+            },
+            {
+                "img": "/images/gritti.png",
+                "name": "GRITTI",
+                "description": "Neroli Extreme Gritti",
+                "cost": "5,500,000 VND"
+            },
+            {
+                "img": "/images/fusciuni.png",
+                "name": "FUSCIUNI CAT",
+                "description": "Fusciuni Little Song",
+                "cost": "6,900,000 VND"
+            }
+        ]
     )
 }

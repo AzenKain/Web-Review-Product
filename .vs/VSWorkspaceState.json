@@ -5,12 +5,12 @@
     "\\packages\\next-app",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
-    "\\packages\\next-app\\src\\app\\(Home)",
+    "\\packages\\next-app\\src\\app\\(Showroom)",
+    "\\packages\\next-app\\src\\app\\(Showroom)\\product\\[slug]",
+    "\\packages\\next-app\\src\\app\\(Showroom)\\showroom",
     "\\packages\\next-app\\src\\components",
-    "\\packages\\next-app\\src\\components\\Carousel",
-    "\\packages\\next-app\\src\\components\\Footer",
-    "\\packages\\next-app\\src\\components\\Header"
+    "\\packages\\next-app\\src\\components\\Tab"
   ],
-  "SelectedNode": "\\packages\\next-app\\.gitignore",
+  "SelectedNode": "\\packages\\next-app\\src\\app\\(Showroom)\\showroom\\[type]\\[value]\\[[...id]]\\layout.tsx",
   "PreviewInSolutionExplorer": false
 }

@@ -1,4 +1,5 @@
-﻿export default function TabContent () {
+﻿"use client"
+export default function TabContent() {
     return (
         <div role="tablist" className="tabs tabs-lifted">
             <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Tab 1" />
