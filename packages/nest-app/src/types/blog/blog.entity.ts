@@ -14,8 +14,8 @@ export class BlogEntity {
     @Column()
     typeBlog: string;
 
-    @Column()
-    content: string;
+    @Column({ type: 'longtext', nullable: true}) 
+    content?: string;
 
     @CreateDateColumn()
     created_at: Date;

@@ -39,6 +39,15 @@ input CreateProductDto {
   userId: String
 }
 
+input CreateUserDto {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  role: [String!]!
+  username: String!
+}
+
 type CustomerInfo {
   email: String!
   firstName: String!
@@ -98,11 +107,14 @@ type Mutation {
   CreateBlog(CreateBlog: CreateBlogDto!): Blog!
   CreateOrder(CreateOrder: createOrderDto!): Order!
   CreateProduct(CreateProduct: CreateProductDto!): Product!
+  CreateUser(CreateUser: CreateUserDto!): UserType!
   DeleteBlog(DeleteBlog: DeleteBlogDto!): ResponseType!
   DeleteProduct(DeleteProduct: DeleteProductDto!): ResponseType!
+  DeleteUser(DeleteUser: CreateUserDto!): UserType!
   UpdateBlog(UpdateBlog: UpdateBlogDto!): Blog!
   UpdateOrder(UpdateOrder: updateOrderDto!): Order!
   UpdateProduct(UpdateProduct: UpdateProductDto!): Product!
+  UpdateUser(UpdateUser: CreateUserDto!): UserType!
 }
 
 type Order {
@@ -153,14 +165,17 @@ type Product {
 }
 
 type ProductDetail {
-  brand: TagsDetail!
-  concentration: TagsDetail!
+  brand: TagsDetail
+  concentration: TagsDetail
   description: String
-  fragranceNotes: TagsDetail!
+  fragranceNotes: TagsDetail
   id: ID!
-  imgDisplay: [ImageDetail!]!
-  sex: TagsDetail!
-  size: TagsDetail!
+  imgDisplay: [ImageDetail!]
+  longevity: TagsDetail
+  sex: TagsDetail
+  sillage: TagsDetail
+  size: TagsDetail
+  tutorial: String
 }
 
 input ProductDetailInp {
@@ -169,18 +184,20 @@ input ProductDetailInp {
   description: String
   fragranceNotes: TagsDetailInp
   imgDisplay: [ImageDetailInp!]
+  longevity: TagsDetailInp
   sex: TagsDetailInp
   size: TagsDetailInp
+  tutorial: String
 }
 
 type Query {
   GetBlogById(blogId: Float!): Blog!
   GetOrderById(orderId: Float!): Order!
   GetProductById(productId: Float!): Product!
+  GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
   SearchOrderWithOption(SearchOrder: SearchOrderDto!): [Order!]!
   SearchProductWithOptions(SearchProduct: SearchProductDto!): [Product!]!
-  getUser(id: String!): UserType!
 }
 
 type ResponseType {
@@ -219,7 +236,7 @@ type TagsDetail {
 
 input TagsDetailInp {
   type: String!
-  value: String!
+  value: String
 }
 
 input UpdateBlogDto {

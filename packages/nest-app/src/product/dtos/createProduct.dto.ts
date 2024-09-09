@@ -10,8 +10,8 @@ export class TagsDetailInp {
 
     @IsOptional()
     @IsString()
-    @Field()
-    value: string;
+    @Field({nullable: true})
+    value?: string;
 
 }
 
@@ -30,6 +30,12 @@ export class ProductDetailInp {
     size?: TagsDetailInp;
 
     @IsOptional()
+    sillage?: TagsDetailInp;
+
+    @Field(() => TagsDetailInp, { nullable: true })
+    longevity?: TagsDetailInp;
+
+    @IsOptional()
     @Field(() => TagsDetailInp, { nullable: true })
     fragranceNotes?: TagsDetailInp;
 
@@ -44,6 +50,10 @@ export class ProductDetailInp {
     @IsOptional()
     @Field({ nullable: true })
     description?: string;
+
+    @IsOptional()
+    @Field({ nullable: true })
+    tutorial?: string
 }
 
 @InputType()
@@ -61,11 +71,6 @@ export class ImageDetailInp {
 
 @InputType()
 export class CreateProductDto {
-    @IsOptional()
-    @IsString()
-    @Field({ nullable: true })
-    public userId?: string;
-
     @IsNotEmpty()
     @IsString()
     @Field()
@@ -81,10 +86,10 @@ export class CreateProductDto {
     @Field(() => Float)
     displayCost: number;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsNumber()
-    @Field(() => Int)
-    stockQuantity: number;
+    @Field(() => Int, { nullable: true })
+    stockQuantity?: number;
 
     @IsOptional()
     @IsString()

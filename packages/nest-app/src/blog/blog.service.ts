@@ -51,7 +51,7 @@ export class BlogService {
         const newBlog = this.blogRepository.create({
             title: dto.title,
             typeBlog: dto.typeBlog,
-            content: dto.content,
+            content: dto.content || '',
             isDisplay: true,
         });
     

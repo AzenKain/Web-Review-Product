@@ -7,9 +7,4 @@ export class DeleteBlogDto {
     @IsNumber()
     @Field(() => ID)
     blogId: number;
-
-    @IsOptional()
-    @IsString()
-    @Field({ nullable: true })
-    userId?: string;
 }

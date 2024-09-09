@@ -7,9 +7,4 @@ export class DeleteProductDto {
   @IsNumber()
   @Field(() => ID)
   productId : number;
-
-  @IsOptional()
-  @IsString()
-  @Field({ nullable: true })
-  userId?: string;
 }

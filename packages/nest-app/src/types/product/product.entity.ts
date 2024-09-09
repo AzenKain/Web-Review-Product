@@ -1,19 +1,17 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany, ManyToOne } from "typeorm";
 import { OrderProductEntity } from "../order";
 
-
 @Entity({ name: 'TagsDetail' })
 export class TagsEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: number;
 
-    @Column()
+    @Column() 
     type: string;
 
     @Column()
     value: string;
 }
-
 
 @Entity({ name: 'ProductDetail' })
 export class ProductDetailEntity {
@@ -23,28 +21,39 @@ export class ProductDetailEntity {
     @OneToMany(() => ImageDetailEntity, (img) => img.productDetail)
     imgDisplay: ImageDetailEntity[];
 
-    @OneToOne(() => TagsEntity)
+    @ManyToOne(() => TagsEntity, { nullable: true }) 
     @JoinColumn()
     size: TagsEntity;
 
-    @OneToOne(() => TagsEntity)
+    @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     brand: TagsEntity;
 
-    @OneToOne(() => TagsEntity)
+    @ManyToOne(() => TagsEntity, { nullable: true }) 
     @JoinColumn()
     fragranceNotes: TagsEntity;
-    
-    @OneToOne(() => TagsEntity)
+
+    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @JoinColumn()
+    sillage: TagsEntity;
+
+    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @JoinColumn()
+    longevity: TagsEntity;
+
+    @ManyToOne(() => TagsEntity, { nullable: true }) 
     @JoinColumn()
     concentration: TagsEntity;
 
-    @OneToOne(() => TagsEntity)
+    @ManyToOne(() => TagsEntity, { nullable: true }) 
     @JoinColumn()
     sex: TagsEntity;
 
-    @Column({ nullable: true })
+    @Column({ type: 'longtext', nullable: true }) 
     description?: string;
+
+    @Column({ type: 'longtext', nullable: true }) 
+    tutorial?: string;
 }
 
 @Entity({ name: 'ImageDetail' })
@@ -55,7 +64,7 @@ export class ImageDetailEntity {
     @Column()
     url: string;
 
-    @Column({type: 'simple-array', nullable: true })
+    @Column({ type: 'simple-array', nullable: true })
     link?: string[];
 
     @ManyToOne(() => ProductDetailEntity, (pd) => pd.imgDisplay, { nullable: true })
@@ -67,7 +76,7 @@ export class ProductEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: number;
 
-    @Column()
+    @Column({ unique: true }) 
     name: string;
 
     @Column({ type: 'boolean' })
@@ -79,10 +88,10 @@ export class ProductEntity {
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     displayCost: number;
 
-    @Column({ type: 'bigint' })
-    stockQuantity: number;
+    @Column({ type: 'bigint', nullable: true, default: 0 })
+    stockQuantity?: number;
 
-    @Column({ nullable: true})
+    @Column({ nullable: true, default: 'perfume'})
     category?: string;
 
     @Column({ type: 'bigint', nullable: true, default: 0 })
@@ -94,7 +103,7 @@ export class ProductEntity {
     @OneToOne(() => ProductDetailEntity)
     @JoinColumn()
     details: ProductDetailEntity;
-    
+
     @OneToMany(() => OrderProductEntity, (orderProduct) => orderProduct.product)
     orderProducts: OrderProductEntity[];
     

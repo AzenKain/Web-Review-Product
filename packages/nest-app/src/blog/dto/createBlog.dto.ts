@@ -3,11 +3,6 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 @InputType()
 export class CreateBlogDto {
-    @IsOptional()
-    @IsString()
-    @Field({ nullable: true })
-    userId?: string;
-
     @IsNotEmpty()
     @IsString()
     @Field()
@@ -18,8 +13,8 @@ export class CreateBlogDto {
     @Field()
     typeBlog: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
-    @Field()
-    content: string;
+    @Field({nullable: true})
+    content?: string;
 }

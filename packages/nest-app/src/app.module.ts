@@ -15,6 +15,7 @@ import { CustomerInfoEntity, DeliveryInfoEntity, OrderEntity, OrderProductEntity
 import { ActionLogEntity } from './types/actionlog';
 import { BlogModule } from './blog/blog.module';
 import { BlogEntity } from './types/blog';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [    
@@ -69,6 +70,7 @@ import { BlogEntity } from './types/blog';
     ActionLogModule,
     OrderModule,
     BlogModule,
+    MediaModule,
   ],
   controllers: [],
   providers: [],

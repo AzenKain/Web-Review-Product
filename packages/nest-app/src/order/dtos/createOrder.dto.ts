@@ -45,11 +45,6 @@ export class DeliveryInfoInp {
 
 @InputType()
 export class createOrderDto {
-  @IsOptional()
-  @IsString()
-  @Field({ nullable: true })
-  userId?: string;
-
   @IsNotEmpty()
   @Field(() => [OrderProductInp])
   orderProducts: OrderProductInp[];
