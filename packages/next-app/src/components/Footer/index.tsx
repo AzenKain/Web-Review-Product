@@ -4,50 +4,10 @@
             <div className="base-100 text-neutral-content text-center flex-grow flex justify-center items-center">
                 <h1 className="my-auto text-white">ĐunKain PARFUMS</h1>
             </div>
-            <footer className="footer base-100 text-neutral-content text-base-content p-10">
-                <nav>
-                    <h6 className="footer-title">Services</h6>
-                    <a className="link link-hover">Branding</a>
-                    <a className="link link-hover">Design</a>
-                    <a className="link link-hover">Marketing</a>
-                    <a className="link link-hover">Advertisement</a>
-                </nav>
-                <nav>
-                    <h6 className="footer-title">Company</h6>
-                    <a className="link link-hover">About us</a>
-                    <a className="link link-hover">Contact</a>
-                    <a className="link link-hover">Jobs</a>
-                    <a className="link link-hover">Press kit</a>
-                </nav>
-                <nav>
-                    <h6 className="footer-title">Legal</h6>
-                    <a className="link link-hover">Terms of use</a>
-                    <a className="link link-hover">Privacy policy</a>
-                    <a className="link link-hover">Cookie policy</a>
-                </nav>
-                <form>
-                    <h6 className="footer-title">Newsletter</h6>
-                    <fieldset className="form-control w-80">
-                        <label className="label">
-                            <span className="label-text">Enter your email address</span>
-                        </label>
-                        <div className="join">
-                            <input
-                                type="text"
-                                placeholder="username@site.com"
-                                className="input input-bordered join-item" />
-                            <button className="btn btn-primary join-item">Subscribe</button>
-                        </div>
-                    </fieldset>
-                </form>
-            </footer>
+            <div className="flex flex-col sm:flex-row xl:container justify-around m-auto">
+                <a href="/showroom"><button className="btn btn-lg btn-outline glass">Mua sắm</button></a>
+            </div>
             <footer className="footer footer-center base-100 text-neutral-content rounded p-10 flex-shrink">
-                <nav className="grid grid-flow-col gap-4">
-                    <a className="link link-hover">About us</a>
-                    <a className="link link-hover">Contact</a>
-                    <a className="link link-hover">Jobs</a>
-                    <a className="link link-hover">Press kit</a>
-                </nav>
                 <nav>
                     <div className="grid grid-flow-col gap-4">
                         <a>

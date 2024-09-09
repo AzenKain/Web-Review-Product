@@ -37,9 +37,13 @@ export default function TopPerfumeCarousel({ Perfume, reverse }: { Perfume: Perf
 
                 },
                 1024: {
-                    slidesPerView: 4,
+                    slidesPerView: 3,
                     spaceBetween: 30,
                 },
+                1440: {
+                    slidesPerView: 4,
+                    spaceBetween: 40,
+                }
             }}
         >
             {Perfume ? Perfume.map((perfume, index) => (

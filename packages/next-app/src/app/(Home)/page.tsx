@@ -44,7 +44,7 @@ const Page: FC<PageProps> = ({
             <div className="box-border p-[1%]">
                 <TopPerfumeCarousel Perfume={topWomanPerfume} />
             </div>
-            <div id="main-introduce" className={`xl:container my-16 pt-8 border-t border-neutral ${isOpenIntroduce ? "" : "h-96 overflow-hidden"} relative`}>
+            <div id="main-introduce" className={`xl:container my-16 pt-8 border-y border-neutral ${isOpenIntroduce ? "" : "h-96 overflow-hidden"} relative`}>
                 <div style={{
                     height: "100%",
                     padding: "20px 20px",
@@ -60,8 +60,8 @@ const Page: FC<PageProps> = ({
                     setIsOpenIntroduce((isOpenIntroduce => !isOpenIntroduce))
                 }}>{isOpenIntroduce ? "Thu gọn" : "Đọc thêm"}</button></a>
             </div>
-            <div className="add-contact h-64 flex justify-center flex-col py-16" id="contact">
-                <form className="flex flex-row justify-between mx-8">
+            <div className="add-contact flex justify-center flex-col py-16" id="contact">
+                <form className="flex flex-col md:flex-row justify-between mx-8 gap-10">
                     <div className="contact-info flex-1 mr-12">
                         <h2 className="footer-title font-bold text-2xl">ConTact DunKain Perfume</h2>
                         <p>Thank you for your interest in DunKain Perfume, where passion and the art of fragrance come together to create unique experiences. We’re always here to listen and assist you. Whether you’re seeking advice on the perfect scent, want to learn more about our products, or have any other inquiries, don’t hesitate to reach out to us. Your satisfaction is our top priority at DunKain Perfume.</p>
