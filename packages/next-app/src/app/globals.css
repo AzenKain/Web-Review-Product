@@ -12,6 +12,7 @@
         scrollbar-width: thin;
         letter-spacing: 1px;
         scroll-behavior: smooth;
+        font-weight: 400
     }
 
     .hover-up {

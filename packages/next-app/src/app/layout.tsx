@@ -7,9 +7,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ["latin"] });
-const luxuriousRoman = Luxurious_Roman({ weight: '400', subsets: ['latin'] })
-const nanumGothic = Nanum_Gothic({ weight: '400', subsets: ["latin"] })
-const dancingScript = Dancing_Script({ weight: '700', subsets: ["latin"] })
 
 type Perfume = {
     img?: string;
@@ -34,7 +31,7 @@ export default async function RootLayout({
                 <link rel="manifest" href="/site.webmanifest"></link>
                 <script src="/js/jquery-3.7.1.min.js"></script>
             </head>
-            <body className={`${nanumGothic.className} selection:bg-base-content selection:text-base-100`}>
+            <body className={`${inter.className} selection:bg-base-content selection:text-base-100`}>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
                 <Providers>
                     <StoreProvider>
