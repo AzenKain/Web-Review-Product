@@ -37,6 +37,7 @@ import { MediaModule } from './media/media.module';
       driver: ApolloDriver,
       autoSchemaFile: 'src/schema.gql',
       sortSchema: true,
+      
     }),
     AuthModule,
     TypeOrmModule.forRootAsync({

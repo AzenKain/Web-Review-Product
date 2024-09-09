@@ -1,6 +1,7 @@
 import { Field, InputType } from "@nestjs/graphql";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { TagsDetailInp } from "./createProduct.dto";
+
 
 @InputType()
 export class SearchProductDto {
@@ -33,5 +34,23 @@ export class SearchProductDto {
     @Field(()=>[TagsDetailInp], { nullable: true })
     sex?: TagsDetailInp[];
 
+    @IsOptional() 
+    @IsNumber()
+    @Field(() => Number, { nullable: true })
+    index?: number
 
+    @IsOptional() 
+    @IsNumber()
+    @Field(() => Number, { nullable: true })
+    count?: number
+
+    @IsOptional() 
+    @IsString()
+    @Field(() => String, { nullable: true })
+    sort?: string
+
+    @IsOptional() 
+    @IsString()
+    @Field(() => String, { nullable: true })
+    hotSales?: string
 }

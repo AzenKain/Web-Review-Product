@@ -6,11 +6,13 @@ import { UserEntity } from 'src/types/user';
 import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } from 'src/types/product';
 import { ProductController } from './product.controller';
 import { HttpModule } from '@nestjs/axios';
+import { OrderModule } from 'src/order/order.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, ProductEntity, ProductDetailEntity, ImageDetailEntity, TagsEntity]),
-    HttpModule
+    HttpModule,
+    OrderModule
   ],
   providers: [ProductResolver, ProductService],
   controllers: [ProductController]

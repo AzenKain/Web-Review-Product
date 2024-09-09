@@ -8,11 +8,13 @@ import { CreateProductDto, DeleteProductDto, ProductDetailInp, SearchProductDto,
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import * as FormData from 'form-data';
+import { OrderService } from 'src/order/order.service';
 
 @Injectable()
 export class ProductService {
     constructor(
         private config: ConfigService,
+        private orderService: OrderService,
         private readonly httpService: HttpService,
         @InjectRepository(ProductEntity) private productRepository: Repository<ProductEntity>,
         @InjectRepository(ProductDetailEntity) private productDetailRepository: Repository<ProductDetailEntity>,
@@ -22,13 +24,13 @@ export class ProductService {
 
     ) { }
     async analyzeFile(file: Express.Multer.File): Promise<any> {
-        const formData = new FormData(); 
+        const formData = new FormData();
         formData.append('file', file.buffer, { filename: file.originalname });
 
         try {
             const response = await firstValueFrom(
                 this.httpService.post('http://localhost:8000/read-file', formData, {
-                    headers: formData.getHeaders(), 
+                    headers: formData.getHeaders(),
                 }),
             );
 
@@ -49,7 +51,7 @@ export class ProductService {
     async SearchProductWithOptionsService(dto: SearchProductDto) {
         const queryBuilder = this.productRepository.createQueryBuilder('product');
         queryBuilder
-            .leftJoinAndSelect('product.details', 'details') // Chỉ cần một lần join với 'details'
+            .leftJoinAndSelect('product.details', 'details')
             .leftJoinAndSelect('details.imgDisplay', 'imgDisplay')
             .leftJoinAndSelect('details.size', 'size')
             .leftJoinAndSelect('details.brand', 'brand')
@@ -58,41 +60,94 @@ export class ProductService {
             .leftJoinAndSelect('details.sex', 'sex')
             .leftJoinAndSelect('details.sillage', 'sillage')
             .leftJoinAndSelect('details.longevity', 'longevity');
-    
+
         queryBuilder.andWhere('product.isDisplay = :isDisplay', { isDisplay: true });
-    
+
+        // Filter by product name
         if (dto.name) {
             queryBuilder.andWhere('product.name LIKE :name', { name: `%${dto.name}%` });
         }
-    
+
+        // Filter by price range
         if (dto.rangeMoney && dto.rangeMoney.length === 2) {
             const [min, max] = dto.rangeMoney;
             queryBuilder.andWhere('product.displayCost BETWEEN :min AND :max', { min, max });
         }
-    
+
+        // Filter by size, brand, fragrance notes, concentration, sex
         if (dto.size && dto.size.length > 0) {
             queryBuilder.andWhere('size.value IN (:...sizes)', { sizes: dto.size.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.brand && dto.brand.length > 0) {
             queryBuilder.andWhere('brand.value IN (:...brands)', { brands: dto.brand.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.fragranceNotes && dto.fragranceNotes.length > 0) {
             queryBuilder.andWhere('fragranceNotes.value IN (:...fragranceNotes)', { fragranceNotes: dto.fragranceNotes.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.concentration && dto.concentration.length > 0) {
             queryBuilder.andWhere('concentration.value IN (:...concentrations)', { concentrations: dto.concentration.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.sex && dto.sex.length > 0) {
             queryBuilder.andWhere('sex.value IN (:...sexes)', { sexes: dto.sex.map(tag => tag.value.toLowerCase()) });
         }
-    
-        return await queryBuilder.getMany();
+
+        // Sorting
+        if (dto.sort) {
+            switch (dto.sort) {
+                case 'price_asc':
+                    queryBuilder.orderBy('product.displayCost', 'ASC');
+                    break;
+                case 'price_desc':
+                    queryBuilder.orderBy('product.displayCost', 'DESC');
+                    break;
+                case 'created_at_asc':
+                    queryBuilder.orderBy('product.created_at', 'ASC');
+                    break;
+                case 'created_at_desc':
+                    queryBuilder.orderBy('product.created_at', 'DESC');
+                    break;
+                default:
+                    break;
+            }
+        }
+        let list_product = await queryBuilder.getMany();
+
+        if (dto.hotSales) {
+            const timeframes: Array<'week' | 'month' | 'year' | 'all'> = ['week', 'month', 'year', 'all'];
+            let currentTimeframe: 'week' | 'month' | 'year' | 'all' = (dto.hotSales as 'week' | 'month' | 'year' | 'all') || 'week';
+
+            let tmpOrder = await this.orderService.getOrderDetail(currentTimeframe);
+
+            while (tmpOrder.length < dto.count) {
+                const currentIndex = timeframes.indexOf(currentTimeframe);
+                if (tmpOrder.length < dto.count) {
+                    currentTimeframe = timeframes[currentIndex + 1];
+                    if (currentTimeframe === 'all') {
+                        list_product.sort((a, b) => a.buyCount - b.buyCount)
+                        break;
+                    }
+                    tmpOrder = await this.orderService.getOrderDetail(currentTimeframe);
+                }
+                else {
+                    list_product = list_product.filter((i) => tmpOrder.findIndex(e => e.productId === i.id) !== -1);
+                    break;
+                }
+            }
+        }
+
+        if (dto.index && dto.count) {
+            const offset = (dto.index - 1) * dto.count;
+            list_product = list_product.slice(offset, offset + dto.count);
+        }
+
+        return list_product;
     }
-    
+
+
 
 
     async GetProductByIdService(productId: number) {
@@ -155,7 +210,7 @@ export class ProductService {
         const sexTag = dto.details.sex?.value ? await this.findOrCreateTag(dto.details.sex.value, 'sex') : null;
         const sillageTag = dto.details.sillage?.value ? await this.findOrCreateTag(dto.details.sillage.value, 'sillage') : null;
         const longevityTag = dto.details.longevity?.value ? await this.findOrCreateTag(dto.details.longevity.value, 'longevity') : null;
-        
+
         // Save product detail
         const newProductDetail = this.productDetailRepository.create({
             size: sizeTag,

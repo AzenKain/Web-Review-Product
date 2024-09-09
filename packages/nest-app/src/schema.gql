@@ -13,7 +13,7 @@ type ActionLog {
 }
 
 type Blog {
-  content: String!
+  content: String
   created_at: DateTime!
   id: ID!
   isDisplay: Boolean!
@@ -23,10 +23,9 @@ type Blog {
 }
 
 input CreateBlogDto {
-  content: String!
+  content: String
   title: String!
   typeBlog: String!
-  userId: String
 }
 
 input CreateProductDto {
@@ -35,8 +34,7 @@ input CreateProductDto {
   displayCost: Float!
   name: String!
   originCost: Float!
-  stockQuantity: Int!
-  userId: String
+  stockQuantity: Int
 }
 
 input CreateUserDto {
@@ -70,12 +68,10 @@ scalar DateTime
 
 input DeleteBlogDto {
   blogId: ID!
-  userId: String
 }
 
 input DeleteProductDto {
   productId: ID!
-  userId: String
 }
 
 type DeliveryInfo {
@@ -149,7 +145,7 @@ input OrderProductInp {
 }
 
 type Product {
-  buyCount: Float
+  buyCount: Int
   category: String
   created_at: DateTime!
   details: ProductDetail!
@@ -160,7 +156,7 @@ type Product {
   orderProducts: [OrderProduct!]!
   originCost: Float!
   rating: Float
-  stockQuantity: Int!
+  stockQuantity: Int
   updated_at: DateTime!
 }
 
@@ -186,6 +182,7 @@ input ProductDetailInp {
   imgDisplay: [ImageDetailInp!]
   longevity: TagsDetailInp
   sex: TagsDetailInp
+  sillage: TagsDetailInp
   size: TagsDetailInp
   tutorial: String
 }
@@ -221,11 +218,15 @@ input SearchOrderDto {
 input SearchProductDto {
   brand: [TagsDetailInp!]
   concentration: [TagsDetailInp!]
+  count: Float
   fragranceNotes: [TagsDetailInp!]
+  hotSales: String
+  index: Float
   name: String!
   rangeMoney: [Float!]
   sex: [TagsDetailInp!]
   size: [TagsDetailInp!]
+  sort: String
 }
 
 type TagsDetail {
@@ -244,11 +245,10 @@ input UpdateBlogDto {
   content: String!
   title: String
   typeBlog: String
-  userId: String
 }
 
 input UpdateProductDto {
-  buyCount: Float
+  buyCount: Int
   category: String
   details: ProductDetailInp
   displayCost: Float
@@ -257,7 +257,6 @@ input UpdateProductDto {
   productId: ID!
   rating: Float
   stockQuantity: Int
-  userId: String
 }
 
 type UserDetail {
@@ -292,12 +291,10 @@ input createOrderDto {
   notes: String
   orderProducts: [OrderProductInp!]!
   status: String!
-  userId: String
 }
 
 input updateOrderDto {
   isPaid: Boolean
   orderId: ID!
   status: String
-  userId: String
 }

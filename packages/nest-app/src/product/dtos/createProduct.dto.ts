@@ -30,8 +30,10 @@ export class ProductDetailInp {
     size?: TagsDetailInp;
 
     @IsOptional()
+    @Field(() => TagsDetailInp, { nullable: true })
     sillage?: TagsDetailInp;
-
+    
+    @IsOptional()
     @Field(() => TagsDetailInp, { nullable: true })
     longevity?: TagsDetailInp;
 
