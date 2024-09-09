@@ -19,12 +19,43 @@ export class OrderService {
         @InjectRepository(ProductEntity) private productRepository: Repository<ProductEntity>,
     ) { }
 
+    async getOrderDetail(time: string = 'week') {
+
+        let dateCondition: string;
+    
+        switch (time) {
+            case 'week':
+                dateCondition = "DATE_SUB(CURDATE(), INTERVAL 1 WEEK)";
+                break;
+            case 'month':
+                dateCondition = "DATE_SUB(CURDATE(), INTERVAL 1 MONTH)";
+                break;
+            case 'year':
+                dateCondition = "DATE_SUB(CURDATE(), INTERVAL 1 YEAR)";
+                break;
+            default:
+                throw new ForbiddenException('Invalid time period');
+        }
+    
+        return await this.orderProductRepository
+            .createQueryBuilder('orderProduct')
+            .select('orderProduct.productId', 'productId')
+            .addSelect('SUM(orderProduct.quantity)', 'totalQuantity')
+            .leftJoin('orderProduct.order', 'order')
+            .where('order.created_at >= ' + dateCondition)
+            .groupBy('orderProduct.productId')
+            .orderBy('totalQuantity', 'DESC')
+            .getRawMany(); 
+    }
+    
+    
+
     private CheckRoleUser(user: UserEntity) {
         if (!user.role.includes("ADMIN") && !user.role.includes("SALES")) {
             throw new ForbiddenException('The user does not have permission');
         }
     }
-    
+
     private async getProductDetail(productId: number): Promise<ProductEntity> {
         const product = await this.productRepository.findOne({
             where: {
@@ -38,38 +69,38 @@ export class OrderService {
     }
     async SearchOrderWithOptionsServices(dto: SearchOrderDto, user: UserEntity) {
         this.CheckRoleUser(user);
-    
+
         const query = this.orderRepository.createQueryBuilder('order')
             .leftJoinAndSelect('order.customerInfo', 'customerInfo')
             .leftJoinAndSelect('order.deliveryInfo', 'deliveryInfo')
             .leftJoinAndSelect('order.orderProducts', 'orderProducts')
             .leftJoinAndSelect('orderProducts.product', 'product');
-    
+
         if (dto.orderId) {
             query.andWhere('order.id = :orderId', { orderId: dto.orderId });
         }
-    
+
         if (dto.email) {
             query.andWhere('customerInfo.email = :email', { email: dto.email });
         }
-    
+
         if (dto.firstName) {
             query.andWhere('customerInfo.firstName = :firstName', { firstName: dto.firstName });
         }
-    
+
         if (dto.lastName) {
             query.andWhere('customerInfo.lastName = :lastName', { lastName: dto.lastName });
         }
-    
+
         if (dto.phoneNumber) {
             query.andWhere('customerInfo.phoneNumber = :phoneNumber', { phoneNumber: dto.phoneNumber });
         }
-    
+
         const orders = await query.getMany();
-    
+
         return orders;
     }
-    
+
     async CreateOderService(dto: createOrderDto, user: UserEntity) {
         this.CheckRoleUser(user)
 
@@ -84,9 +115,9 @@ export class OrderService {
             ...dto,
             deliveryInfo,
             customerInfo,
-            isDisplay: true,  
+            isDisplay: true,
             isPaid: false,
-            totalAmount: 0  
+            totalAmount: 0
         });
 
         const savedOrder = await this.orderRepository.save(order);
@@ -99,7 +130,7 @@ export class OrderService {
                 orderId: savedOrder.id,
                 quantity: product.quantity,
                 discount: product.discount ? product.discount : 0,
-                unitPrice: productData.displayCost 
+                unitPrice: productData.displayCost
             });
             totalAmount += orderProduct.unitPrice * product.quantity;
             await this.orderProductRepository.save(orderProduct);

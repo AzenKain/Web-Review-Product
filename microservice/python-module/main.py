@@ -16,6 +16,11 @@ def parse_json_fields(data):
 
     return data
 
+@app.post('/hot-sale') 
+async def get_hot_sales(data: dict):
+    data_product = data['product']
+    order = data['order']
+
 
 
 @app.post("/read-file")
