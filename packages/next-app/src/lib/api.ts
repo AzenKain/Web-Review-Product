@@ -3,7 +3,6 @@ import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import axios from 'axios';
 
-
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
         const response = await fetch(Backend_URL + "/auth/refreshToken", {
@@ -105,13 +104,13 @@ export async function GetHotSaleProductForHome(sex: string) {
             query: query,
         });
 
-        const res : ProductType[] =  response.data.data.SearchProductWithOptions;
-        const dataReturn : Perfume[] = []
+        const res: ProductType[] = response.data.data.SearchProductWithOptions;
+        const dataReturn: Perfume[] = []
         for (const item of res) {
             dataReturn.push({
                 img: item.details?.imgDisplay?.[0]?.url || null,
                 name: item.name,
-                brand: item.details?.brand?.value || null, 
+                brand: item.details?.brand?.value || null,
                 cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ'
 
             } as Perfume)

@@ -1,8 +1,6 @@
 ﻿'use client'
-import React, { useState } from 'react';
-import Link from 'next/link'
+import React, { useState, useEffect } from 'react';
 import ListIcon from '@mui/icons-material/List';
-import { Drawer } from 'antd';
 
 interface PerfumeType {
     role: string;
@@ -18,9 +16,32 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType }) => {
 
+    const [brands, setBrands] = useState<string[]>(brandName ? [...brandName] : []);
+    const [letterSort, setLetterSort] = useState<string[]>([])
+
+    const resetBrandSort = () => { setLetterSort([]) }
+
+    const handleSortBrand = (e: React.MouseEvent<HTMLElement>) => {
+        const target = $(e.currentTarget);
+        const key = target.text();
+        if (key) {
+            setLetterSort((preletters) => {
+                if (preletters.includes(key)) { return preletters.filter(letter => letter !== key) }
+                else { return [...preletters, key] }
+            });
+        }
+    }
+
+    useEffect(() => {
+        setBrands(() =>
+            letterSort.length && brandName
+                ? brandName.filter((brand) => letterSort.includes(brand[0].toUpperCase()))
+                : (brandName ? [...brandName] : [])
+        );
+    }, [letterSort]);
+
 
     const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
-
 
     const openNavbarOptionLg = (e: React.MouseEvent<HTMLElement>) => {
         const detailsRef: HTMLElement = e.currentTarget
@@ -42,24 +63,13 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
         }
     }
 
-    const handleDrawer = () => {
-        $('#my-drawer').trigger('click')
-    }
+    const handleDrawer = () => { $('#my-drawer').trigger('click') }
 
     const handleDrawerDropdown = (e: React.MouseEvent<HTMLElement>) => {
         const $summary = $(e.currentTarget);
         const $ul = $summary.next('ul');
-
-        // Kiểm tra và thay đổi class 'hidden'
-        if ($ul.hasClass('hidden')) {
-            $ul.removeClass('hidden');
-        } else {
-            $ul.addClass('hidden');
-        }
+        $ul.toggleClass('hidden');
     };
-
-
-
 
     return (
         <div className="top-0 left-0 bg-base-100 fixed z-50 flex w-full flex-col border-b" id="header">
@@ -88,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         }}
                     />
                 </div></a>
-                <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
+                <a href="/#main-introduce"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
                 <div className="flex-1"></div>
                 <div className="product-search sm:block hidden">
                     <label className="input input-bordered flex items-center gap-2 h-10">
@@ -144,14 +154,14 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                 padding: 0
             }}>
                 <ul className="menu menu-horizontal navbar-option w-full h-full justify-around content-center">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About DK</a></li>
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/#main-introduce">Về PefumeDK</a></li>
                     <li className="pesudo-class  remove-li-before" style={{ position: "static" }}
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}
                     >
                         <details>
-                            <summary>Trademark</summary>
+                            <summary>Thương hiệu</summary>
                         </details>
                         <ul
                             className="menu xl:menu-horizontal bg-base-200"
@@ -175,7 +185,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 <h2 className="uppercase text-lg my-3" style={{
                                     marginInlineStart: "1rem",
                                     paddingInlineStart: "0.5rem"
-                                }}>Best selling brand</h2>
+                                }}>Nhãn hàng bán chạy nhất</h2>
                                 <ul className="steps steps-vertical">
                                     {topBrandName ? topBrandName.map((brand: string, index: number) => (
                                         <li key={index} className="step uppercase"><a>{brand}</a></li>
@@ -186,19 +196,21 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 <h2 className="uppercase text-center text-lg my-3" style={{
                                     marginInlineStart: "1rem",
                                     paddingInlineStart: "0.5rem"
-                                }}>Perfume brand</h2>
+                                }}>Các thương hiệu nước hoa</h2>
                                 <div className="flex flex-wrap justify-center">
-                                    <button className="btn btn-square btn-outline m-px h-8 min-h-0 w-20 mr-6">All</button>
+                                    <button className={`btn btn-square btn-outline m-px h-8 min-h-0 w-20 mr-6 ${letterSort.length ? "" : "btn-active"}`} onClick={resetBrandSort}>All</button>
                                     {alphabet.map((letter) => (
-                                        <button key={letter} className="btn btn-square btn-outline m-px w-8 h-8 min-h-0">
+                                        <button key={letter}
+                                            onClick={handleSortBrand}
+                                            className={`btn btn-square btn-outline m-px w-8 h-8 min-h-0 ${letterSort.includes(letter) ? "btn-active" : ""}`}>
                                             {letter}
                                         </button>
                                     ))}
                                 </div>
                                 <div className="mt-5">
                                     <ul className="brand-item flex flex-row flex-wrap">
-                                        {brandName ? brandName.map((brand: string, index: number) => (
-                                            <li key={index} className="w-1/3 uppercase mt-1"><a>{brand}</a></li>
+                                        {brands ? brands.map((brand: string, index: number) => (
+                                            <li key={index} className="w-1/3 uppercase mt-1"><a href={`/showroom/brand/`}>{brand}</a></li>
                                         )) : null}
                                     </ul>
                                 </div>
@@ -209,7 +221,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}>
                         <details>
-                            <summary><a href="/showroom">Perfume</a></summary>
+                            <summary><a href="/showroom">Nước hoa</a></summary>
                         </details>
                         <ul className="menu xl:menu-horizontal bg-base-200 lg:min-w-max w-full"
                             style={{
@@ -248,7 +260,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}>
                         <details>
-                            <summary><a href="/news">News</a></summary>
+                            <summary><a href="/news">Tin tức</a></summary>
                         </details>
                         <ul className="menu xl:menu-horizontal bg-base-200 lg:min-w-max w-full"
                             style={{
@@ -262,11 +274,11 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 animationDuration: "1s",
                                 boxShadow: "0px 2px 3px"
                             }}>
-                            <li><a>Perfume review</a></li>
-                            <li><a>Experience in choosing perfume</a></li>
+                            <li><a>Giới thiệu nước hoa</a></li>
+                            <li><a>Kinh nghiệm chọn nước hoa</a></li>
                         </ul>
                     </li>
-                    <li><a href="/#contact">Contact</a></li>
+                    <li><a href="/#contact">Liên hệ</a></li>
                 </ul>
             </header>
             <header>
