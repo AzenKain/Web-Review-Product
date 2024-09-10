@@ -3,12 +3,12 @@
     "",
     "\\packages",
     "\\packages\\next-app",
+    "\\packages\\next-app\\public",
+    "\\packages\\next-app\\public\\js",
     "\\packages\\next-app\\src",
     "\\packages\\next-app\\src\\app",
-    "\\packages\\next-app\\src\\app\\api",
-    "\\packages\\next-app\\src\\app\\api\\auth",
-    "\\packages\\next-app\\src\\app\\api\\auth\\[...nextauth]"
+    "\\packages\\next-app\\src\\components"
   ],
-  "SelectedNode": "\\packages\\next-app\\tsconfig.json",
+  "SelectedNode": "\\packages\\next-app\\src\\app\\layout.tsx",
   "PreviewInSolutionExplorer": false
 }

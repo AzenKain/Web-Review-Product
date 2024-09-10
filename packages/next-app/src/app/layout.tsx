@@ -1,10 +1,11 @@
-﻿import { Dancing_Script, Inter, Luxurious_Roman, Nanum_Gothic } from "next/font/google";
+﻿import { Inter } from "next/font/google";
 import React from 'react'
 import "./globals.css";
 import Providers from "@/components/Providers/Providers";
 import StoreProvider from "./StoreProvider";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
