@@ -5,10 +5,10 @@ import { TagsDetailInp } from "./createProduct.dto";
 
 @InputType()
 export class SearchProductDto {
-    @IsNotEmpty()
+    @IsOptional() 
     @IsString()
-    @Field()
-    name: string;
+    @Field({ nullable: true })
+    name?: string;
 
     @IsOptional() 
     @Field(() => [Number], { nullable: true })
