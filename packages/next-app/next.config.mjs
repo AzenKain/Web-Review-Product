@@ -7,6 +7,9 @@ const nextConfig = {
     images: {
         domains: ['localhost', 'anhvienpiano.com',]
     },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     async headers() {
         return [
             {

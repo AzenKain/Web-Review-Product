@@ -3,14 +3,8 @@ import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import MainCard from "../Card/MainCard";
+import { Perfume } from '@/types/Perfume';
 
-interface Perfume {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
 
 export default function TopPerfumeCarousel({ Perfume, reverse }: { Perfume: Perfume[], reverse?: boolean }) {
     return (

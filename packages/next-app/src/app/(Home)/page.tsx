@@ -8,14 +8,8 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import Introduce from './introduce'
+import { Perfume } from '@/types/Perfume';
 
-interface Perfume {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
 
 interface PageProps {
     topUnisexPerfume: Perfume[],
