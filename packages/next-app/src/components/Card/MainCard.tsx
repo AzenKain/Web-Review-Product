@@ -10,9 +10,9 @@ const MainCard: React.FC<{ item: Perfume }> = ({ item }) => {
                 <img src={item.img || ''} alt={item.name} className="bg-white w-full" style={{aspectRatio: 1}} />
             </figure>
             <div className="card-body">
-                <h2 className="card-title text-center block">{item.brand}</h2>
-                <p className="text-center">{item.name}</p>
-                <h2 className="text-center">{item.cost}</h2>
+                <h5 className="card-title text-center block "><p className="line-clamp-1">{item.brand}</p></h5>
+                <h6 className="text-center"><p className="line-clamp-2">{item.name}</p></h6>
+                <h6 className="text-center">{item.cost}</h6>
             </div>
         </div>
     );

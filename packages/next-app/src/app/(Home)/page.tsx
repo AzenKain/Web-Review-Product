@@ -7,12 +7,6 @@ import { Perfume } from "@/types";
 import { GetHotSaleProductForHome } from "@/lib/api";
 
 
-interface PageProps {
-    topUnisexPerfume: Perfume[],
-    topManPerfume: Perfume[],
-    topWomanPerfume: Perfume[]
-}
-
 export default async function Page() {
 
     const { topUnisexPerfume, topManPerfume, topWomanPerfume } = await getTopPerfume()
