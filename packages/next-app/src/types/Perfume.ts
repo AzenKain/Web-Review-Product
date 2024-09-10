@@ -1,7 +1,6 @@
 export type  Perfume =  {
     img?: string | null;
+    brand: string;
     name: string;
-    description: string;
-    href?: string | null;
     cost: string;
 }

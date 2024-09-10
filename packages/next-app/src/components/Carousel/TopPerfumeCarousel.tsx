@@ -4,7 +4,7 @@ import { Autoplay, EffectFade, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 import MainCard from "../Card/MainCard";
-import { Perfume } from '@/types/Perfume';
+import { Perfume } from '@/types';
 
 
 export default function TopPerfumeCarousel({ Perfume, reverse }: { Perfume: Perfume[], reverse?: boolean }) {

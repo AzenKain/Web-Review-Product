@@ -3,14 +3,9 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import About from './about'
+import { Perfume } from "@/types";
+import { GetHotSaleProductForHome } from "@/lib/api";
 
-interface Perfume {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
 
 interface PageProps {
     topUnisexPerfume: Perfume[],
@@ -81,43 +76,10 @@ export default async function Page() {
     );
 }
 
-function getTopPerfume() {
-    const topUnisexPerfume: Perfume[] = (
-        [
-            {
-                "img": "/images/atelier.png",
-                "name": "ATELIER MATERI",
-                "description": "Atelier Materi Santal Blond EDP",
-                "cost": "6,500,000 VND"
-            },
-            {
-                "img": "/images/clive.png",
-                "name": "CLIVE CHRISTIAN",
-                "description": "Clive Christian E Cashmere Musk",
-                "cost": "12,200,000 VND"
-            },
-            {
-                "img": "/images/borntostandout.png",
-                "name": "BORNTOSTANDOUT",
-                "description": "BTSO Dirty Rice EDP",
-                "cost": "5,330,000 VND"
-            },
-            {
-                "img": "/images/gritti.png",
-                "name": "GRITTI",
-                "description": "Neroli Extreme Gritti",
-                "cost": "5,500,000 VND"
-            },
-            {
-                "img": "/images/fusciuni.png",
-                "name": "FUSCIUNI CAT",
-                "description": "Fusciuni Little Song",
-                "cost": "6,900,000 VND"
-            }
-        ])
+async function getTopPerfume() {
+    const topUnisexPerfume: Perfume[] = await GetHotSaleProductForHome('unisex')
 
-
-    const topManPerfume: Perfume[] = [...topUnisexPerfume]
-    const topWomanPerfume: Perfume[] = [...topUnisexPerfume]
+    const topManPerfume: Perfume[] = await GetHotSaleProductForHome('nam')
+    const topWomanPerfume: Perfume[] = await GetHotSaleProductForHome('nu')
     return { topUnisexPerfume, topManPerfume, topWomanPerfume }
 }
