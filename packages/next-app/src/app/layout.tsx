@@ -5,11 +5,11 @@ import Providers from "@/components/Providers/Providers";
 import StoreProvider from "./StoreProvider";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Script from "next/script";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
-import Script from 'next/script'
+
 export default async function RootLayout({
     children
 }: {
@@ -24,7 +24,6 @@ export default async function RootLayout({
                 <link rel="icon" type="x-icon" sizes="16x16" href="/favicon.ico" />
                 <link rel="manifest" href="/site.webmanifest"></link>
                 <script src="/js/jquery-3.7.1.min.js"></script>
-                {/* <Script strategy="beforeInteractive" src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossOrigin="anonymous"></Script> */}
             </head>
             <body className={`${inter.className} selection:bg-base-content selection:text-base-100`}>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

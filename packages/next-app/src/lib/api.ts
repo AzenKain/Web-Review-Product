@@ -2,6 +2,7 @@ import { Perfume, ProductType } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import axios from 'axios';
+import { SearchProductDto } from "./dtos/product";
 
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
@@ -122,3 +123,64 @@ export async function GetHotSaleProductForHome(sex: string) {
         throw error;
     }
 }
+
+export async function GetProductForSearch(dto: SearchProductDto) {
+    const query = `
+    query SearchProductWithOptions {
+      SearchProductWithOptions(
+        SearchProduct: {
+          name: ${dto.name ? `"${dto.name}"` : null}
+          rangeMoney: ${dto.rangeMoney ? `[${dto.rangeMoney.join(', ')}]` : null}
+          size: ${dto.size ? `[${dto.size.map(item => `{ type: "${item.type}", value: "${item.value || ''}" }`).join(', ')}]` : null}
+          brand: ${dto.brand ? `[${dto.brand.map(item => `{ type: "${item.type}", value: "${item.value || ''}" }`).join(', ')}]` : null}
+          fragranceNotes: ${dto.fragranceNotes ? `[${dto.fragranceNotes.map(item => `{ type: "${item.type}", value: "${item.value || ''}" }`).join(', ')}]` : null}
+          concentration: ${dto.concentration ? `[${dto.concentration.map(item => `{ type: "${item.type}", value: "${item.value || ''}" }`).join(', ')}]` : null}
+          sex: ${dto.sex ? `[${dto.sex.map(item => `{ type: "${item.type}", value: "${item.value || ''}" }`).join(', ')}]` : null}
+          index: ${dto.index || 1}
+          count: ${dto.count || 10}
+          sort: ${dto.sort ? `"${dto.sort}"` : null}
+          hotSales: ${dto.hotSales ? `"${dto.hotSales}"` : null}
+        }
+      ) {
+        displayCost
+        name
+        details {
+            id
+            imgDisplay {
+                id
+                link
+                url
+            }
+            brand {
+                id
+                type
+                value
+            }
+        }
+        id
+      }
+    }
+  `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', { query });
+
+        const res: ProductType[] = response.data.data.SearchProductWithOptions;
+        const dataReturn: Perfume[] = [];
+
+        for (const item of res) {
+            dataReturn.push({
+                img: item.details?.imgDisplay?.[0]?.url || null,
+                name: item.name,
+                brand: item.details?.brand?.value || null,
+                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ'
+            } as Perfume);
+        }
+        
+        return dataReturn;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        throw error;
+    }
+}
+
