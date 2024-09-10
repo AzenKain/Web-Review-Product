@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm --prefix packages/next-app run dev\" \"npm --prefix packages/nest-app run start:dev\"",
     "dev:next": "npm --prefix packages/next-app run dev",
+    "build:next": "npm --prefix packages/next-app run build",
     "build": "npm --prefix packages/next-app run build && npm --prefix packages/nest-app run build"
   },
 

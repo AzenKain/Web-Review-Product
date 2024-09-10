@@ -2,13 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import ShapeCard from '@/components/Card/ShapeCard'
 import Pagination from '@/components/Footer/Pagination'
-
-type Perfume = {
-    img?: string;
-    name: string;
-    description: string;
-    cost: string;
-}
+import { Perfume } from '@/types/Perfume'
 
 export default function Page() {
     const [perfumes, setPerfumes] = useState <Perfume[]>([])

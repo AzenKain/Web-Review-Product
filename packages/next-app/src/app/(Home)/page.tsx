@@ -4,19 +4,6 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import About from './about'
 
-interface Perfume {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
-
-interface PageProps {
-    topUnisexPerfume: Perfume[],
-    topManPerfume: Perfume[],
-    topWomanPerfume: Perfume[]
-}
 
 export default async function Page() {
 

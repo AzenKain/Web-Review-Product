@@ -5,11 +5,9 @@ import Providers from "@/components/Providers/Providers";
 import StoreProvider from "./StoreProvider";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
-import Script from 'next/script'
 export default async function RootLayout({
     children
 }: {
