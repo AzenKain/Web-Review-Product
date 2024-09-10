@@ -22,7 +22,8 @@ export default async function RootLayout({
                 <link rel="apple-touch-icon.png" sizes="180x180" href="/apple-touch-icon.png" />
                 <link rel="icon" type="x-icon" sizes="16x16" href="/favicon.ico" />
                 <link rel="manifest" href="/site.webmanifest"></link>
-                <script strategy="beforeInteractive" src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+                <script src="/js/jquery-3.7.1.min.js"></script>
+                {/* <Script strategy="beforeInteractive" src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossOrigin="anonymous"></Script> */}
             </head>
             <body className={`${inter.className} selection:bg-base-content selection:text-base-100`}>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
