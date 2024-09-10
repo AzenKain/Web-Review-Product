@@ -1,15 +1,16 @@
-﻿"use client"
-import { FC, useState } from 'react';
-import React from 'react'
-import 'swiper/css';
-import 'swiper/css/autoplay';
-import TopPerfumeCarousel from "@/components/Carousel/TopPerfumeCarousel"
+﻿import TopPerfumeCarousel from "@/components/Carousel/TopPerfumeCarousel"
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import Introduce from './introduce'
-import { Perfume } from '@/types/Perfume';
+import About from './about'
 
+interface Perfume {
+    img?: string;
+    name: string;
+    description: string;
+    href?: string;
+    cost: string;
+}
 
 interface PageProps {
     topUnisexPerfume: Perfume[],
@@ -17,12 +18,9 @@ interface PageProps {
     topWomanPerfume: Perfume[]
 }
 
-const Page: FC<PageProps> = ({
-    topUnisexPerfume,
-    topManPerfume,
-    topWomanPerfume
-}) => {
-    const [isOpenIntroduce, setIsOpenIntroduce] = useState<boolean>(false)
+export default async function Page() {
+
+    const { topUnisexPerfume, topManPerfume, topWomanPerfume } = await getTopPerfume()
 
     return (
         <main id="main-content" className="bg-base-100 z-1 relative m-auto min-h-[190vh] xl:container">
@@ -37,22 +35,6 @@ const Page: FC<PageProps> = ({
             <div className="divider-page h-[200px] w-full text-3xl text-center flex justify-center flex-col"><a>WOMAN PERFUME</a></div>
             <div className="box-border p-[1%]">
                 <TopPerfumeCarousel Perfume={topWomanPerfume} />
-            </div>
-            <div id="main-introduce" className={`xl:container my-16 pt-8 border-y border-neutral ${isOpenIntroduce ? "" : "h-96 overflow-hidden"} relative`}>
-                <div style={{
-                    height: "100%",
-                    padding: "20px 20px",
-                    position: "relative",
-                    filter: isOpenIntroduce ? "" : "blur(1px)",
-                    maskImage: isOpenIntroduce ? "" : "linear-gradient(to bottom, white, transparent)"
-                }}><Introduce /></div>
-                <a href="/#main-introduce"><button className="btn glass absolute rounded-none" style={{
-                    bottom: 0,
-                    left: "50%",
-                    transform: `translate(-50%, ${isOpenIntroduce ? "40px" : "-20px"})`
-                }} onClick={() => {
-                    setIsOpenIntroduce((isOpenIntroduce => !isOpenIntroduce))
-                }}>{isOpenIntroduce ? "Thu gọn" : "Đọc thêm"}</button></a>
             </div>
             <div className="add-contact flex justify-center flex-col py-16" id="contact">
                 <form className="flex flex-col md:flex-row justify-between mx-8 gap-10">
@@ -83,6 +65,7 @@ const Page: FC<PageProps> = ({
                     </fieldset>
                 </form>
             </div>
+            <About />
             <div className="ggMap w-full flex flex-row justify-center my-8">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.5888048598886!2d105.78863241166319!3d20.96902198058479!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ad45949d675b%3A0x6068a93ab6b49f71!2zQ1QxIENodW5nIGPGsCBWaeG7h24gMTAz!5e0!3m2!1svi!2s!4v1724575227462!5m2!1svi!2s"
@@ -98,4 +81,43 @@ const Page: FC<PageProps> = ({
     );
 }
 
-export default Page;
+function getTopPerfume() {
+    const topUnisexPerfume: Perfume[] = (
+        [
+            {
+                "img": "/images/atelier.png",
+                "name": "ATELIER MATERI",
+                "description": "Atelier Materi Santal Blond EDP",
+                "cost": "6,500,000 VND"
+            },
+            {
+                "img": "/images/clive.png",
+                "name": "CLIVE CHRISTIAN",
+                "description": "Clive Christian E Cashmere Musk",
+                "cost": "12,200,000 VND"
+            },
+            {
+                "img": "/images/borntostandout.png",
+                "name": "BORNTOSTANDOUT",
+                "description": "BTSO Dirty Rice EDP",
+                "cost": "5,330,000 VND"
+            },
+            {
+                "img": "/images/gritti.png",
+                "name": "GRITTI",
+                "description": "Neroli Extreme Gritti",
+                "cost": "5,500,000 VND"
+            },
+            {
+                "img": "/images/fusciuni.png",
+                "name": "FUSCIUNI CAT",
+                "description": "Fusciuni Little Song",
+                "cost": "6,900,000 VND"
+            }
+        ])
+
+
+    const topManPerfume: Perfume[] = [...topUnisexPerfume]
+    const topWomanPerfume: Perfume[] = [...topUnisexPerfume]
+    return { topUnisexPerfume, topManPerfume, topWomanPerfume }
+}

@@ -1,30 +1,23 @@
 ﻿import React from 'react'
-import 'react-toastify/dist/ReactToastify.css';
-import Page from "./page"
 import Footer from "@/components/Footer/index";
 import Header from "@/components/Header";
 import Carousel from '@/components/Carousel';
 
 
-type Perfume = {
-    img?: string;
-    name: string;
-    description: string;
-    href?: string;
-    cost: string;
-}
-
-export default async function HomeTemplate( ) {
+export default async function HomeTemplate({
+    children
+}: {
+    children: React.ReactNode
+}) {
 
     const { brandName, topBrandName, perfumeType } = await getBrandData()
-    const { topUnisexPerfume, topManPerfume, topWomanPerfume } = await getTopPerfume()
 
     return (
         <div className="relative">
             <Header brandName={brandName} topBrandName={topBrandName} perfumeType={perfumeType} /> {/*z-index: 50*/}
             <div id="main-carousel" className="overflow-hidden"><Carousel></Carousel></div>
             <main className="bg-base-100" style={{ position: "relative", zIndex: 10, marginBottom: "95vh", width: "100%" }}>
-                <Page topUnisexPerfume={topUnisexPerfume} topManPerfume={topManPerfume} topWomanPerfume={topWomanPerfume} /> {/*children*/}
+                {children}
                 <div className="end h-10 bg-neutral w-full glass"></div>
             </main>
             <Footer /> {/*z-index: 0*/}
@@ -115,43 +108,3 @@ function getBrandData() {
     return { brandName, topBrandName, perfumeType };
 }
 
-function getTopPerfume() {
-    const topUnisexPerfume: Perfume[] = (
-        [
-            {
-                "img": "/images/atelier.png",
-                "name": "ATELIER MATERI",
-                "description": "Atelier Materi Santal Blond EDP",
-                "cost": "6,500,000 VND"
-            },
-            {
-                "img": "/images/clive.png",
-                "name": "CLIVE CHRISTIAN",
-                "description": "Clive Christian E Cashmere Musk",
-                "cost": "12,200,000 VND"
-            },
-            {
-                "img": "/images/borntostandout.png",
-                "name": "BORNTOSTANDOUT",
-                "description": "BTSO Dirty Rice EDP",
-                "cost": "5,330,000 VND"
-            },
-            {
-                "img": "/images/gritti.png",
-                "name": "GRITTI",
-                "description": "Neroli Extreme Gritti",
-                "cost": "5,500,000 VND"
-            },
-            {
-                "img": "/images/fusciuni.png",
-                "name": "FUSCIUNI CAT",
-                "description": "Fusciuni Little Song",
-                "cost": "6,900,000 VND"
-            }
-        ])
-
-
-    const topManPerfume: Perfume[] = [...topUnisexPerfume]
-    const topWomanPerfume: Perfume[] = [...topUnisexPerfume]
-    return { topUnisexPerfume, topManPerfume, topWomanPerfume }
-}

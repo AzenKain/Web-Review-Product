@@ -1,5 +1,4 @@
 ﻿import React from 'react'
-import 'react-toastify/dist/ReactToastify.css';
 import Footer from "@/components/Footer/index";
 import Header from "@/components/Header";
 
