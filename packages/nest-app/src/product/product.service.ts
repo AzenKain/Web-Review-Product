@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } from 'src/types/product';
 import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
-import { CreateProductDto, DeleteProductDto, ProductDetailInp, SearchProductDto, UpdateProductDto } from './dtos';
+import { CreateProductDto, DeleteProductDto, ProductDetailInp, SearchProductDto, TagsProductDto, UpdateProductDto } from './dtos';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import * as FormData from 'form-data';
@@ -147,7 +147,15 @@ export class ProductService {
         return list_product;
     }
 
-
+    async GetTagsProductService(dto: TagsProductDto) {
+        const queryBuilder = this.tagsRepository.createQueryBuilder('tagsDetail');
+        if (dto.tags) {
+            queryBuilder.andWhere('tagsDetail.type = :tagsType', { tagsType: dto.tags });
+        }
+    
+        return await queryBuilder.getMany();
+    }
+    
 
 
     async GetProductByIdService(productId: number) {

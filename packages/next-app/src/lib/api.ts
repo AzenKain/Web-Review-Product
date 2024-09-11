@@ -1,8 +1,8 @@
-import { Perfume, ProductType } from "@/types";
+import { Perfume, ProductType, TagsDetailType } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import axios from 'axios';
-import { SearchProductDto } from "./dtos/product";
+import { SearchProductDto, TagsProductDto } from "./dtos/product";
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
@@ -118,7 +118,7 @@ export async function GetHotSaleProductForHome(sex: string) {
         }
         return dataReturn
     } catch (error) {
-        console.error('Error fetching hot sale products:', error);
+        console.error('Error fetching: ', error);
         throw error;
     }
 }
@@ -179,8 +179,32 @@ export async function GetProductForSearch(dto: SearchProductDto) {
         
         return dataReturn;
     } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching: ', error);
         throw error;
     }
 }
 
+export async function GetTagsProduct(dto: TagsProductDto) {
+    const query = `
+        query GetTagsProduct {
+            GetTagsProduct(GetTagsProduct: { tags: "${dto.tags}" }) {
+                id
+                type
+                value
+            }
+        }
+
+  `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        const res: TagsDetailType[] = response.data.data.GetTagsProduct;
+        return res
+    } catch (error) {
+        console.error('Error fetching: ', error);
+        throw error;
+    }
+}

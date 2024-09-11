@@ -191,6 +191,7 @@ type Query {
   GetBlogById(blogId: Float!): Blog!
   GetOrderById(orderId: Float!): Order!
   GetProductById(productId: Float!): Product!
+  GetTagsProduct(GetTagsProduct: TagsProductDto!): [TagsDetail!]!
   GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
   SearchOrderWithOption(SearchOrder: SearchOrderDto!): [Order!]!
@@ -222,7 +223,7 @@ input SearchProductDto {
   fragranceNotes: [TagsDetailInp!]
   hotSales: String
   index: Float
-  name: String!
+  name: String
   rangeMoney: [Float!]
   sex: [TagsDetailInp!]
   size: [TagsDetailInp!]
@@ -238,6 +239,10 @@ type TagsDetail {
 input TagsDetailInp {
   type: String!
   value: String
+}
+
+input TagsProductDto {
+  tags: String
 }
 
 input UpdateBlogDto {
