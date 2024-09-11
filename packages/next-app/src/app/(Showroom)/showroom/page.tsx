@@ -13,7 +13,6 @@ export default function Page() {
     const perfumes = useAppSelector((state) => state.filterSearch.perfumes)
     const dispatch = useAppDispatch()
 
-
     const fetchData = async () => {
         const responseData: Perfume[] = await GetProductForSearch(filters);
         dispatch(UpdatePerfume({ value: responseData }))
@@ -27,7 +26,13 @@ export default function Page() {
         <>
             <div className="flex w-full flex-row flex-wrap justify-between">
                 {perfumes ? perfumes.map((perfume, index) => (
-                    <ShapeCard key={index} id={perfume.id} name={perfume.name} brand={perfume.brand} img={perfume.img} cost={perfume.cost} />
+                    <ShapeCard
+                        key={index}
+                        id={perfume.id}
+                        name={perfume.name}
+                        brand={perfume.brand}
+                        img={perfume.img}
+                        cost={perfume.cost} />
                 )) : null}
             </div>
             <div className="flex flex-row justify-center mt-10"><Pagination /></div>

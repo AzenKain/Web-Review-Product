@@ -1,8 +1,8 @@
-import { Perfume, ProductType, TagsDetailType } from "@/types";
+import { Perfume, ProductType, TagsDetailType, Product } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import axios from 'axios';
-import { SearchProductDto, TagsProductDto } from "./dtos/product";
+import { SearchProductDto } from "./dtos/product";
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
@@ -176,7 +176,7 @@ export async function GetProductForSearch(dto: SearchProductDto) {
                 id: item.id
             } as Perfume);
         }
-        
+
         return dataReturn;
     } catch (error) {
         console.error('Error fetching: ', error);
@@ -184,10 +184,10 @@ export async function GetProductForSearch(dto: SearchProductDto) {
     }
 }
 
-export async function GetTagsProduct(dto: TagsProductDto) {
+export async function GetTagsProduct(tag: string | null = null) {
     const query = `
         query GetTagsProduct {
-            GetTagsProduct(GetTagsProduct: { tags: "${dto.tags}" }) {
+            GetTagsProduct(GetTagsProduct: { tags: "${tag}" }) {
                 id
                 type
                 value
@@ -202,6 +202,84 @@ export async function GetTagsProduct(dto: TagsProductDto) {
         });
 
         const res: TagsDetailType[] = response.data.data.GetTagsProduct;
+        return res
+    } catch (error) {
+        console.error('Error fetching: ', error);
+        throw error;
+    }
+}
+
+export async function GetProductById(id: number) {
+    const query = `
+        query GetProductById {
+            GetProductById(productId: ${id}) {
+                displayCost
+                id
+                isDisplay
+                name
+                originCost
+                rating
+                stockQuantity
+                updated_at
+                buyCount
+                details {
+                    brand {
+                        id
+                        type
+                        value
+                    }
+                    fragranceNotes {
+                        id
+                        type
+                        value
+                    }
+                    description
+                    concentration {
+                        id
+                        type
+                        value
+                    }
+                    imgDisplay {
+                        id
+                        link
+                        url
+                    }
+                    longevity {
+                        id
+                        type
+                        value
+                    }
+                    sex {
+                        id
+                        type
+                        value
+                    }
+                    sillage {
+                        id
+                        type
+                        value
+                    }
+                    size {
+                        id
+                        type
+                        value
+                    }
+                    tutorial
+                }
+            }
+        }
+
+  `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        const res: Product = {
+            ...response.data.data.GetProductById,
+            displayCost: response.data.data.GetProductById.displayCost.toLocaleString('vi-VN') + ' VNĐ'
+        }
         return res
     } catch (error) {
         console.error('Error fetching: ', error);

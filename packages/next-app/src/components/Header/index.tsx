@@ -211,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 <div className="mt-5">
                                     <ul className="brand-item flex flex-row flex-wrap">
                                         {brands ? brands.map((brand: string, index: number) => (
-                                            <li key={index} className="w-1/3 uppercase mt-1"><a href={`/showroom/brand/${slugify(brand, { lower: true, strict: true }) }`}>{brand}</a></li>
+                                            <li key={index} className="w-1/2 2xl:w-1/3 uppercase mt-1"><a href={`/showroom/brand/${slugify(brand, { lower: true, strict: true }) }`}>{brand}</a></li>
                                         )) : null}
                                     </ul>
                                 </div>

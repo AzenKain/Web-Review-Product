@@ -145,7 +145,7 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
                         <h6>{(priceRange[0] * 1000).toLocaleString('vi-VN')}</h6>
                         <h6>{(priceRange[1] * 1000).toLocaleString('vi-VN')} VND</h6>
                     </div>
-                    <Slider range={true} defaultValue={[0, 50000]} min={0} max={50000}
+                    <Slider range={true} defaultValue={[0, 50000]} min={priceRange[0]} max={priceRange[1]}
                         tooltip={{ open: false }}
                         className="flex-1"
                         onChange={(e) => setPriceRange([e[0], e[1]])}
