@@ -36,7 +36,7 @@ function getBrandData() {
         },
         {
             role: "CAPACITY",
-            type: ["100ml", "10ml", "125 ml", "35ml", "50ml", "5ml", "75ml", "78 ml", "80ml", "90ml"]
+            type: ["100ml", "10ml", "125ml", "35ml", "50ml", "5ml", "75ml", "78ml", "80ml", "90ml"]
         }
     ];
 

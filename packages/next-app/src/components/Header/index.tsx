@@ -1,6 +1,7 @@
 ﻿'use client'
 import React, { useState, useEffect } from 'react';
 import ListIcon from '@mui/icons-material/List';
+import slugify from 'slugify'
 
 interface PerfumeType {
     role: string;
@@ -210,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 <div className="mt-5">
                                     <ul className="brand-item flex flex-row flex-wrap">
                                         {brands ? brands.map((brand: string, index: number) => (
-                                            <li key={index} className="w-1/3 uppercase mt-1"><a href={`/showroom/brand/`}>{brand}</a></li>
+                                            <li key={index} className="w-1/3 uppercase mt-1"><a href={`/showroom/brand/${slugify(brand, { lower: true, strict: true }) }`}>{brand}</a></li>
                                         )) : null}
                                     </ul>
                                 </div>
@@ -247,7 +248,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                         <ul>
                                             {item.type.map((subItem, subIndex) => (
                                                 <li key={subIndex} className="uppercase">
-                                                    <a>{subItem}</a>
+                                                    <a href={`/showroom/${slugify(item.role, { lower: true, strict: true })}/${slugify(subItem, { lower: true, strict: true })}`}>{subItem}</a>
                                                 </li>
                                             ))}
                                         </ul>
@@ -330,8 +331,8 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                     <summary><a href="/news" className="uppercase">Tin tức</a></summary>
                                 </details>
                                 <ul className="hidden">
-                                    <li><a className="uppercase">Giới thiệu nước hoa</a></li>
-                                    <li><a className="uppercase">Kinh nghiệm chọn nước hoa</a></li>
+                                    <li><a href="/news/review" className="uppercase">Giới thiệu nước hoa</a></li>
+                                    <li><a href="/news/tips" className="uppercase">Kinh nghiệm chọn nước hoa</a></li>
                                 </ul>
                             </li>
                             <li><a href="/#contact" className="uppercase">Liên hệ</a></li>

@@ -112,8 +112,8 @@ export async function GetHotSaleProductForHome(sex: string) {
                 img: item.details?.imgDisplay?.[0]?.url || null,
                 name: item.name,
                 brand: item.details?.brand?.value || null,
-                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ'
-
+                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ',
+                id: item.id
             } as Perfume)
         }
         return dataReturn
@@ -172,7 +172,8 @@ export async function GetProductForSearch(dto: SearchProductDto) {
                 img: item.details?.imgDisplay?.[0]?.url || null,
                 name: item.name,
                 brand: item.details?.brand?.value || null,
-                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ'
+                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ',
+                id: item.id
             } as Perfume);
         }
         

@@ -1,13 +1,18 @@
-﻿import { Perfume } from '@/types/Perfume';
-import React from 'react';
+﻿"use client"
+import { Perfume } from '@/types/Perfume';
+import React, { useEffect } from 'react';
 
 
 
 const MainCard: React.FC<{ item: Perfume }> = ({ item }) => {
+    useEffect(() => {
+        console.log(item)
+    }, [])
+
     return (
         <div className="card glass h-[450px] max-h-[80vh] w-full shadow-xl">
             <figure className="w-full h-[60%]">
-                <img src={item.img || ''} alt={item.name} className="bg-white w-full" style={{aspectRatio: 1}} />
+                <a href={`/product/${item.id}`}><img src={item.img || ''} alt={item.name} className="bg-white w-full" style={{ aspectRatio: 1 }} /></a>
             </figure>
             <div className="card-body">
                 <h5 className="card-title text-center block "><p className="line-clamp-1">{item.brand}</p></h5>
