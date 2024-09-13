@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { HomeOutlined, MailOutlined, SettingOutlined, ShopOutlined, BarChartOutlined, FileDoneOutlined, TeamOutlined } from '@ant-design/icons';
+import { HomeOutlined, MailOutlined, MenuFoldOutlined, ShopOutlined, BarChartOutlined, FileDoneOutlined, TeamOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';0.
 import Link from 'next/link'
@@ -9,6 +9,20 @@ import Avatar from '@/components/Avatar'
 type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
+    {
+        label: '',
+        key: 'More',
+        icon: <MenuFoldOutlined />,
+        children: [
+            {
+                type: 'group',
+                children: [
+                    { label: <Link href="/admin/warehouse/inventory">Inventory</Link>, key: 'inventory' },
+                    { label: <Link href="/admin/warehouse/manage-storage">Manage Storage</Link>, key: 'manage-storage' },
+                ],
+            },
+        ],
+    },
     {
         label: <Link href="/admin">Home</Link>,
         key: 'home',

@@ -1,12 +1,21 @@
-﻿import { Perfume } from "@/types/Perfume"
+﻿"use client"
+import { Perfume } from "@/types/Perfume"
+import Image from 'next/image';
 
 export default function ShapeCard({ name, img, brand, cost, id }: Perfume) {
     return (
-        <div className="card border-neutral h-80 my-[10px] w-[250px] rounded-none border shadow-xl">
+        <div className="card border-neutral h-80 my-[10px] w-[250px] rounded-none border shadow-xl transition-transform duration-300 hover:scale-105">
             <figure className="h-[60%] overflow-hidden">
-                <a href={`/product/${id}`} target="_blank" rel="noopener noreferrer"><img style={{ backgroundColor: 'white' }}
-                    src={img}
-                    alt={name} /></a>
+                <a href={`/product/${id}`} target="_blank" rel="noopener noreferrer">
+                    <Image
+                        src={img as string}
+                        alt={name}
+                        style={{ backgroundColor: 'white' }}
+                        layout="responsive"
+                        width={500}
+                        height={300}
+                    />
+                </a>
             </figure>
             <div className="card-body p-4" style={{
                 gap: '0.2rem',

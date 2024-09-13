@@ -1,8 +1,8 @@
-import { Perfume, ProductType, TagsDetailType } from "@/types";
+import { Perfume, ProductType, TagsDetailType, Product } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import axios from 'axios';
-import { SearchProductDto, TagsProductDto } from "./dtos/product";
+import { SearchProductDto } from "./dtos/product";
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
@@ -80,22 +80,25 @@ export async function GetHotSaleProductForHome(sex: string) {
           sex: { type: "sex", value: "${sex}" }
         }
       ) {
-        displayCost
-        name
-        details {
+        data {
+            displayCost
+            name
+            details {
+                id
+                imgDisplay {
+                    id
+                    link
+                    url
+                }
+                brand {
+                    id
+                    type
+                    value
+                }
+            }
             id
-            imgDisplay {
-                id
-                link
-                url
-            }
-            brand {
-                id
-                type
-                value
-            }
         }
-        id
+        maxValue
       }
     }
   `;
@@ -105,7 +108,9 @@ export async function GetHotSaleProductForHome(sex: string) {
             query: query,
         });
 
-        const res: ProductType[] = response.data.data.SearchProductWithOptions;
+        const res: ProductType[] = response.data.data.SearchProductWithOptions.data;
+        const maxValue = response.data.data.SearchProductWithOptions.maxValue
+
         const dataReturn: Perfume[] = []
         for (const item of res) {
             dataReturn.push({
@@ -116,7 +121,7 @@ export async function GetHotSaleProductForHome(sex: string) {
                 id: item.id
             } as Perfume)
         }
-        return dataReturn
+        return {maxValue: maxValue, data: dataReturn};
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
@@ -141,22 +146,25 @@ export async function GetProductForSearch(dto: SearchProductDto) {
           hotSales: ${dto.hotSales ? `"${dto.hotSales}"` : null}
         }
       ) {
-        displayCost
-        name
-        details {
+        data {
+            displayCost
+            name
+            details {
+                id
+                imgDisplay {
+                    id
+                    link
+                    url
+                }
+                brand {
+                    id
+                    type
+                    value
+                }
+            }
             id
-            imgDisplay {
-                id
-                link
-                url
-            }
-            brand {
-                id
-                type
-                value
-            }
         }
-        id
+        maxValue
       }
     }
   `;
@@ -164,7 +172,8 @@ export async function GetProductForSearch(dto: SearchProductDto) {
     try {
         const response = await axios.post(Backend_URL + '/graphql', { query });
 
-        const res: ProductType[] = response.data.data.SearchProductWithOptions;
+        const res: ProductType[] = response.data.data.SearchProductWithOptions.data;
+        const maxValue = response.data.data.SearchProductWithOptions.maxValue
         const dataReturn: Perfume[] = [];
 
         for (const item of res) {
@@ -176,25 +185,24 @@ export async function GetProductForSearch(dto: SearchProductDto) {
                 id: item.id
             } as Perfume);
         }
-        
-        return dataReturn;
+
+        return {maxValue: maxValue, data: dataReturn};
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
     }
 }
 
-export async function GetTagsProduct(dto: TagsProductDto) {
+export async function GetTagsProduct(tag: string | null = null) {
     const query = `
-        query GetTagsProduct {
-            GetTagsProduct(GetTagsProduct: { tags: "${dto.tags}" }) {
-                id
-                type
-                value
-            }
+      query GetTagsProduct {
+        GetTagsProduct(GetTagsProduct: { tags: ${tag ? `"${tag}"` : null} }) {
+          id
+          type
+          value
         }
-
-  `;
+      }
+    `;
 
     try {
         const response = await axios.post(Backend_URL + '/graphql', {
@@ -206,5 +214,103 @@ export async function GetTagsProduct(dto: TagsProductDto) {
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
+    }
+}
+
+export async function GetProductById(id: number) {
+    const query = `
+        query GetProductById {
+            GetProductById(productId: ${id}) {
+                displayCost
+                id
+                isDisplay
+                name
+                originCost
+                rating
+                stockQuantity
+                updated_at
+                buyCount
+                details {
+                    brand {
+                        id
+                        type
+                        value
+                    }
+                    fragranceNotes {
+                        id
+                        type
+                        value
+                    }
+                    description
+                    concentration {
+                        id
+                        type
+                        value
+                    }
+                    imgDisplay {
+                        id
+                        link
+                        url
+                    }
+                    longevity {
+                        id
+                        type
+                        value
+                    }
+                    sex {
+                        id
+                        type
+                        value
+                    }
+                    sillage {
+                        id
+                        type
+                        value
+                    }
+                    size {
+                        id
+                        type
+                        value
+                    }
+                    tutorial
+                }
+            }
+        }
+
+  `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        const res: Product = {
+            ...response.data.data.GetProductById,
+            displayCost: response.data.data.GetProductById.displayCost.toLocaleString('vi-VN') + ' VNĐ'
+        }
+        return res
+    } catch (error) {
+        console.error('Error fetching: ', error);
+        throw error;
+    }
+}
+
+
+export async function uploadFile(data: File, accessToken: string) {
+    try {
+        const formData = new FormData();
+        formData.append('file', data); 
+        const response = await axios.post('/media/upload', formData, {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'multipart/form-data', 
+            },
+        });
+        if (response.status == 200) {
+            return Backend_URL + response.data['url'];  
+        }
+    } catch (error: any) {
+        console.error('Upload failed:', error.response ? error.response.data : error.message);
+        throw error; 
     }
 }
