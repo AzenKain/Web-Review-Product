@@ -186,15 +186,14 @@ export async function GetProductForSearch(dto: SearchProductDto) {
 
 export async function GetTagsProduct(tag: string | null = null) {
     const query = `
-        query GetTagsProduct {
-            GetTagsProduct(GetTagsProduct: { tags: "${tag}" }) {
-                id
-                type
-                value
-            }
+      query GetTagsProduct {
+        GetTagsProduct(GetTagsProduct: { tags: ${tag ? `"${tag}"` : null} }) {
+          id
+          type
+          value
         }
-
-  `;
+      }
+    `;
 
     try {
         const response = await axios.post(Backend_URL + '/graphql', {

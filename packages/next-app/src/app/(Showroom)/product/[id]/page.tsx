@@ -39,19 +39,19 @@ export default async function Page({
                     </div>
                     <div className="divider"></div>
                     <div className="flex flex-row justify-between">
-                        <h3 className="text-[18px] mb-[4px]">Cost:</h3>
+                        <h3 className="text-[18px] mb-[4px]">Giá sản phẩm:</h3>
                         <h3 className="text-red-500 font-bold text-[18px] mb-[4px]">{product.displayCost}</h3>
                     </div>
                     <div className="flex flex-row justify-between">
-                        <h3 className="text-[18px] mb-[4px]">Inventory quantity:</h3>
+                        <h3 className="text-[18px] mb-[4px]">Lượng hàng còn lại:</h3>
                         <h3 className="text-[18px] mb-[4px]">{product.stockQuantity}</h3>
                     </div>
                     <div className="flex flex-row justify-between">
-                        <h3 className="text-[18px] mb-[4px]">Purchased:</h3>
+                        <h3 className="text-[18px] mb-[4px]">Số lượng đã bán:</h3>
                         <h3 className="text-[18px] mb-[4px]">{product.buyCount}</h3>
                     </div>
                     <div className="divider"></div>
-                    <h3 className="text-[18px] mb-[4px]">Capacity: </h3>
+                    <h3 className="text-[18px] mb-[4px]">Dung tích: </h3>
                     <div>
                         <button className="btn btn-outline btn-sm">100ML</button>
                         <button className="btn btn-outline btn-sm">10ML</button>
@@ -122,7 +122,7 @@ export default async function Page({
                                     WebkitMask: 'url(/icons/ic-info-5.svg) no-repeat center',
                                 }}
                             ></div>
-                            <h3 className="ml-3 h-5 self-center">Gender: </h3>
+                            <h3 className="ml-3 h-5 self-center">Giớ tính: </h3>
                             <a href={`/showroom/sex/${slugify(product.details.sex.value, { strict: true, lower: true })}`} 
                                 className="h-5 self-center underline">
                                 {product.details.sex.value}
@@ -134,18 +134,20 @@ export default async function Page({
             <div className="xl:container m-auto mt-24 flex flex-row relative">
                 <div className="flex-1 mr-6">
                     <div role="tablist" className="tabs tabs-lifted">
-                        <input type="radio" style={{ width: "200px !important" }} name="my_tabs_2" role="tab" className="tab" value="haizz" aria-label="Mô tả sản phẩm" defaultChecked />
+                        <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" value="haizz" aria-label="Mô tả sản phẩm" defaultChecked />
                         <div role="tabpanel" style={{ whiteSpace: 'pre-line' }} className="tab-content bg-base-100 border-base-300 rounded-box p-6">
                             <div>{product.details.description}</div>
                         </div>
 
-                        <input type="radio" style={{ width: "200px !important" }} name="my_tabs_2" role="tab" className="tab" aria-label="Sử dụng và Bảo quản"  />
+                        <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" aria-label="Sử dụng và Bảo quản"  />
                         <div role="tabpanel" style={{ whiteSpace: 'pre-line' }} className="tab-content bg-base-100 border-base-300 rounded-box p-6">
                             <div>{product.details.tutorial}</div>
                         </div>
                     </div>
                 </div>
-                <div className="p-4 w-[400px] border-4 rounded-lg border-neutral">
+                <div className="p-4 w-[400px] border-4 rounded-lg border-neutral block" style={{
+                        height: "fit-content"
+                }}>
                     <h1 className="font-bold uppercase">QUYỂN LỢI KHÁCH HÀNG</h1>
                     <div className="product-property flex flex-col">
                         <div className="flex border-b border-neutral">
@@ -185,7 +187,7 @@ export default async function Page({
                 </div>
             </div>
             <div className="xl:container m-auto mt-20 mb-10">
-                <h1 className="text-3xl font-bold mb-5">RELATED PRODUCTS</h1>
+                <h1 className="text-3xl font-bold mb-5">SẢN PHẨM LIÊN QUAN</h1>
                 <TopPerfumeCarousel Perfume={linkedPerfume} reverse={true} />
             </div>
             <div className="h-10 bg-neutral w-full glass"></div>

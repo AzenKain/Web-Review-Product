@@ -11,11 +11,11 @@ const config: Config = {
   ],
   darkMode: 'selector',
   daisyui: {
-      themes: ["light", "dark", "cupcake", "luxury", "coffee"],
+      themes: ["light","luxury", "disable"],
   },
   plugins: [
       require("daisyui"),
-    ],
+  ],
 };
 
 
