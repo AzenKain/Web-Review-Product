@@ -25,11 +25,12 @@ export class AuthController {
     ) {
         return await this.authService.SignupService(dto)
     }
+    
     @UseGuards(JwtGuardRestApiRefresh)
     @Post('refresh')
     async RefreshController(
         @CurrentUserRest() user: JwtPayload
     ) {
-        return await this,this.authService.RefreshService(user)
+        return await this.authService.RefreshService(user)
     }
 }

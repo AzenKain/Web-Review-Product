@@ -101,7 +101,7 @@ export class OrderService {
         return orders;
     }
 
-    async CreateOderService(dto: createOrderDto, user: UserEntity) {
+    async CreateOrderService(dto: createOrderDto, user: UserEntity) {
         this.CheckRoleUser(user)
 
 

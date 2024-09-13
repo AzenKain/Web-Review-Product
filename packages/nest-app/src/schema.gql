@@ -170,7 +170,7 @@ type ProductDetail {
   longevity: TagsDetail
   sex: TagsDetail
   sillage: TagsDetail
-  size: TagsDetail
+  size: [TagsDetail!]
   tutorial: String
 }
 
@@ -183,7 +183,7 @@ input ProductDetailInp {
   longevity: TagsDetailInp
   sex: TagsDetailInp
   sillage: TagsDetailInp
-  size: TagsDetailInp
+  size: [TagsDetailInp!]
   tutorial: String
 }
 
@@ -195,7 +195,7 @@ type Query {
   GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
   SearchOrderWithOption(SearchOrder: SearchOrderDto!): [Order!]!
-  SearchProductWithOptions(SearchProduct: SearchProductDto!): [Product!]!
+  SearchProductWithOptions(SearchProduct: SearchProductDto!): SearchProduct!
 }
 
 type ResponseType {
@@ -214,6 +214,11 @@ input SearchOrderDto {
   lastName: String
   orderId: ID
   phoneNumber: String
+}
+
+type SearchProduct {
+  data: [Product!]!
+  maxValue: Float!
 }
 
 input SearchProductDto {
@@ -237,7 +242,7 @@ type TagsDetail {
 }
 
 input TagsDetailInp {
-  type: String!
+  type: String
   value: String
 }
 

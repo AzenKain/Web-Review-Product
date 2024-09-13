@@ -21,8 +21,8 @@ export class ProductDetailType {
     @Field(() => [ImageDetailType], { nullable: true })
     imgDisplay?: ImageDetailType[];
 
-    @Field(()=>TagsDetailType, { nullable: true })
-    size?: TagsDetailType;
+    @Field(()=>[TagsDetailType], { nullable: true })
+    size?: TagsDetailType[];
 
     @Field(()=>TagsDetailType, { nullable: true })
     brand?: TagsDetailType;

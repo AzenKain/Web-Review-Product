@@ -60,41 +60,38 @@ export class ProductService {
             .leftJoinAndSelect('details.sex', 'sex')
             .leftJoinAndSelect('details.sillage', 'sillage')
             .leftJoinAndSelect('details.longevity', 'longevity');
-
+    
         queryBuilder.andWhere('product.isDisplay = :isDisplay', { isDisplay: true });
-
-        // Filter by product name
+    
         if (dto.name) {
             queryBuilder.andWhere('product.name LIKE :name', { name: `%${dto.name}%` });
         }
-
-        // Filter by price range
+    
         if (dto.rangeMoney && dto.rangeMoney.length === 2) {
             const [min, max] = dto.rangeMoney;
             queryBuilder.andWhere('product.displayCost BETWEEN :min AND :max', { min, max });
         }
-
-        // Filter by size, brand, fragrance notes, concentration, sex
+    
         if (dto.size && dto.size.length > 0) {
             queryBuilder.andWhere('size.value IN (:...sizes)', { sizes: dto.size.map(tag => tag.value.toLowerCase()) });
         }
-
+    
         if (dto.brand && dto.brand.length > 0) {
             queryBuilder.andWhere('brand.value IN (:...brands)', { brands: dto.brand.map(tag => tag.value.toLowerCase()) });
         }
-
+    
         if (dto.fragranceNotes && dto.fragranceNotes.length > 0) {
             queryBuilder.andWhere('fragranceNotes.value IN (:...fragranceNotes)', { fragranceNotes: dto.fragranceNotes.map(tag => tag.value.toLowerCase()) });
         }
-
+    
         if (dto.concentration && dto.concentration.length > 0) {
             queryBuilder.andWhere('concentration.value IN (:...concentrations)', { concentrations: dto.concentration.map(tag => tag.value.toLowerCase()) });
         }
-
+    
         if (dto.sex && dto.sex.length > 0) {
             queryBuilder.andWhere('sex.value IN (:...sexes)', { sexes: dto.sex.map(tag => tag.value.toLowerCase()) });
         }
-
+    
         // Sorting
         if (dto.sort) {
             switch (dto.sort) {
@@ -114,38 +111,42 @@ export class ProductService {
                     break;
             }
         }
+   
+        const maxValue = await queryBuilder.getCount();
+    
         let list_product = await queryBuilder.getMany();
-
+    
         if (dto.hotSales) {
             const timeframes: Array<'week' | 'month' | 'year' | 'all'> = ['week', 'month', 'year', 'all'];
             let currentTimeframe: 'week' | 'month' | 'year' | 'all' = (dto.hotSales as 'week' | 'month' | 'year' | 'all') || 'week';
-
+    
             let tmpOrder = await this.orderService.getOrderDetail(currentTimeframe);
-
+    
             while (tmpOrder.length < dto.count) {
                 const currentIndex = timeframes.indexOf(currentTimeframe);
                 if (tmpOrder.length < dto.count) {
                     currentTimeframe = timeframes[currentIndex + 1];
                     if (currentTimeframe === 'all') {
-                        list_product.sort((a, b) => a.buyCount - b.buyCount)
+                        list_product.sort((a, b) => a.buyCount - b.buyCount);
                         break;
                     }
                     tmpOrder = await this.orderService.getOrderDetail(currentTimeframe);
-                }
-                else {
+                } else {
                     list_product = list_product.filter((i) => tmpOrder.findIndex(e => e.productId === i.id) !== -1);
                     break;
                 }
             }
         }
-
+    
         if (dto.index && dto.count) {
             const offset = (dto.index - 1) * dto.count;
             list_product = list_product.slice(offset, offset + dto.count);
         }
+    
 
-        return list_product;
+        return { maxValue, data: list_product };
     }
+    
 
     async GetTagsProductService(dto: TagsProductDto) {
         const queryBuilder = this.tagsRepository.createQueryBuilder('tagsDetail');
@@ -184,44 +185,58 @@ export class ProductService {
     private async findOrCreateTag(tagValue: string, tagType: string): Promise<TagsEntity> {
         const tagLowerCase = tagValue.toLowerCase();
         let tag = await this.tagsRepository.findOne({ where: { value: tagLowerCase, type: tagType } });
-
+    
         if (!tag) {
             tag = this.tagsRepository.create({ value: tagLowerCase, type: tagType });
             tag = await this.tagsRepository.save(tag);
         }
-
+    
         return tag;
     }
-
+    
     async CreateProductService(dto: CreateProductDto, user: UserEntity) {
         this.CheckRoleUser(user);
-
+    
         const existingProduct = await this.productRepository.findOne({
             where: { name: dto.name, category: dto.category },
         });
-
+    
         if (existingProduct) {
             throw new ForbiddenException('Product already exists with the same name and category.');
         }
-
+    
         // Save image details
         const imgDetails = dto.details.imgDisplay.map((img) =>
             this.imageDetailRepository.create({ url: img.url, link: img.link || [] })
         );
         const savedImgDetails = await this.imageDetailRepository.save(imgDetails);
-
-        // Process all TagsEntity fields
-        const sizeTag = dto.details.size?.value ? await this.findOrCreateTag(dto.details.size.value, 'size') : null;
+    
+        // Process size tags (handling array of sizes)
+        const sizeTags = dto.details.size
+            ? await Promise.all(
+                  dto.details.size.map(async (sizeTag) => {
+                      return await this.findOrCreateTag(sizeTag.value, 'size');
+                  })
+              )
+            : [];
+    
+        // Process other TagsEntity fields
         const brandTag = dto.details.brand?.value ? await this.findOrCreateTag(dto.details.brand.value, 'brand') : null;
-        const fragranceNotesTag = dto.details.fragranceNotes?.value ? await this.findOrCreateTag(dto.details.fragranceNotes.value, 'fragranceNotes') : null;
-        const concentrationTag = dto.details.concentration?.value ? await this.findOrCreateTag(dto.details.concentration.value, 'concentration') : null;
+        const fragranceNotesTag = dto.details.fragranceNotes?.value
+            ? await this.findOrCreateTag(dto.details.fragranceNotes.value, 'fragranceNotes')
+            : null;
+        const concentrationTag = dto.details.concentration?.value
+            ? await this.findOrCreateTag(dto.details.concentration.value, 'concentration')
+            : null;
         const sexTag = dto.details.sex?.value ? await this.findOrCreateTag(dto.details.sex.value, 'sex') : null;
         const sillageTag = dto.details.sillage?.value ? await this.findOrCreateTag(dto.details.sillage.value, 'sillage') : null;
-        const longevityTag = dto.details.longevity?.value ? await this.findOrCreateTag(dto.details.longevity.value, 'longevity') : null;
-
+        const longevityTag = dto.details.longevity?.value
+            ? await this.findOrCreateTag(dto.details.longevity.value, 'longevity')
+            : null;
+    
         // Save product detail
         const newProductDetail = this.productDetailRepository.create({
-            size: sizeTag,
+            size: sizeTags, // Save array of size tags
             brand: brandTag,
             fragranceNotes: fragranceNotesTag,
             concentration: concentrationTag,
@@ -230,11 +245,11 @@ export class ProductService {
             imgDisplay: savedImgDetails,
             tutorial: dto.details.tutorial || '',
             sillage: sillageTag,
-            longevity: longevityTag
+            longevity: longevityTag,
         });
-
+    
         const savedProductDetail = await this.productDetailRepository.save(newProductDetail);
-
+    
         // Save product
         const newProduct = this.productRepository.create({
             name: dto.name,
@@ -245,10 +260,10 @@ export class ProductService {
             category: dto.category,
             details: savedProductDetail,
         });
-
+    
         return await this.productRepository.save(newProduct);
     }
-
+    
     async DeleteProductService(dto: DeleteProductDto, user: UserEntity) {
         this.CheckRoleUser(user);
 
@@ -266,7 +281,12 @@ export class ProductService {
 
     private async updateProductDetails(details: ProductDetailEntity, dtoDetails: ProductDetailInp): Promise<ProductDetailEntity> {
         if (dtoDetails.size) {
-            details.size = await this.findOrCreateTag(dtoDetails.size.value, 'size');
+            const updatedSizeTags = await Promise.all(
+                dtoDetails.size.map(async (sizeTag) => {
+                    return await this.findOrCreateTag(sizeTag.value, 'size');
+                })
+            );
+            details.size = updatedSizeTags;
         }
 
         if (dtoDetails.brand) {

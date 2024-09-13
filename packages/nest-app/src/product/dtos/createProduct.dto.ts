@@ -3,16 +3,15 @@ import { IsString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 @InputType()
 export class TagsDetailInp {
-    @IsOptional()
+    @IsOptional() 
     @IsString()
-    @Field()
-    type: string;
+    @Field({ nullable: true })  
+    type?: string;
 
     @IsOptional()
     @IsString()
-    @Field({nullable: true})
+    @Field({ nullable: true })
     value?: string;
-
 }
 
 @InputType()
@@ -26,8 +25,8 @@ export class ProductDetailInp {
     brand?: TagsDetailInp;
 
     @IsOptional()
-    @Field(() => TagsDetailInp, { nullable: true })
-    size?: TagsDetailInp;
+    @Field(() => [TagsDetailInp], { nullable: true })
+    size?: TagsDetailInp[];
 
     @IsOptional()
     @Field(() => TagsDetailInp, { nullable: true })

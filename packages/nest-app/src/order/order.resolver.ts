@@ -36,7 +36,7 @@ export class OrderResolver {
         @CurrentUserGraphql() user: UserEntity,
         @Args('CreateOrder') dto: createOrderDto
     ): Promise<OrderType> {
-        return await this.orderService.CreateOderService(dto, user)
+        return await this.orderService.CreateOrderService(dto, user)
     }
 
     @Mutation(() => OrderType)

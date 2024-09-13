@@ -1,20 +1,22 @@
-import { Controller, Get, NotFoundException, Param, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { MediaService } from './media.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { join } from 'path';
 import { existsSync } from 'fs';
+import { JwtGuardRestApi } from 'src/auth/guard';
 
 @Controller('media')
 export class MediaController {
   constructor(
     private readonly mediaService: MediaService
   ) { }
-
+  
+  @UseGuards(JwtGuardRestApi)
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+    return await this.mediaService.uploadFileService(file)
   }
 
   @Get('*')

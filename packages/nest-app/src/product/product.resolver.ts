@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateProductDto, DeleteProductDto, SearchProductDto, TagsProductDto, UpdateProductDto } from './dtos';
-import { ProductType, TagsDetailType } from 'src/types/product';
+import { ProductType, SearchProductType, TagsDetailType } from 'src/types/product';
 import { ResponseType } from 'src/types/response.type';
 import { JwtGuardGraphql } from 'src/auth/guard';
 import { ProductService } from './product.service';
@@ -21,10 +21,10 @@ export class ProductResolver {
         return await this.productService.GetTagsProductService(tags)
     }
 
-    @Query(() => [ProductType])
+    @Query(() => SearchProductType)
     async SearchProductWithOptions(
         @Args('SearchProduct') dto: SearchProductDto
-    ): Promise<ProductType[]> { 
+    ): Promise<SearchProductType> { 
         return await this.productService.SearchProductWithOptionsService(dto)
     }
 

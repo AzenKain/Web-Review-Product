@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany, ManyToOne } from "typeorm";
 import { OrderProductEntity } from "../order";
-
 @Entity({ name: 'TagsDetail' })
 export class TagsEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
@@ -11,6 +10,9 @@ export class TagsEntity {
 
     @Column()
     value: string;
+
+    @ManyToOne(() => ProductDetailEntity, (productDetail) => productDetail.size)
+    productDetail: typeof ProductDetailEntity;
 }
 
 @Entity({ name: 'ProductDetail' })
@@ -21,31 +23,30 @@ export class ProductDetailEntity {
     @OneToMany(() => ImageDetailEntity, (img) => img.productDetail)
     imgDisplay: ImageDetailEntity[];
 
-    @ManyToOne(() => TagsEntity, { nullable: true }) 
-    @JoinColumn()
-    size: TagsEntity;
+    @OneToMany(() => TagsEntity, (tag) => tag.productDetail)
+    size: TagsEntity[];
 
     @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     brand: TagsEntity;
 
-    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     fragranceNotes: TagsEntity;
 
-    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     sillage: TagsEntity;
 
-    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     longevity: TagsEntity;
 
-    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     concentration: TagsEntity;
 
-    @ManyToOne(() => TagsEntity, { nullable: true }) 
+    @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     sex: TagsEntity;
 
@@ -55,6 +56,8 @@ export class ProductDetailEntity {
     @Column({ type: 'longtext', nullable: true }) 
     tutorial?: string;
 }
+
+
 
 @Entity({ name: 'ImageDetail' })
 export class ImageDetailEntity {
