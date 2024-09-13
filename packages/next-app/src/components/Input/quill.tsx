@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-export const Editor: React.FC = () => {
+export const Editor: React.FC<{
+    typeTag: string;
+    value?: any;  // Controlled value from Form.Item
+    onChange?: (value: any) => void;  // Controlled onChange from Form.Item
+}> = ({typeTag, value, onChange}) => {
     const modules = {
         toolbar: [
             [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -42,6 +46,7 @@ export const Editor: React.FC = () => {
         editor: any
     ) => {
         setCode(content);
+        if (onChange) { onChange(content); }
     };
 
     return (

@@ -4,13 +4,18 @@ export type TagsDetailInp = {
     value?: string;
 }
 
+export type TagsSizeDetailInp = {
+    type: string;
+    value?: string[];
+}
+
 export type SearchProductDto = {
 
     name?: string;
 
     rangeMoney?: number[]
 
-    size?: TagsDetailInp[];
+    size?: TagsSizeDetailInp[];
 
     brand?: TagsDetailInp[];
 

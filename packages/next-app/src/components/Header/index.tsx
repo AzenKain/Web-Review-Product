@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         }}
                     />
                 </div></a>
-                <a href="/#main-introduce"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
+                <a href="/"><h1 className="ml-4 font-bold text-4xl hover-up luxuriousFont">DK Perfume</h1></a>
                 <div className="flex-1"></div>
                 <div className="flex-none">
                     <div className="dropdown dropdown-end flex flex row">

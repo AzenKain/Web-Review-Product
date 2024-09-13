@@ -86,10 +86,12 @@ export default async function Page({
                                 }}
                             ></div>
                             <h3 className="ml-3 h-5 self-center">Dung tích: </h3>
-                            <a href={`/showroom/size/${slugify(product.details.size.value, { strict: true, lower: true })}`}
-                                className="h-5 self-center underline">
-                                {product.details.size.value}
-                            </a>
+                            {product.details.size.map((item, index) => (
+                                <a key={index} href={`/showroom/size/${slugify(item.value, { strict: true, lower: true })}`}
+                                    className="h-5 self-center underline">
+                                    {item.value}
+                                </a>
+                            )) }
                         </div>
                         <div className="h-16 flex flex-row border-b border-neutral">
                             <div

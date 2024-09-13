@@ -5,6 +5,7 @@ export type DetailType = {
     value: string;
 };
 
+
 export type ImageType = {
     id: number;
     link: string[];
@@ -20,7 +21,7 @@ export type ProductDetails = {
     longevity: DetailType;
     sex: DetailType;
     sillage: DetailType;
-    size: DetailType;
+    size: DetailType[];
     tutorial: string;
 };
 
