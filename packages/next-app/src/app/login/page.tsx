@@ -103,7 +103,7 @@ export default function Login(props: any) {
                 className="absolute inset-0 w-full h-full object-cover"
               /> */}
               <Image
-                layout="fill"
+                fill
                 src="https://anhvienpiano.com/wp-content/uploads/2018/08/dich-vu-chup-anh-thoi-trang-cho-shop-quan-ao-dep-gia-re.jpg"
                 alt="Studio Collection"
                 className="relative z-10 w-full h-full object-cover"

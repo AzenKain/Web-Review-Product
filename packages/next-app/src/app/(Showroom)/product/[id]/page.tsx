@@ -20,7 +20,7 @@ export default async function Page({
         brand: [{ type: "brand", value: product.details.brand.value }]
     }
 
-    const linkedPerfume = await GetProductForSearch(brandFilter)
+    const linkedPerfume = (await GetProductForSearch(brandFilter)).data
 
     const imageUrls = product.details.imgDisplay.map(img => img.url)
 
@@ -124,7 +124,7 @@ export default async function Page({
                                     WebkitMask: 'url(/icons/ic-info-5.svg) no-repeat center',
                                 }}
                             ></div>
-                            <h3 className="ml-3 h-5 self-center">Giớ tính: </h3>
+                            <h3 className="ml-3 h-5 self-center">Giới tính: </h3>
                             <a href={`/showroom/sex/${slugify(product.details.sex.value, { strict: true, lower: true })}`} 
                                 className="h-5 self-center underline">
                                 {product.details.sex.value}

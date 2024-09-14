@@ -71,9 +71,9 @@ export default async function Page() {
 }
 
 async function getTopPerfume() {
-    const topUnisexPerfume: Perfume[] = await GetHotSaleProductForHome('unisex')
+    const topUnisexPerfume: Perfume[] = (await GetHotSaleProductForHome('unisex')).data
 
-    const topManPerfume: Perfume[] = await GetHotSaleProductForHome('nam')
-    const topWomanPerfume: Perfume[] = await GetHotSaleProductForHome('nu')
+    const topManPerfume: Perfume[] = (await GetHotSaleProductForHome('nam')).data
+    const topWomanPerfume: Perfume[] = (await GetHotSaleProductForHome('nu')).data
     return { topUnisexPerfume, topManPerfume, topWomanPerfume }
 }

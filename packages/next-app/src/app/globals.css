@@ -5,7 +5,11 @@
 
 @layer utilities {
     .text-balance {
-    text-wrap: balance;
+        text-wrap: balance;
+    }
+
+    html {
+        scroll-behavior: smooth;
     }
 
     * {
