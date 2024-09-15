@@ -19,7 +19,7 @@ export default function Page () {
         {
             key: '2',
             label: 'Nhập hàng loạt',
-            children: <InputAdd />,
+            children: <InputAdd typeTag="someTypeTag" />,
         },
     ];
 

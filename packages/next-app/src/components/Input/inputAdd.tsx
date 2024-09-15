@@ -26,7 +26,7 @@ export const InputAdd: React.FC<{
         if (name) {
             const newItems = [...items, { type: typeTag, value: name }];
             setItems(newItems);
-            if (onChange) { onChange(multi ? [...value, name] : [name]); }
+            if (onChange) { onChange(multi ? [...items.map(item => item.value || ""), name] : [name]); }
             setName("");
             setTimeout(() => { inputRef.current?.focus(); }, 0);
         }
