@@ -7,8 +7,11 @@ import { CustomerInfoEntity, DeliveryInfoEntity, OrderEntity, OrderProductEntity
 import { ProductEntity } from 'src/types/product';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, OrderEntity, DeliveryInfoEntity, CustomerInfoEntity, OrderProductEntity, ProductEntity]),],
-  providers: [OrderService, OrderResolver],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, OrderEntity, DeliveryInfoEntity, CustomerInfoEntity, OrderProductEntity, ProductEntity]),
+
+  ],
+  providers: [OrderService, OrderResolver,],
   exports: [OrderService]
 })
-export class OrderModule {}
+export class OrderModule { }

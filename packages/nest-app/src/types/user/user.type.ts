@@ -1,5 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ActionLogType } from '../actionlog';
+import { Relation } from 'typeorm';
 
 @ObjectType("UserDetail")
 export class UserDetailType {
@@ -58,7 +59,7 @@ export class UserType {
   refreshToken: string;
 
   @Field(() => [ActionLogType], { nullable: true })
-  actionLog: ActionLogType[];
+  actionLog: Relation<ActionLogType[]>;
 
   @Field()
   created_at: Date;

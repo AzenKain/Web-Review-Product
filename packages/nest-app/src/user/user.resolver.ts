@@ -9,7 +9,7 @@ import { CreateUserDto } from './dtos';
 export class UserResolver {
     constructor(
         private userService: UserService,
-    ) {}
+    ) { }
 
     @Mutation(() => UserType)
     async CreateUser(
@@ -19,6 +19,13 @@ export class UserResolver {
         return await this.userService.CreateUserService(dto, user)
     }
 
+    @Mutation(() => [UserType])
+    async CreateUserByList(
+        @CurrentUserGraphql() user: UserEntity,
+        @Args({ name: 'CreateUser', type: () => [CreateUserDto] }) dto: CreateUserDto[],
+    ): Promise<UserType[]> {
+        return await this.userService.CreateUserByListService(dto, user);
+    }
     @Mutation(() => UserType)
     async UpdateUser(
         @CurrentUserGraphql() user: UserEntity,
@@ -36,7 +43,7 @@ export class UserResolver {
     }
 
     @HttpCode(200)
-    @Query(()=>UserType)
+    @Query(() => UserType)
     async GetUserById(
         @CurrentUserGraphql() user: UserEntity,
         @Args('id') userId: string
