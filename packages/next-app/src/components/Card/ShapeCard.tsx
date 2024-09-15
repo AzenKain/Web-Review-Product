@@ -11,7 +11,6 @@ export default function ShapeCard({ name, img, brand, cost, id }: Perfume) {
                         src={img as string}
                         alt={name}
                         style={{ backgroundColor: 'white' }}
-                        layout="responsive"
                         width={500}
                         height={300}
                     />

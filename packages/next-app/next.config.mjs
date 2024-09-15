@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+    reactStrictMode: false,
     env: {
       NEXTAUTH_SECRET:"the-king-also-has-to-cum",
     },

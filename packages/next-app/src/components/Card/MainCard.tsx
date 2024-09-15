@@ -6,9 +6,6 @@ import Image from 'next/image';
 
 
 const MainCard: React.FC<{ item: Perfume }> = ({ item }) => {
-    useEffect(() => {
-        console.log(item)
-    }, [])
 
     return (
         <div className="card glass h-[450px] max-h-[80vh] w-full shadow-xl">

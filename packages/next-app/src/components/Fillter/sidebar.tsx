@@ -1,11 +1,13 @@
 ﻿"use client"
-import { ChangeEvent, useEffect, useState } from 'react'
-import { Slider } from "antd";
+import { ChangeEvent, useEffect, useState, useRef } from 'react'
+import { Slider, ConfigProvider } from "antd";
 import { SearchProductDto } from "@/lib/dtos/product/"
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
 import { UpdateFilter } from '@/app/redux/features/filterSearch';
+import { SearchOutlined } from '@ant-design/icons'
 import slugify from 'slugify'
 import { current } from '@reduxjs/toolkit';
+import { GetTagsProduct } from '@/lib/api'
 
 type FilterSidebarProps = {
     brand: string[],
@@ -21,20 +23,61 @@ type filterStorageDto = {
     sex?: string[],
     size?: string[],
     rangeMoney?: [number, number],
+    fragranceNotes?: string[],
 }
 
 export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps) {
+    const staticRender = useRef<number>(0)
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000])
+    const [searchName, setSearchName] =  useState<string>('')
     const [brandStorage, setBrandStorage] = useState<string[]>([...brand])
     const [filterStorage, setFilterStorage] = useState<filterStorageDto>({})
     const dispatch = useAppDispatch()
     const filters = useAppSelector((state) => state.filterSearch.value);
 
+    useEffect(() => {
+        if (staticRender.current < 2) {
+            staticRender.current++
+            setFilterStorage({
+                brand: filters.brand?.map(e => e.value!),
+                concentration: filters.concentration?.map(e => e.value!),
+                sex: filters.sex?.map(e => e.value!),
+                size: filters.size?.map(e => e.value!),
+                rangeMoney: filters.rangeMoney ? [filters.rangeMoney[0], filters.rangeMoney[1]] : undefined,
+                fragranceNotes: filters.fragranceNotes?.map(e => e.value!),
+            })
+            console.log("FS:", filterStorage)
+            setPriceRange([
+                filters.rangeMoney?.[0] !== undefined ? filters.rangeMoney[0] / 1000 : 0,
+                filters.rangeMoney?.[1] !== undefined ? filters.rangeMoney[1] / 1000 : 50000
+            ]);
+            setSearchName(filters.name!)
+        }
+    }, [filters])
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const SM: SearchProductDto = {
+            ...filters,
+            name: $(e.currentTarget).val()
+        }
+        dispatch(UpdateFilter({ value: SM }))
+    }
+
+    const handleClear = () => {
+        setSearchName("")
+        const SM: SearchProductDto = {
+            ...filters,
+            name: ''
+        }
+        dispatch(UpdateFilter({ value: SM }))
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === "Enter") { e.currentTarget.blur() } }
 
     const filterBrand = (e: ChangeEvent<HTMLInputElement>) => {
         const target = $(e.currentTarget);
         const value = target.val()?.toLocaleLowerCase();
-        setBrandStorage(() => brand.filter(item => item.toLocaleLowerCase().includes(value ? value : "")));
+        setBrandStorage(() => brand.filter(item => item.toLocaleLowerCase().includes(value || "")));
     }
 
     const changeRangeMoney = (value: number[]) => {
@@ -68,45 +111,90 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
     useEffect(() => {
         const SM: SearchProductDto = {
             ...filters,
-            brand: filterStorage.brand?.map(item => ({ type: "brand", value: slugify(item, { lower: true, strict: true }).replace(/-/g, " ") })),
-            sex: filterStorage.sex?.map(item => ({ type: "sex", value: slugify(item, { lower: true, strict: true }).replace(/-/g, " ") })),
-            concentration: filterStorage.concentration?.map(item => ({ type: "concentration", value: slugify(item, { lower: true, strict: true }).replace(/-/g, " ") })),
-            size: filterStorage.size?.map(item => ({ type: "size", value: slugify(item, { lower: true, strict: true }).replace(/-/g, " ") })),
+            brand: filterStorage.brand?.map(item => ({ type: "brand", value: item })),
+            sex: filterStorage.sex?.map(item => ({ type: "sex", value: item})),
+            concentration: filterStorage.concentration?.map(item => ({ type: "concentration", value: item })),
+            fragranceNotes: filterStorage.fragranceNotes?.map(item => ({ type: "fragranceNotes", value: item })),
+            size: filterStorage.size?.map(item => ({ type: "size", value: item })),
             rangeMoney: filterStorage.rangeMoney,
         }
-        console.log(SM)
         dispatch(UpdateFilter({ value: SM }))
     }, [filterStorage])
 
     return (
         <div className="block w-full">
             <div className="input-search">
+                <div className="join w-full border rounded-none border-neutral">
+                    <input type="text"
+                        value={searchName}
+                        onChange={(e) => {setSearchName(e.currentTarget.value)}}
+                        onBlur={handleChange}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Search by name"
+                        className="input w-full max-w-xs rounded-none"
+                    />
+                    <button className="join-item btn rounded-none" onClick={handleClear}>x</button>
+                </div>
+                <div className="divider"></div>
                 <label className="form-control w-full max-w-xs">
                     <input type="text"
                         onChange={filterBrand}
-                        placeholder="Search by brand" className="input input-bordered w-full max-w-xs rounded-none" />
+                        placeholder="Search brand" className="input input-bordered w-full max-w-xs rounded-none"
+                    />
                 </label>
                 <div className="max-h-72 overflow-y-scroll">
                     <div className="form-control brand-search">
                         {brandStorage ? brandStorage.map((item, index) => (
                             <label className="label cursor-pointer justify-start" key={index}>
-                                <input type="checkbox" value={item} custume-for="brand" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
-                                <span className="label-text">{item}</span>
+                                <input type="checkbox"
+                                    checked={filters.brand?.some((e) => e.value === item)}
+                                    value={item}
+                                    custume-for="brand"
+                                    onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
+                                <span className="label-text capitalize">{item}</span>
                             </label>
                         )) : null}
                     </div>
                 </div>
                 <div className="divider"></div>
                 <div>
-                    <h4>SEX</h4>
+                    <h4>Giá</h4>
+                    <div className="flex flex-row justify-between">
+                        <h6>{(priceRange[0] * 1000).toLocaleString('vi-VN')}</h6>
+                        <h6>{(priceRange[1] * 1000).toLocaleString('vi-VN')} VND</h6>
+                    </div>
+                    <ConfigProvider theme={{
+                        components: {
+                            Slider: {
+                                handleColor: "rgb(220 165 76)",
+                                handleActiveOutlineColor: "rgb(220 165 76)",
+                                trackBg: "rgb(220 165 76)",
+                                trackHoverBg: "rgb(220 165 76)"
+                            },
+                        },
+                    }}>
+                        <Slider range={true} defaultValue={[0, 50000]}
+                            min={0}
+                            max={50000}
+                            value={[priceRange[0], priceRange[1]]}
+                            tooltip={{ open: false }}
+                            className="flex-1"
+                            onChange={(e) => setPriceRange([e[0], e[1]])}
+                            onChangeComplete={changeRangeMoney}
+                        />
+                    </ConfigProvider>
+                </div>
+                <div className="divider"></div>
+                <div>
+                    <h4>Giới tính</h4>
                     <div className="form-control flex-wrap flex flex-row">
                         <label className="label cursor-pointer justify-start">
                             <input type="checkbox" value="nam" custume-for="sex" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
-                            <span className="label-text">Male</span>
+                            <span className="label-text">Nam</span>
                         </label>
                         <label className="label cursor-pointer justify-start">
                             <input type="checkbox" value="nữ" custume-for="sex" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
-                            <span className="label-text">Female</span>
+                            <span className="label-text">Nữ</span>
                         </label>
                         <label className="label cursor-pointer justify-start">
                             <input type="checkbox" value="unisex" custume-for="sex" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
@@ -116,42 +204,54 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
                 </div>
                 <div className="divider"></div>
                 <div>
-                    <h4>Concentration</h4>
-                    <div className="form-control">
-                        {perfumeType ? perfumeType.find(perfume => perfume.role === "Concentration")?.type.map((item, index) => (
-                            <label className="label cursor-pointer justify-start" key={index}>
-                                <input type="checkbox" value={item} custume-for="concentration" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
-                                <span className="label-text">{item}</span>
+                    <h4>Nhóm hương</h4>
+                    <div className="form-control flex-wrap flex flex-row">
+                        {perfumeType ? perfumeType.find(perfume => perfume.role === "FRAGRANCE GROUP")?.type.map((item, index) => (
+                            <label className="label cursor-pointer justify-start w-1/2" key={index}>
+                                <input type="checkbox"
+                                    value={item}
+                                    checked={filters.fragranceNotes?.some((e) => e.value === item)}
+                                    custume-for="fragranceNotes"
+                                    onChange={handleCheckboxChange}
+                                    className="checkbox mx-2 rounded-none" />
+                                <span className="label-text capitalize">{item}</span>
                             </label>
                         )) : null}
                     </div>
                 </div>
                 <div className="divider"></div>
                 <div>
-                    <h4>Capacity</h4>
+                    <h4>Nồng độ</h4>
+                    <div className="form-control">
+                        {perfumeType ? perfumeType.find(perfume => perfume.role === "CONCENTRATION")?.type.map((item, index) => (
+                            <label className="label cursor-pointer justify-start" key={index}>
+                                <input type="checkbox"
+                                    value={item}
+                                    checked={filters.concentration?.some((e) => e.value === item)}
+                                    custume-for="concentration"
+                                    onChange={handleCheckboxChange}
+                                    className="checkbox mx-2 rounded-none" />
+                                <span className="label-text capitalize">{item}</span>
+                            </label>
+                        )) : null}
+                    </div>
+                </div>
+                <div className="divider"></div>
+                <div>
+                    <h4>Dung tích</h4>
                     <div className="form-control flex-wrap flex flex-row">
                         {perfumeType ? perfumeType.find(perfume => perfume.role === "CAPACITY")?.type.map((item, index) => (
                             <label className="label cursor-pointer justify-start w-1/2" key={index}>
-                                <input type="checkbox" value={item} custume-for="size" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
-                                <span className="label-text">{item}</span>
+                                <input type="checkbox"
+                                    value={item}
+                                    checked={filters.size?.some((e) => e.value === item)}
+                                    custume-for="size"
+                                    onChange={handleCheckboxChange}
+                                    className="checkbox mx-2 rounded-none" />
+                                <span className="label-text capitalize">{item}</span>
                             </label>
                         )) : null}
                     </div>
-                </div>
-                <div className="divider"></div>
-                <div>
-                    <h4>Price</h4>
-                    <div className="flex flex-row justify-between">
-                        <h6>{(priceRange[0] * 1000).toLocaleString('vi-VN')}</h6>
-                        <h6>{(priceRange[1] * 1000).toLocaleString('vi-VN')} VND</h6>
-                    </div>
-                    <Slider range={true} defaultValue={[0, 50000]} min={priceRange[0]} max={priceRange[1]}
-                        tooltip={{ open: false }}
-                        className="flex-1"
-                        onChange={(e) => setPriceRange([e[0], e[1]])}
-                        onChangeComplete={changeRangeMoney}
-
-                    />
                 </div>
             </div>
             <style jsx>{`

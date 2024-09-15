@@ -4,10 +4,6 @@ export type TagsDetailInp = {
     value?: string;
 }
 
-export type TagsSizeDetailInp = {
-    type: string;
-    value?: string[];
-}
 
 export type SearchProductDto = {
 
@@ -15,7 +11,7 @@ export type SearchProductDto = {
 
     rangeMoney?: number[]
 
-    size?: TagsSizeDetailInp[];
+    size?: TagsDetailInp[];
 
     brand?: TagsDetailInp[];
 
@@ -33,3 +29,4 @@ export type SearchProductDto = {
 
     hotSales?: string
 }
+
