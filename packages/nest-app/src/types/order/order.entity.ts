@@ -7,6 +7,7 @@ import {
     ManyToOne,
     OneToMany,
     JoinColumn,
+    Relation
 } from "typeorm";
 import { ProductEntity } from "../product";
 
@@ -58,7 +59,7 @@ export class OrderEntity {
     totalAmount: number;
 
     @OneToMany(() => OrderProductEntity, (orderProduct) => orderProduct.order)
-    orderProducts: OrderProductEntity[];
+    orderProducts: Relation<OrderProductEntity[]>;
 
     @ManyToOne(() => DeliveryInfoEntity)
     @JoinColumn({ name: 'deliveryInfoId' })
@@ -104,9 +105,9 @@ export class OrderProductEntity {
 
     @ManyToOne(() => OrderEntity, (order) => order.orderProducts)
     @JoinColumn({ name: 'orderId' })
-    order: OrderEntity;
+    order: Relation<OrderEntity>;
 
     @ManyToOne(() => ProductEntity, (product) => product.orderProducts)
     @JoinColumn({ name: 'productId' })
-    product: ProductEntity;
+    product: Relation<ProductEntity>;
 }

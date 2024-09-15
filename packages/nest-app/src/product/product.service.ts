@@ -5,10 +5,11 @@ import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } fro
 import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
 import { CreateProductDto, DeleteProductDto, ProductDetailInp, SearchProductDto, TagsProductDto, UpdateProductDto } from './dtos';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
-import * as FormData from 'form-data';
 import { OrderService } from 'src/order/order.service';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import * as FormData from 'form-data';
+import { Readable } from 'stream';
 
 @Injectable()
 export class ProductService {
@@ -23,33 +24,26 @@ export class ProductService {
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
 
     ) { }
-    async analyzeFile(file: Express.Multer.File): Promise<any> {
-        const formData = new FormData();
-        formData.append('file', file.buffer, { filename: file.originalname });
 
-        try {
-            const response = await firstValueFrom(
-                this.httpService.post('http://localhost:8000/read-file', formData, {
-                    headers: formData.getHeaders(),
-                }),
-            );
-
-            return response.data;
-        } catch (error) {
-            throw new HttpException(
-                `Failed to analyze file: ${error.message}`,
-                error.response?.status || 500,
-            );
-        }
-    }
     private CheckRoleUser(user: UserEntity) {
         if (!user.role.includes("ADMIN") && !user.role.includes("WEREHOUSEMANAGER")) {
             throw new ForbiddenException('The user does not have permission');
         }
     }
+    async GetReportProduct(dto: SearchProductDto) {
+        const dataRequest: ProductEntity[] = (await this.SearchProductWithOptionsService(dto)).data;
 
+        const response = await firstValueFrom(
+          this.httpService.post('http://localhost:8000/export-file', dataRequest, {
+            responseType: 'arraybuffer',  
+          }),
+        );
+    
+        return response.data
+    }
     async SearchProductWithOptionsService(dto: SearchProductDto) {
         const queryBuilder = this.productRepository.createQueryBuilder('product');
+
         queryBuilder
             .leftJoinAndSelect('product.details', 'details')
             .leftJoinAndSelect('details.imgDisplay', 'imgDisplay')
@@ -60,38 +54,38 @@ export class ProductService {
             .leftJoinAndSelect('details.sex', 'sex')
             .leftJoinAndSelect('details.sillage', 'sillage')
             .leftJoinAndSelect('details.longevity', 'longevity');
-    
+
         queryBuilder.andWhere('product.isDisplay = :isDisplay', { isDisplay: true });
-    
+
         if (dto.name) {
             queryBuilder.andWhere('product.name LIKE :name', { name: `%${dto.name}%` });
         }
-    
+
         if (dto.rangeMoney && dto.rangeMoney.length === 2) {
             const [min, max] = dto.rangeMoney;
             queryBuilder.andWhere('product.displayCost BETWEEN :min AND :max', { min, max });
         }
-    
+
         if (dto.size && dto.size.length > 0) {
             queryBuilder.andWhere('size.value IN (:...sizes)', { sizes: dto.size.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.brand && dto.brand.length > 0) {
             queryBuilder.andWhere('brand.value IN (:...brands)', { brands: dto.brand.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.fragranceNotes && dto.fragranceNotes.length > 0) {
             queryBuilder.andWhere('fragranceNotes.value IN (:...fragranceNotes)', { fragranceNotes: dto.fragranceNotes.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.concentration && dto.concentration.length > 0) {
             queryBuilder.andWhere('concentration.value IN (:...concentrations)', { concentrations: dto.concentration.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         if (dto.sex && dto.sex.length > 0) {
             queryBuilder.andWhere('sex.value IN (:...sexes)', { sexes: dto.sex.map(tag => tag.value.toLowerCase()) });
         }
-    
+
         // Sorting
         if (dto.sort) {
             switch (dto.sort) {
@@ -111,17 +105,17 @@ export class ProductService {
                     break;
             }
         }
-   
+
         const maxValue = await queryBuilder.getCount();
-    
+
         let list_product = await queryBuilder.getMany();
-    
+
         if (dto.hotSales) {
             const timeframes: Array<'week' | 'month' | 'year' | 'all'> = ['week', 'month', 'year', 'all'];
             let currentTimeframe: 'week' | 'month' | 'year' | 'all' = (dto.hotSales as 'week' | 'month' | 'year' | 'all') || 'week';
-    
+
             let tmpOrder = await this.orderService.getOrderDetail(currentTimeframe);
-    
+
             while (tmpOrder.length < dto.count) {
                 const currentIndex = timeframes.indexOf(currentTimeframe);
                 if (tmpOrder.length < dto.count) {
@@ -137,26 +131,26 @@ export class ProductService {
                 }
             }
         }
-    
+
         if (dto.index && dto.count) {
             const offset = (dto.index - 1) * dto.count;
             list_product = list_product.slice(offset, offset + dto.count);
         }
-    
 
         return { maxValue, data: list_product };
     }
-    
+
+
 
     async GetTagsProductService(dto: TagsProductDto) {
         const queryBuilder = this.tagsRepository.createQueryBuilder('tagsDetail');
         if (dto.tags) {
             queryBuilder.andWhere('tagsDetail.type = :tagsType', { tagsType: dto.tags });
         }
-    
+
         return await queryBuilder.getMany();
     }
-    
+
 
 
     async GetProductByIdService(productId: number) {
@@ -185,42 +179,47 @@ export class ProductService {
     private async findOrCreateTag(tagValue: string, tagType: string): Promise<TagsEntity> {
         const tagLowerCase = tagValue.toLowerCase();
         let tag = await this.tagsRepository.findOne({ where: { value: tagLowerCase, type: tagType } });
-    
+
         if (!tag) {
             tag = this.tagsRepository.create({ value: tagLowerCase, type: tagType });
             tag = await this.tagsRepository.save(tag);
         }
-    
+
         return tag;
     }
-    
+
+    async CreateProductByListService(dto: CreateProductDto[], user: UserEntity) {
+        const dataReturn : ProductEntity[] = []
+        for (const product of dto) {
+            dataReturn.push(await this.CreateProductService(product, user))
+        }
+        return dataReturn
+    }
+
     async CreateProductService(dto: CreateProductDto, user: UserEntity) {
         this.CheckRoleUser(user);
-    
+
         const existingProduct = await this.productRepository.findOne({
             where: { name: dto.name, category: dto.category },
         });
-    
+
         if (existingProduct) {
             throw new ForbiddenException('Product already exists with the same name and category.');
         }
-    
-        // Save image details
+
+
         const imgDetails = dto.details.imgDisplay.map((img) =>
             this.imageDetailRepository.create({ url: img.url, link: img.link || [] })
         );
         const savedImgDetails = await this.imageDetailRepository.save(imgDetails);
-    
-        // Process size tags (handling array of sizes)
-        const sizeTags = dto.details.size
-            ? await Promise.all(
-                  dto.details.size.map(async (sizeTag) => {
-                      return await this.findOrCreateTag(sizeTag.value, 'size');
-                  })
-              )
-            : [];
-    
-        // Process other TagsEntity fields
+
+        const sizeTags = [];
+
+        for (const sizeTag of dto.details.size) {
+            const tag = await this.findOrCreateTag(sizeTag.value, 'size');
+            sizeTags.push(tag);
+        }
+
         const brandTag = dto.details.brand?.value ? await this.findOrCreateTag(dto.details.brand.value, 'brand') : null;
         const fragranceNotesTag = dto.details.fragranceNotes?.value
             ? await this.findOrCreateTag(dto.details.fragranceNotes.value, 'fragranceNotes')
@@ -233,10 +232,10 @@ export class ProductService {
         const longevityTag = dto.details.longevity?.value
             ? await this.findOrCreateTag(dto.details.longevity.value, 'longevity')
             : null;
-    
-        // Save product detail
+
+
         const newProductDetail = this.productDetailRepository.create({
-            size: sizeTags, // Save array of size tags
+            size: sizeTags, 
             brand: brandTag,
             fragranceNotes: fragranceNotesTag,
             concentration: concentrationTag,
@@ -247,9 +246,9 @@ export class ProductService {
             sillage: sillageTag,
             longevity: longevityTag,
         });
-    
+
         const savedProductDetail = await this.productDetailRepository.save(newProductDetail);
-    
+
         // Save product
         const newProduct = this.productRepository.create({
             name: dto.name,
@@ -260,10 +259,10 @@ export class ProductService {
             category: dto.category,
             details: savedProductDetail,
         });
-    
+
         return await this.productRepository.save(newProduct);
     }
-    
+
     async DeleteProductService(dto: DeleteProductDto, user: UserEntity) {
         this.CheckRoleUser(user);
 
@@ -281,12 +280,13 @@ export class ProductService {
 
     private async updateProductDetails(details: ProductDetailEntity, dtoDetails: ProductDetailInp): Promise<ProductDetailEntity> {
         if (dtoDetails.size) {
-            const updatedSizeTags = await Promise.all(
-                dtoDetails.size.map(async (sizeTag) => {
-                    return await this.findOrCreateTag(sizeTag.value, 'size');
-                })
-            );
-            details.size = updatedSizeTags;
+            const sizeTags = [];
+
+            for (const sizeTag of dtoDetails.size) {
+                const tag = await this.findOrCreateTag(sizeTag.value, 'size');
+                sizeTags.push(tag);
+            }
+            details.size = sizeTags;
         }
 
         if (dtoDetails.brand) {

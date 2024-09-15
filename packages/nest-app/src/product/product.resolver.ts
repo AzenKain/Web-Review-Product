@@ -28,6 +28,13 @@ export class ProductResolver {
         return await this.productService.SearchProductWithOptionsService(dto)
     }
 
+    @Query(() => SearchProductType)
+    async GetReportProduct(
+        @Args('ReportProduct') dto: SearchProductDto
+    ) { 
+        return await this.productService.GetReportProduct(dto)
+    }
+
     @Query(() => ProductType)
     async GetProductById(
         @Args('productId') productId: number 
@@ -43,6 +50,16 @@ export class ProductResolver {
         @Args('CreateProduct') dto: CreateProductDto
     ): Promise<ProductType> {
         const product = await this.productService.CreateProductService(dto, user);
+        return product; 
+    }
+
+    @UseGuards(JwtGuardGraphql)
+    @Mutation(() => [ProductType])
+    async CreateProductByList(
+        @CurrentUserGraphql() user: UserEntity,
+        @Args({ name: 'CreateProduct', type: () => [CreateProductDto] }) dto: CreateProductDto[]
+    ): Promise<ProductType[]> {
+        const product = await this.productService.CreateProductByListService(dto, user);
         return product; 
     }
 

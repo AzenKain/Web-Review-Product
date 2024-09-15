@@ -38,10 +38,14 @@ input CreateProductDto {
 }
 
 input CreateUserDto {
+  address: String!
+  birthday: DateTime!
   email: String!
   firstName: String!
+  gender: String!
   lastName: String!
   password: String!
+  phoneNumber: String!
   role: [String!]!
   username: String!
 }
@@ -103,7 +107,9 @@ type Mutation {
   CreateBlog(CreateBlog: CreateBlogDto!): Blog!
   CreateOrder(CreateOrder: createOrderDto!): Order!
   CreateProduct(CreateProduct: CreateProductDto!): Product!
+  CreateProductByList(CreateProduct: [CreateProductDto!]!): [Product!]!
   CreateUser(CreateUser: CreateUserDto!): UserType!
+  CreateUserByList(CreateUser: [CreateUserDto!]!): [UserType!]!
   DeleteBlog(DeleteBlog: DeleteBlogDto!): ResponseType!
   DeleteProduct(DeleteProduct: DeleteProductDto!): ResponseType!
   DeleteUser(DeleteUser: CreateUserDto!): UserType!
@@ -191,6 +197,7 @@ type Query {
   GetBlogById(blogId: Float!): Blog!
   GetOrderById(orderId: Float!): Order!
   GetProductById(productId: Float!): Product!
+  GetReportProduct(ReportProduct: SearchProductDto!): SearchProduct!
   GetTagsProduct(GetTagsProduct: TagsProductDto!): [TagsDetail!]!
   GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany, ManyToOne } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany, ManyToOne, Relation, ManyToMany, JoinTable } from "typeorm";
 import { OrderProductEntity } from "../order";
 @Entity({ name: 'TagsDetail' })
 export class TagsEntity {
@@ -11,8 +11,23 @@ export class TagsEntity {
     @Column()
     value: string;
 
-    @ManyToOne(() => ProductDetailEntity, (productDetail) => productDetail.size)
-    productDetail: typeof ProductDetailEntity;
+    @ManyToMany(() => ProductDetailEntity, (productDetail) => productDetail.size)
+    productDetail: Relation<ProductDetailEntity[]>;
+}
+
+@Entity({ name: 'ImageDetail' })
+export class ImageDetailEntity {
+    @PrimaryGeneratedColumn({ type: 'bigint' })
+    id: number;
+
+    @Column()
+    url: string;
+
+    @Column({ type: 'simple-array', nullable: true })
+    link?: string[];
+
+    @ManyToOne(() => ProductDetailEntity, (pd) => pd.imgDisplay, { nullable: true })
+    productDetail: Relation<ProductDetailEntity>;
 }
 
 @Entity({ name: 'ProductDetail' })
@@ -21,15 +36,16 @@ export class ProductDetailEntity {
     id: number;
 
     @OneToMany(() => ImageDetailEntity, (img) => img.productDetail)
-    imgDisplay: ImageDetailEntity[];
+    imgDisplay: Relation<ImageDetailEntity[]>;
 
-    @OneToMany(() => TagsEntity, (tag) => tag.productDetail)
-    size: TagsEntity[];
+    @ManyToMany(()=> TagsEntity, (tag) => tag.productDetail)
+    @JoinTable()
+    size: Relation<TagsEntity[]>;
 
     @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     brand: TagsEntity;
-
+    
     @ManyToOne(() => TagsEntity, { nullable: true })
     @JoinColumn()
     fragranceNotes: TagsEntity;
@@ -58,21 +74,6 @@ export class ProductDetailEntity {
 }
 
 
-
-@Entity({ name: 'ImageDetail' })
-export class ImageDetailEntity {
-    @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: number;
-
-    @Column()
-    url: string;
-
-    @Column({ type: 'simple-array', nullable: true })
-    link?: string[];
-
-    @ManyToOne(() => ProductDetailEntity, (pd) => pd.imgDisplay, { nullable: true })
-    productDetail: ProductDetailEntity;
-}
 
 @Entity({ name: 'Product' })
 export class ProductEntity {
@@ -108,7 +109,7 @@ export class ProductEntity {
     details: ProductDetailEntity;
 
     @OneToMany(() => OrderProductEntity, (orderProduct) => orderProduct.product)
-    orderProducts: OrderProductEntity[];
+    orderProducts: Relation<OrderProductEntity[]>;
     
     @CreateDateColumn()
     created_at: Date;

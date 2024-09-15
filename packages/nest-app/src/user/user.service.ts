@@ -22,6 +22,15 @@ export class UserService {
             throw new ForbiddenException('The user does not have permission');
         }
     }
+    
+    async CreateUserByListService(dto: CreateUserDto[], userCurrent: UserEntity) {
+        const dataReturn : UserEntity[] = []
+        for (const user of dto) {
+            dataReturn.push(await this.CreateUserService(user, userCurrent))
+        }
+        return dataReturn
+    }
+
     async CreateUserService(dto: CreateUserDto, userCurrent: UserEntity): Promise<UserEntity> {
         this.CheckRoleUser(userCurrent)
 
