@@ -45,7 +45,7 @@ const App: React.FC = () => {
         return info.originNode;
     };
 
-    return <Calendar cellRender={cellRender} />;
+    return <div className="xl:container m-auto"><Calendar cellRender={cellRender} /></div>;
 };
 
 export default App;

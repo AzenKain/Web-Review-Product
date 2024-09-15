@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import { HomeOutlined, MailOutlined, MenuFoldOutlined, ShopOutlined, BarChartOutlined, FileDoneOutlined, TeamOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';

@@ -34,6 +34,10 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
     }
 
     useEffect(() => {
+        setBrands(brandName ? [...brandName] : [])
+    }, [brandName])
+
+    useEffect(() => {
         setBrands(() =>
             letterSort.length && brandName
                 ? brandName.filter((brand) => letterSort.includes(brand[0].toUpperCase()))

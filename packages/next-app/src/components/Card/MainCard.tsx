@@ -16,7 +16,6 @@ const MainCard: React.FC<{ item: Perfume }> = ({ item }) => {
                         alt={item.name}
                         className="bg-white w-full"
                         style={{ aspectRatio: 1 }}
-                        layout="responsive"
                         width={500}
                         height={500}
                     />

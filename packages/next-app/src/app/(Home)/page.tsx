@@ -77,3 +77,5 @@ async function getTopPerfume() {
     const topWomanPerfume: Perfume[] = (await GetHotSaleProductForHome('nu')).data
     return { topUnisexPerfume, topManPerfume, topWomanPerfume }
 }
+
+/*export const revalidate = 120; */
