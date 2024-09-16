@@ -1,17 +1,13 @@
 ﻿'use client'
 import React, { useEffect, useRef } from 'react'
-import dynamic from 'next/dynamic'
 import { useRouter, useSearchParams } from 'next/navigation';
-/*import ShapeCard from '@/components/Card/ShapeCard'*/
+import ShapeCard from '@/components/Card/ShapeCard'
 import { Perfume } from '@/types/Perfume'
 import { GetProductForSearch } from "@/lib/api"
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
 import { UpdatePerfume, UpdateMaxValue, UpdateFilter } from '@/app/redux/features/filterSearch';
 import { SearchProductDto } from '@/lib/dtos/product'
 import { encodeDto, encodeParams, decodeParams } from '@/lib/helper/urlHandler'
-
-const ShapeCard = dynamic(() => import('@/components/Card/ShapeCard'), { ssr: false })
-
 
 
 export default function Page() {
@@ -83,7 +79,7 @@ export default function Page() {
             }
             console.log("encodeDTO: ", newPath)
             console.log("encode: ", encodeParams(newPath))
-            router.push(`/showroom${encodeParams(newPath)}`) 
+            router.push(`/showroom${encodeParams(newPath)}`)
             fetchData();
         }
     }, [filters, dispatch])

@@ -1,79 +1,84 @@
-﻿'use client'
-import React, { Suspense, useEffect, useState } from 'react'
-import dynamic from 'next/dynamic';
+﻿import React from 'react'
+import Footer from "@/components/Footer/index";
+import Header from "@/components/Header";
 import { GetTagsProduct } from '@/lib/api'
 import { perfumeType } from '@/types'
 
-// Dynamic import for components that need to be client-side only
-const Footer = dynamic(() => import('@/components/Footer/index'), { ssr: false });
-const Header = dynamic(() => import('@/components/Header'), { ssr: false });
-const FilterSidebar = dynamic(() => import('@/components/Fillter/sidebar'), { ssr: false });
-const FilterNavbar = dynamic(() => import('@/components/Fillter/navbar'), { ssr: false });
-const Pagination = dynamic(() => import('@/components/Footer/Pagination'), { ssr: false });
 
-type typePerfumeType = {
-    role: string,
-    type: string[]
-}
+export default async function HomeLayout({
+    children
+}: {
+    children: React.ReactNode
+}) {
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
-    const [brandName, setBrandName] = useState<string[]>([]);
-    const [topBrandName] = useState<string[]>(["Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels"]);
-    const [perfumeType, setPerfumeType] = useState<perfumeType[]>([]);
-
-    const adjustCarouselHeight = () => {
-        const header = document.getElementById('header');
-        const body = document.getElementById('main-content');
-        if (header && body) {
-            const headerHeight = header.offsetHeight;
-            body.style.marginTop = `${headerHeight}px`;
-        }
-    };
-
-    useEffect(() => {
-        async function fetchData() {
-            const { brand, perfumeType } = await getBrandData();
-            setBrandName(brand as string[]);
-            setPerfumeType(perfumeType as perfumeType[]);
-        }
-        fetchData();
-        
-        window.addEventListener('resize', adjustCarouselHeight);
-        return () => { window.removeEventListener('resize', adjustCarouselHeight); };
-    }, []);
+    const { brandName, topBrandName, perfumeType } = await getBrandData()
 
     return (
         <div className="relative">
-            <Suspense>
-                <Header brandName={brandName} topBrandName={topBrandName} perfumeType={perfumeType} />
-                <main onLoad={adjustCarouselHeight} id="main-content" style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
-                    <div className="p-2 z-[10] bg-base-100 flex flex-row">
-                        <div className="p-4" style={{ flex: '0 0 350px' }}>
-                            <FilterSidebar brand={brandName} perfumeType={perfumeType as typePerfumeType[]} />
-                        </div>
-                        <div className="flex-1 p-4">
-                            <FilterNavbar />
-                            <div className="relative">
-                                {children}
-                                <div className="w-full flex justify-center">
-                                    <Pagination />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="h-10 bg-neutral w-full glass"></div>
-                </main>
-                <Footer />
-            </Suspense>
+            <Header brandName={brandName as string[]} topBrandName={topBrandName} perfumeType={perfumeType as perfumeType[]} /> {/*z-index: 50*/}
+            <main id="main-content" style={{ position: "relative", zIndex: 10, marginBottom: "95vh" }}>
+                {children}
+            </main>
+            <Footer /> {/*z-index: 0*/}
+            <script
+                id="margin-header"
+                dangerouslySetInnerHTML={{
+                    __html: `
+                              $(document).ready(function() {
+                                function adjustCarouselHeight() {
+                                  const header = $('#header');
+                                  const body = $('#main-content');
+                                  if (header.length && body.length) {
+                                    const headerHeight = header.outerHeight();
+                                    body.css({
+                                      'margin-top': headerHeight + 'px',
+                                    });
+                                  }
+                                }
+                                // Set initial height and margin
+                                adjustCarouselHeight();
+
+                                // Adjust on window resize
+                                $(window).resize(adjustCarouselHeight);
+                              });
+                              `,
+                }}
+            ></script>
+            <script
+                id="hide-header"
+                dangerouslySetInnerHTML={{
+                    __html: `
+                                  function handleScroll() {
+                                      const header = $('#header');
+                                      const headerHideable = $('#header>.hideable').outerHeight();
+                                      $(window).on('scroll', function() {
+                                        const st = $(this).scrollTop();
+                                        if (st < headerHideable) {
+                                          header.css({
+                                            'top': '-' + st + 'px'
+                                          });
+                                        } else {
+                                           header.css({
+                                            'top': '-' + headerHideable + 'px'
+                                          });
+                                        }
+                                      });
+                                    }
+                                    handleScroll();
+                              `,
+                }}
+            ></script>
         </div>
     );
 }
 
 async function getBrandData() {
-    const brand = (await GetTagsProduct("brand")).map(item => item.value).sort();
+
+    const brandName = (await GetTagsProduct("brand")).map(item => item.value).sort()
+    const topBrandName = ["Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels"];
     const perfumeType = [
         {
-            role: "Pefume",
+            role: "Perfume",
             type: (await GetTagsProduct("sex")).map(item => item.value).sort()
         },
         {
@@ -81,7 +86,7 @@ async function getBrandData() {
             type: (await GetTagsProduct("fragranceNotes")).map(item => item.value).sort()
         },
         {
-            role: "CONCENTRATION",
+            role: "Concentration",
             type: (await GetTagsProduct("concentration")).map(item => item.value).sort()
         },
         {
@@ -89,5 +94,6 @@ async function getBrandData() {
             type: (await GetTagsProduct("size")).map(item => item.value).sort()
         }
     ];
-    return { brand, perfumeType };
+
+    return { brandName, topBrandName, perfumeType };
 }

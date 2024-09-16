@@ -1,55 +1,30 @@
-"use client"
-import React, { useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, Input, Select, Space } from 'antd';
-import type { InputRef } from 'antd';
+﻿"use client"
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 
-let index = 0;
+const Tabs = dynamic(() => import('antd').then(mod => mod.Tabs), { ssr: false });
+const AddNewProduct = dynamic(() => import('./addNewProduct'), { ssr: false });
 
-const Page: React.FC = () => {
-    const [items, setItems] = useState(['jack', 'lucy']);
-    const [name, setName] = useState('');
-    const inputRef = useRef<InputRef>(null);
-
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value);
-    };
-
-    const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-        e.preventDefault();
-        setItems([...items, name || `New item ${index++}`]);
-        setName('');
-        setTimeout(() => {
-            inputRef.current?.focus();
-        }, 0);
-    };
+export default function Page() {
+    const items = [
+        {
+            key: '1',
+            label: 'Thêm sản phẩm',
+            children: <AddNewProduct />,
+        },
+        /*        {
+                    key: '2',
+                    label: 'Thêm file sản phẩm mới',
+                    children: <AddNewProductByFile />,
+                },*/
+/*        {
+            key: '3',
+            label: 'Nhập hàng',
+            children: <AddProductByFile />,
+        },*/
+    ];
 
     return (
-        <Select
-            style={{ width: 300 }}
-            placeholder="custom dropdown render"
-            getPopupContainer={triggerNode => triggerNode.parentNode}
-            dropdownRender={(menu) => (
-                <>
-                    {menu}
-                    <Divider style={{ margin: '8px 0' }} />
-                    <Space style={{ padding: '0 8px 4px' }}>
-                        <Input
-                            placeholder="Please enter item"
-                            ref={inputRef}
-                            value={name}
-                            onChange={onNameChange}
-                            onKeyDown={(e) => e.stopPropagation()}
-                        />
-                        <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
-                            Add item
-                        </Button>
-                    </Space>
-                </>
-            )}
-            options={items.map((item) => ({ label: item, value: item }))}
-        />
+        <Tabs defaultActiveKey="1" items={items} tabPosition="left" className="min-h-screen" />
     );
-};
-
-export default Page;
+}

@@ -1,6 +1,9 @@
+﻿"use client"
 import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
+import { FileUpload } from '@/components/Input'
+import EditableTable from '@/components/Table/editableTable'
 
 type FieldType = {
     username?: string;
@@ -21,44 +24,27 @@ export default function AddByFile() {
     return (
         <>
             <Form
+                className="box-border w-full"
                 name="basic"
+                layout="vertical"
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
-                style={{ maxWidth: 600 }}
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
-                <Form.Item<FieldType>
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item<FieldType>
-                    label="Password"
-                    name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
-                >
-                    <Input.Password />
-                </Form.Item>
-
-                <Form.Item<FieldType>
-                    name="remember"
-                    valuePropName="checked"
-                    wrapperCol={{ offset: 8, span: 16 }}
-                >
-                    <Checkbox>Remember me</Checkbox>
-                </Form.Item>
-
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
-                </Form.Item>
+                <div className="m-8">
+                    <Form.Item wrapperCol={{
+                        offset: 8, span: 16, style: { textAlign: 'right' }
+                    }}>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item>
+                    <FileUpload />
+                    <EditableTable />
+                </div>
             </Form>
         </>
     )
