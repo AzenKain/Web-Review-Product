@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 
 const Tabs = dynamic(() => import('antd').then(mod => mod.Tabs), { ssr: false });
-const AddNewProduct = dynamic(() => import('./addNewProduct'), { ssr: false });
+const CreateBill = dynamic(() => import('./createBill'), { ssr: false });
 
 export default function Page() {
     const items = [
         {
             key: '1',
-            label: 'Thêm sản phẩm',
-            children: <AddNewProduct />,
+            label: 'Thêm hóa đơn',
+            children: <CreateBill />,
         },
         /*        {
                     key: '2',
