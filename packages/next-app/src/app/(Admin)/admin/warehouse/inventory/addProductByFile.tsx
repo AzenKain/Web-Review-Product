@@ -36,13 +36,14 @@ export default function AddByFile() {
             >
                 <div className="m-8">
                     <Form.Item wrapperCol={{
-                        offset: 8, span: 16, style: { textAlign: 'right' } }}>
+                        offset: 8, span: 16, style: { textAlign: 'right' }
+                    }}>
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>
                     </Form.Item>
                     <FileUpload />
-                    <EditableTable/>
+                    <EditableTable />
                 </div>
             </Form>
         </>

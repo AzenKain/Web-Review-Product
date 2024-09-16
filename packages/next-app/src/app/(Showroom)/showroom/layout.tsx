@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 import React, { useEffect, useState, Suspense } from 'react'
 import FilterSidebar from '@/components/Fillter/sidebar'
 import FilterNavbar from '@/components/Fillter/navbar'

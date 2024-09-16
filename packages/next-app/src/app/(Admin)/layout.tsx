@@ -3,10 +3,9 @@ import React from 'react'
 import Header from "@/components/Header/(admin)header"
 import Breadcrumb from '@/components/Breadcrumb'
 
-
-export default function Layout({
+export default function layout({
     children
-} : {
+}: {
     children: React.ReactNode
 }) {
 
@@ -14,9 +13,9 @@ export default function Layout({
         <div className="bg-white min-h-screen">
             <Header />
             {/*<Breadcrumb />*/}
-                <main className="">
-                    { children }
-                </main>
+            <main className="">
+                {children}
+            </main>
         </div>
     )
 }

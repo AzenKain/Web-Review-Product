@@ -79,7 +79,7 @@ export default function Page() {
             }
             console.log("encodeDTO: ", newPath)
             console.log("encode: ", encodeParams(newPath))
-            router.push(`/showroom${encodeParams(newPath)}`) 
+            router.push(`/showroom${encodeParams(newPath)}`)
             fetchData();
         }
     }, [filters, dispatch])

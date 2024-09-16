@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import React from "react";
 import { Button, Form, Input, InputNumber } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
@@ -54,7 +54,7 @@ const App: React.FC = () => {
                         name="originCost"
                         rules={[{ required: true, message: "Must fill" }]}
                     >
-                        <InputNumber min={0} style={{width: "100%"}} />
+                        <InputNumber min={0} style={{ width: "100%" }} />
                     </Form.Item>
 
                     <Form.Item<FieldType>
@@ -153,7 +153,7 @@ const App: React.FC = () => {
                 </div>
             </div>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit" style={{marginRight: "12px"}}> Submit </Button>
+                <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}> Submit </Button>
                 <Button htmlType="reset">reset</Button>
             </Form.Item>
         </Form>

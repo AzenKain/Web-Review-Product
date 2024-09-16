@@ -78,7 +78,7 @@ const App: React.FC = () => {
         setEditingKey(record.key);
     };
 
-    const deleteCell = (cell :Item) => {
+    const deleteCell = (cell: Item) => {
         setData(e => e.filter(i => i != cell))
     }
 
@@ -165,7 +165,7 @@ const App: React.FC = () => {
                         <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
                             Edit
                         </Typography.Link>
-                        <Divider type="vertical"/>
+                        <Divider type="vertical" />
                         <Typography.Link onClick={() => deleteCell(record)}>
                             Delete
                         </Typography.Link>
