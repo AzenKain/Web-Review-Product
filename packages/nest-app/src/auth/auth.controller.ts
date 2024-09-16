@@ -2,8 +2,9 @@ import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { JwtGuardRestApiRefresh } from './guard';
 import { AuthService } from './auth.service';
 import { LoginDto, SignUpDto } from './dto';
-import { JwtPayload } from './interfaces/jwt-payload.interfaces';
 import { CurrentUserRest } from 'src/decorators';
+import { UserEntity } from 'src/types/user';
+import { JwtPayload } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +32,7 @@ export class AuthController {
     async RefreshController(
         @CurrentUserRest() user: JwtPayload
     ) {
+        console.log(user)
         return await this.authService.RefreshService(user)
     }
 }

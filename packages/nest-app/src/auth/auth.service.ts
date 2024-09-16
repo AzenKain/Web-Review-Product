@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/types/user';
+import { UserDetailEntity, UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
 import { LoginDto, SignUpDto } from './dto';
 import * as argon from 'argon2';
@@ -16,10 +16,11 @@ export class AuthService {
         private jwt: JwtService,
         private config: ConfigService,
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+        @InjectRepository(UserDetailEntity) private userDetailRepository: Repository<UserDetailEntity>,
 
     ) { }
+
     async validateUser(id: string, email: string): Promise<any> {
-        console.log(id)
         const user = await this.userRepository.findOne({
             where: {
                 email: email,
@@ -31,6 +32,7 @@ export class AuthService {
         }
         return null;
     }
+
     async validateJwtPayload(
         payload: JwtPayload,
     ): Promise<any> {
@@ -101,16 +103,21 @@ export class AuthService {
         }
 
         const hash = await argon.hash(dto.password);
+        
+        const userDetail = this.userDetailRepository.create({
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+        });
+    
+
+        const savedUserDetail = await this.userDetailRepository.save(userDetail);
 
         const UserCre = this.userRepository.create({
             secretKey: uuidv5(dto.email, uuidv5.URL),
             email: dto.email,
             hash: hash,
             refreshToken: uuidv4(),
-            details: {
-                firstName: dto.firstName,
-                lastName: dto.lastName
-            },
+            details: savedUserDetail,
             actionLog: [],
             role: [],
             username: dto.username

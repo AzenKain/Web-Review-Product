@@ -18,7 +18,6 @@ type FilterSidebarProps = {
 }
 
 type filterStorageDto = {
-    name?: [string],
     brand?: string[],
     concentration?: string[],
     sex?: string[],
@@ -31,21 +30,17 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
     const staticRender = useRef<number>(0)
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000])
     const [searchName, setSearchName] =  useState<string>('')
-    const [brandStorage, setBrandStorage] = useState<string[]>([...brand])
+    const [brandStorage, setBrandStorage] = useState<string[]>([])
     const [filterStorage, setFilterStorage] = useState<filterStorageDto>({})
     const dispatch = useAppDispatch()
     const filters = useAppSelector((state) => state.filterSearch.value);
 
-    useEffect(() => { setBrandStorage([...brand]) }, [brand])
+    useEffect(() => { setBrandStorage(brand); }, [brand]) 
 
     useEffect(() => {
-        if (staticRender.current < 1) {
-            staticRender.current++
-        } else if (staticRender.current < 2) {
-            setSearchName(filters.name!)
+        if (staticRender.current < 2) {
             staticRender.current++
             setFilterStorage({
-                name: [filters.name!],
                 brand: filters.brand?.map(e => e.value!),
                 concentration: filters.concentration?.map(e => e.value!),
                 sex: filters.sex?.map(e => e.value!),
@@ -58,22 +53,25 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
                 filters.rangeMoney?.[0] !== undefined ? filters.rangeMoney[0] / 1000 : 0,
                 filters.rangeMoney?.[1] !== undefined ? filters.rangeMoney[1] / 1000 : 50000
             ]);
+            setSearchName(filters.name!)
         }
     }, [filters])
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFilterStorage((preStorage) => ({
-            ...preStorage,
-            name: [searchName],
-        }))
+        const SM: SearchProductDto = {
+            ...filters,
+            name: $(e.currentTarget).val()
+        }
+        dispatch(UpdateFilter({ value: SM }))
     }
 
     const handleClear = () => {
         setSearchName("")
-        setFilterStorage((preStorage) => ({
-            ...preStorage,
-            name: [''],
-        }))
+        const SM: SearchProductDto = {
+            ...filters,
+            name: ''
+        }
+        dispatch(UpdateFilter({ value: SM }))
     }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === "Enter") { e.currentTarget.blur() } }
@@ -87,7 +85,7 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
     const changeRangeMoney = (value: number[]) => {
         setFilterStorage((preStorage) => ({
             ...preStorage,
-            rangeMoney: [value[0] * 1000, value[1] * 1000],
+            rangeMoney: [value[0]*1000, value[1]*1000]
         }))
     }
 
@@ -115,7 +113,6 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
     useEffect(() => {
         const SM: SearchProductDto = {
             ...filters,
-            name: filterStorage.name?.[0],
             index: 1,
             brand: filterStorage.brand?.map(item => ({ type: "brand", value: item })),
             sex: filterStorage.sex?.map(item => ({ type: "sex", value: item})),
@@ -195,15 +192,24 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
                     <h4>Giới tính</h4>
                     <div className="form-control flex-wrap flex flex-row">
                         <label className="label cursor-pointer justify-start">
-                            <input type="checkbox" value="nam" custume-for="sex" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
+                            <input
+                                checked={filters.sex?.some((e) => e.value == "nam")}
+                                type="checkbox" value="nam" custume-for="sex"
+                                onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
                             <span className="label-text">Nam</span>
                         </label>
                         <label className="label cursor-pointer justify-start">
-                            <input type="checkbox" value="nữ" custume-for="sex" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
+                            <input
+                                checked={filters.sex?.some((e) => e.value == "nữ")}
+                                type="checkbox" value="nữ" custume-for="sex"
+                                onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
                             <span className="label-text">Nữ</span>
                         </label>
                         <label className="label cursor-pointer justify-start">
-                            <input type="checkbox" value="unisex" custume-for="sex" onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
+                            <input
+                                checked={filters.sex?.some((e) => e.value == "unisex")}
+                                type="checkbox" value="unisex" custume-for="sex"
+                                onChange={handleCheckboxChange} className="checkbox mx-2 rounded-none" />
                             <span className="label-text">Unisex</span>
                         </label>
                     </div>

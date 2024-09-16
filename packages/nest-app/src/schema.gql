@@ -47,6 +47,7 @@ input CreateUserDto {
   password: String!
   phoneNumber: String!
   role: [String!]!
+  userId: ID
   username: String!
 }
 
@@ -105,6 +106,7 @@ input ImageDetailInp {
 
 type Mutation {
   CreateBlog(CreateBlog: CreateBlogDto!): Blog!
+  CreateListOrder(CreateOrder: [createOrderDto!]!): [Order!]!
   CreateOrder(CreateOrder: createOrderDto!): Order!
   CreateProduct(CreateProduct: CreateProductDto!): Product!
   CreateProductByList(CreateProduct: [CreateProductDto!]!): [Product!]!
@@ -201,8 +203,9 @@ type Query {
   GetTagsProduct(GetTagsProduct: TagsProductDto!): [TagsDetail!]!
   GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
-  SearchOrderWithOption(SearchOrder: SearchOrderDto!): [Order!]!
+  SearchOrderWithOption(SearchOrder: SearchOrderDto!): SearchOrder!
   SearchProductWithOptions(SearchProduct: SearchProductDto!): SearchProduct!
+  SearchUserWithOption(SearchUser: SearchUserDto!): SearchUser!
 }
 
 type ResponseType {
@@ -215,12 +218,21 @@ input SearchBlogDto {
   typeBlog: String
 }
 
+type SearchOrder {
+  data: [Order!]!
+  maxValue: Float!
+}
+
 input SearchOrderDto {
+  count: Float
   email: String
   firstName: String
+  index: Float
   lastName: String
   orderId: ID
   phoneNumber: String
+  rangeMoney: [Float!]
+  sort: String
 }
 
 type SearchProduct {
@@ -240,6 +252,26 @@ input SearchProductDto {
   sex: [TagsDetailInp!]
   size: [TagsDetailInp!]
   sort: String
+}
+
+type SearchUser {
+  data: [UserType!]!
+  maxValue: Float!
+}
+
+input SearchUserDto {
+  address: String
+  birthday: DateTime
+  count: Float
+  email: String
+  firstName: String
+  gender: String
+  index: Float
+  lastName: String
+  phoneNumber: String
+  role: [String!]
+  sort: String
+  username: String
 }
 
 type TagsDetail {

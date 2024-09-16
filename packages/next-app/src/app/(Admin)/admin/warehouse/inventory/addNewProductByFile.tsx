@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 import React from 'react';
 import type { FormProps } from 'antd';
 import { Button, Checkbox, Form, Input } from 'antd';
@@ -11,7 +11,7 @@ type FieldType = {
     remember?: string;
 };
 
-export default function AddByFile() {
+export default function AddNewProductByFile() {
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         console.log('Success:', values);
@@ -36,13 +36,14 @@ export default function AddByFile() {
             >
                 <div className="m-8">
                     <Form.Item wrapperCol={{
-                        offset: 8, span: 16, style: { textAlign: 'right' } }}>
+                        offset: 8, span: 16, style: { textAlign: 'right' }
+                    }}>
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>
                     </Form.Item>
                     <FileUpload />
-                    <EditableTable/>
+                    <EditableTable />
                 </div>
             </Form>
         </>

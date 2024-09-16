@@ -25,7 +25,7 @@ export class UserDetailEntity {
     @Column({nullable: true})
     gender?: string;
 
-    @Column({nullable: true, default: "http://localhost:3434/media/file/user.png"})
+    @Column({nullable: true, default: "/media/uploads/user.png"})
     imgDisplay?: string 
 
 }
@@ -50,7 +50,7 @@ export class UserEntity {
     @Column({ type: 'simple-array', nullable: false})
     role: string[];
 
-    @OneToOne(() => UserDetailEntity)
+    @OneToOne(() => UserDetailEntity, { cascade: true })
     @JoinColumn()
     details: UserDetailEntity;
     

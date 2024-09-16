@@ -8,7 +8,7 @@ const { Dragger } = Upload;
 const props: UploadProps = {
     name: 'file',
     multiple: true,
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+    action: '',
     onChange(info) {
         const { status } = info.file;
         if (status !== 'uploading') {
@@ -25,7 +25,7 @@ const props: UploadProps = {
     },
 };
 
-const App: React.FC = () => (
+export const FileUpload: React.FC = () => (
     <Dragger {...props}>
         <p className="ant-upload-drag-icon">
             <InboxOutlined />
@@ -37,5 +37,3 @@ const App: React.FC = () => (
         </p>
     </Dragger>
 );
-
-export default App;

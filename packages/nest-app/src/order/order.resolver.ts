@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtGuardGraphql } from 'src/auth/guard';
-import { OrderType } from 'src/types/order';
+import { OrderType, SearchOrderType } from 'src/types/order';
 import { UserEntity } from 'src/types/user';
 import { createOrderDto, SearchOrderDto, updateOrderDto } from './dtos';
 import { OrderService } from './order.service';
@@ -14,11 +14,11 @@ export class OrderResolver {
         private readonly orderService: OrderService,
     ) { }
 
-    @Query(() => [OrderType])
+    @Query(() => SearchOrderType)
     async SearchOrderWithOption(
         @CurrentUserGraphql() user: UserEntity,
         @Args('SearchOrder') dto: SearchOrderDto
-    ): Promise<OrderType[]> { 
+    ): Promise<SearchOrderType> { 
         return await this.orderService.SearchOrderWithOptionsServices(dto, user)
     }
 
@@ -37,6 +37,14 @@ export class OrderResolver {
         @Args('CreateOrder') dto: createOrderDto
     ): Promise<OrderType> {
         return await this.orderService.CreateOrderService(dto, user)
+    }
+
+    @Mutation(() => [OrderType])
+    async CreateListOrder(
+        @CurrentUserGraphql() user: UserEntity,
+        @Args({ name: 'CreateOrder', type: () => [createOrderDto] }) dto: createOrderDto[]
+    ): Promise<OrderType[]> {
+        return await this.orderService.CreateOrderByListService(dto, user)
     }
 
     @Mutation(() => OrderType)
