@@ -28,15 +28,23 @@ async function refreshToken(token: JWT): Promise<JWT> {
         },
     });
 
+    if (res.status != 201) {
+        throw new Error("Failed to refresh token");
+    }
+
     const response = await res.json();
 
-    return response;
+    return {
+        ...token,
+        access_token: response.access_token,
+        refresh_token: response.refresh_token || token.refresh_token,
+    };
 }
 
 const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
-              name: "Credentials",
+            name: "Credentials",
             credentials: {
                 email: {
                     label: "Email",
@@ -61,8 +69,9 @@ const authOptions: NextAuthOptions = {
                 if (res.status == 403) {
                     return null;
                 }
+
                 const token = await res.json();
- 
+
                 return token;
             },
         }),
@@ -71,9 +80,11 @@ const authOptions: NextAuthOptions = {
         async jwt({ token, user }) {
             if (user) return { ...token, ...user };
             const decoded = jwtDecode<JwtPayload>(token.access_token);
-        
-            if (new Date().getTime() < decoded.exp * 1000)
+
+            const expirationBuffer = 10 * 60 * 1000;
+            if (new Date().getTime() < decoded.exp * 1000 - expirationBuffer) {
                 return token;
+            }
 
             return await refreshToken(token);
         },
