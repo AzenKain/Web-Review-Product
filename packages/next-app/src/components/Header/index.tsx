@@ -1,7 +1,6 @@
 ﻿'use client'
 import React, { useState, useEffect } from 'react';
 import ListIcon from '@mui/icons-material/List';
-import slugify from 'slugify'
 
 interface PerfumeType {
     role: string;
@@ -196,7 +195,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 <div className="mt-5">
                                     <ul className="brand-item flex flex-row flex-wrap">
                                         {brands ? brands.map((brand: string, index: number) => (
-                                            <li key={index} className="w-1/2 2xl:w-1/3 uppercase mt-1"><a href={`/showroom/brand/${slugify(brand, { lower: true, strict: true }) }`}>{brand}</a></li>
+                                            <li key={index} className="w-1/2 2xl:w-1/3 uppercase mt-1"><a href={`/showroom?brand=${brand}`}>{brand}</a></li>
                                         )) : null}
                                     </ul>
                                 </div>
@@ -233,7 +232,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                         <ul>
                                             {item.type.map((subItem, subIndex) => (
                                                 <li key={subIndex} className="uppercase">
-                                                    <a href={`/showroom/${slugify(item.role, { lower: true, strict: true })}/${slugify(subItem, { lower: true, strict: true })}`}>{subItem}</a>
+                                                    <a href={`/showroom?${item.role}=${subItem}`}>{subItem}</a>
                                                 </li>
                                             ))}
                                         </ul>
