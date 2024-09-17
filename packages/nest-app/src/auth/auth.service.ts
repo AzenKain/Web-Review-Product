@@ -140,7 +140,7 @@ export class AuthService {
                 email,
             },
             {
-                expiresIn: '1h10m',
+                expiresIn: '2h',
                 secret: this.config.get('JWT_SECRET'),
             },
         );
