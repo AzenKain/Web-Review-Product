@@ -103,6 +103,10 @@ const App: React.FC = () => {
         }
     };
 
+    const resetTable = () => {
+        setProducts([])
+    }
+
     const columns = [
         {
             title: "Product Name",
@@ -144,15 +148,19 @@ const App: React.FC = () => {
                     <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}>
                         Submit
                     </Button>
-                    <Button htmlType="reset">Reset</Button>
+                    <Button htmlType="reset" onClick={resetTable}>Reset</Button>
                 </Form.Item>
                 <div className="flex flex-row">
                     <div className="w-[40%] mr-[5%]">
-                        <Form.Item<FieldType> label="firstName" name="firstName">
+                        <Form.Item<FieldType> label="firstName" name="firstName"
+                            rules={[{ required: true, message: 'Please input!' }]}
+                        >
                             <Input />
                         </Form.Item>
 
-                        <Form.Item<FieldType> label="lastName" name="lastName">
+                        <Form.Item<FieldType> label="lastName" name="lastName"
+                            rules={[{ required: true, message: 'Please input!' }]}
+                        >
                             <Input />
                         </Form.Item>
 
@@ -164,7 +172,9 @@ const App: React.FC = () => {
                             <Input />
                         </Form.Item>
 
-                        <Form.Item<FieldType> label="isPaid" name="isPaid">
+                        <Form.Item<FieldType> label="isPaid" name="isPaid"
+                            rules={[{ required: true, message: 'Please input!' }]}
+                        >
                             <Radio.Group>
                                 <Radio value="true">true</Radio>
                                 <Radio value="false">false</Radio>

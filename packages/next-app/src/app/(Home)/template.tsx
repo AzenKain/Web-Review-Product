@@ -86,19 +86,19 @@ async function getBrandData() {
     const topBrandName = ["Thierry Mugler", "Tom Ford", "Trussardi", "Valentino", "Van Cleef & Arpels"];
     const perfumeType = [
         {
-            role: "Perfume",
+            role: "sex",
             type: (await GetTagsProduct("sex")).map(item => item.value).sort()
         },
         {
-            role: "FRAGRANCE GROUP",
+            role: "fragranceNotes",
             type: (await GetTagsProduct("fragranceNotes")).map(item => item.value).sort()
         },
         {
-            role: "Concentration",
+            role: "concentration",
             type: (await GetTagsProduct("concentration")).map(item => item.value).sort()
         },
         {
-            role: "CAPACITY",
+            role: "size",
             type: (await GetTagsProduct("size")).map(item => item.value).sort()
         }
     ];
