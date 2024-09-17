@@ -314,3 +314,28 @@ export async function uploadFile(data: File, accessToken: string) {
         throw error; 
     }
 }
+
+export async function SearchProductWithOptions(name: string | null) {
+    const query = `
+    query SearchProductWithOptions {
+      SearchProductWithOptions(SearchProduct: { name: ${name !== null ? `"${name}"` : "null"} }) {
+        data {
+          id
+          name
+        }
+      }
+    }
+  `;
+
+    try {
+        const response = await axios.post(Backend_URL + "/graphql", {
+            query: query,
+        });
+
+        const res = response.data.data.SearchProductWithOptions;
+        return res;
+    } catch (error) {
+        console.error("Error fetching: ", error);
+        throw error;
+    }
+}
