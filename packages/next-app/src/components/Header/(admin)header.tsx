@@ -4,10 +4,13 @@ import type { MenuProps } from 'antd';
 import { Menu } from 'antd';0.
 import Link from 'next/link'
 import Avatar from '@/components/Avatar'
+import { signOut } from 'next-auth/react';
 
 
 type MenuItem = Required<MenuProps>['items'][number];
-
+const handleLogout = async () => {
+    await signOut({ callbackUrl: '/login' }); 
+};
 const items: MenuItem[] = [
     {
         label: '',
@@ -17,8 +20,10 @@ const items: MenuItem[] = [
             {
                 type: 'group',
                 children: [
-                    { label: <Link href="/admin/warehouse/inventory">Inventory</Link>, key: 'inventory' },
-                    { label: <Link href="/admin/warehouse/manage-storage">Manage Storage</Link>, key: 'manage-storage' },
+                    {
+                        label: <a onClick={handleLogout}>Logout</a>,
+                        key: 'logout',
+                    },
                 ],
             },
         ],

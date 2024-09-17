@@ -27,7 +27,6 @@ async function refreshToken(token: JWT): Promise<JWT> {
             authorization: `Refresh ${token.refreshToken}`,
         },
     });
-    console.log("refreshed");
 
     const response = await res.json();
 
@@ -58,9 +57,8 @@ const authOptions: NextAuthOptions = {
                         "Content-Type": "application/json",
                     },
                 });
-                if (res.status == 401) {
-                    console.log(res.statusText);
 
+                if (res.status == 403) {
                     return null;
                 }
                 const token = await res.json();
