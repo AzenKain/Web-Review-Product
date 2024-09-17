@@ -84,7 +84,6 @@ const App: React.FC = (props: any) => {
                                 <Button block type="primary" htmlType="submit">
                                     Đăng nhập
                                 </Button>
-                                hoặc <a href="#">Đăng ký ngay!</a>
                             </Form.Item>
                         </Form>
                     </div>
