@@ -396,25 +396,70 @@ export async function CreateUser(userData: {
     }
 }
 
-export async function getAllUserName() {
+export async function getAllUserName(accessToken?: string) {
     const query = `
-            query SearchUserWithOption {
-                SearchUserWithOption(SearchUser: { index: 1 }) {
-                    data {
-                        username
-                        id
-                    }
-                }
-            }
-        `
-    try {
-        const response = await axios.post(Backend_URL + '/graphql', {
-            query: query,
-        });
+    query SearchUserWithOption {
+      SearchUserWithOption(SearchUser: { index: 1 }) {
+        data {
+          username
+          id
+          secretKey
+        }
+      }
+    }
+  `;
 
-        return response.data.data.SearchUserWithOption;
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.SearchUserWithOption.data;
     } catch (error) {
-        console.error('Error creating user: ', error);
+        console.error("Error fetching users: ", error);
+        throw error;
+    }
+}
+
+export async function getUserById(id: string, token: string) {
+    const query = `
+        query GetUserById {
+            GetUserById(id: "${id}") {
+                created_at
+                email
+                id
+                isDisplay
+                refreshToken
+                role
+                secretKey
+                updated_at
+                username
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        return response.data.data.GetUserById;
+    } catch (error) {
+        console.error('Error fetching user: ', error);
         throw error;
     }
 }
