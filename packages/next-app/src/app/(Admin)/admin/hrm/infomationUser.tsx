@@ -88,29 +88,30 @@ const App: React.FC = () => {
                     },
                     {
                         key: '3',
-                        label: 'Created_at',
-                        children: data?.created_at,
+                        label: 'Gender',
+                        children: data?.detail?.gender || "no infomation",
                     },
                     {
                         key: '4',
-                        label: 'Address',
+                        label: 'Created_at',
                         span: 2,
-                        children: data?.details?.address || "no infomation",
-                    },
-                    {
-                        key: '5',
-                        label: 'Gender',
-                        children: data?.detail?.gender || "no infomation",
-                    },
-                    {
-                        key: '6',
-                        label: 'Gender',
-                        children: data?.detail?.gender || "no infomation",
+                        children: data?.created_at || "no infomation",
                     },
                     {
                         key: '7',
                         label: 'Birthday',
                         children: data?.detail?.birthday || "no infomation",
+                    },
+                    {
+                        key: '5',
+                        label: 'Address',
+                        span: 2,
+                        children: data?.details?.address || "no infomation",
+                    },
+                    {
+                        key: '6',
+                        label: 'Role',
+                        children: data?.detail?.role || "no infomation",
                     },
                     {
                         key: '8',
