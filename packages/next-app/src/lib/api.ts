@@ -441,6 +441,25 @@ export async function getUserById(id: string, token: string) {
                 secretKey
                 updated_at
                 username
+                details {
+                    address
+                    gender
+                    id
+                    imgDisplay
+                    phoneNumber
+                    birthday
+                    firstName
+                    lastName
+                }
+                created_at
+                actionLog {
+                    action
+                    created_at
+                    details
+                    entityId
+                    entityName
+                    id
+                }
             }
         }
     `;

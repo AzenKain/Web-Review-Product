@@ -68,7 +68,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 const App: React.FC = () => {
     const [form] = Form.useForm();
-    const [data, setData] = useState(originData); // dùng redux cho cái này nó là data của bảng
+    const [data, setData] = useState(originData);
     const [editingKey, setEditingKey] = useState('');
 
     const isEditing = (record: Item) => record.key === editingKey;
