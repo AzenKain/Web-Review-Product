@@ -174,6 +174,8 @@ async def analyze_file(file: UploadFile = File(...), typeFile = Form(...)):
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type")
         dataType = json.loads(typeFile)
+
+        df.fillna('', inplace=True)
         if dataType['type'] == "CreateProduct":
 
             products = []

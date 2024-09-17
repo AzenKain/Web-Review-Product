@@ -159,46 +159,45 @@ export class OrderService {
     }
 
     async CreateOrderService(dto: createOrderDto, user: UserEntity) {
-        this.CheckRoleUser(user)
-
-
+        this.CheckRoleUser(user);
+    
         const customerInfo = this.customerRepository.create(dto.customerInfo);
         await this.customerRepository.save(customerInfo);
-
+    
         const deliveryInfo = this.deliveryRepository.create(dto.deliveryInfo);
         await this.deliveryRepository.save(deliveryInfo);
-
+    
         const order = this.orderRepository.create({
-            ...dto,
+            status: 'processing',
+            notes: dto.notes ? dto.notes : '',
             deliveryInfo,
             customerInfo,
             isDisplay: true,
             isPaid: false,
-            totalAmount: 0
+            totalAmount: 0,
         });
-
         const savedOrder = await this.orderRepository.save(order);
-
         let totalAmount = 0;
         for (const product of dto.orderProducts) {
-            const productData = await this.getProductDetail(product.productId)
+            const productData = await this.getProductDetail(product.productId);
             const orderProduct = this.orderProductRepository.create({
                 productId: productData.id,
-                orderId: savedOrder.id,
+                orderId: savedOrder.id, 
                 quantity: product.quantity,
                 discount: product.discount ? product.discount : 0,
-                unitPrice: productData.displayCost
+                unitPrice: productData.displayCost,
             });
+    
             totalAmount += orderProduct.unitPrice * product.quantity;
             await this.orderProductRepository.save(orderProduct);
         }
 
         savedOrder.totalAmount = totalAmount;
         await this.orderRepository.save(savedOrder);
-
+    
         return savedOrder;
     }
-
+    
 
     async UpdateOrderService(dto: updateOrderDto, user: UserEntity) {
         this.CheckRoleUser(user);
