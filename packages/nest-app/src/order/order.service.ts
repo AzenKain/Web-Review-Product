@@ -6,11 +6,15 @@ import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
 import { createOrderDto, SearchOrderDto, updateOrderDto } from './dtos';
 import { ProductEntity } from 'src/types/product';
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import * as FormData from 'form-data';
 
 @Injectable()
 export class OrderService {
     constructor(
         private config: ConfigService,
+        private readonly httpService: HttpService,
         @InjectRepository(OrderEntity) private orderRepository: Repository<OrderEntity>,
         @InjectRepository(DeliveryInfoEntity) private deliveryRepository: Repository<DeliveryInfoEntity>,
         @InjectRepository(CustomerInfoEntity) private customerRepository: Repository<CustomerInfoEntity>,
@@ -19,10 +23,35 @@ export class OrderService {
         @InjectRepository(ProductEntity) private productRepository: Repository<ProductEntity>,
     ) { }
 
+    async CreateOrderByListService(dto: createOrderDto[], user: UserEntity) {
+        const dataReturn : OrderEntity[] = []
+        for (const order of dto) {
+            dataReturn.push(await this.CreateOrderService(order, user))
+        }
+        return dataReturn
+    }
+
+    async GetReportOrder(dto: SearchOrderDto) {
+        const dataRequest: OrderEntity[] = (await this.SearchOrderWithOptionsServices(dto, new UserEntity())).data;
+
+        const requestBody = {
+            data: dataRequest,
+            type: 'ReportOrder'
+        };
+
+        const response = await firstValueFrom(
+        this.httpService.post('http://localhost:8000/export-file', requestBody, {
+            responseType: 'arraybuffer',
+        }),
+        );
+
+        return response.data;
+    }
+
     async getOrderDetail(time: string = 'week') {
 
         let dateCondition: string;
-    
+
         switch (time) {
             case 'week':
                 dateCondition = "DATE_SUB(CURDATE(), INTERVAL 1 WEEK)";
@@ -36,7 +65,7 @@ export class OrderService {
             default:
                 throw new ForbiddenException('Invalid time period');
         }
-    
+
         return await this.orderProductRepository
             .createQueryBuilder('orderProduct')
             .select('orderProduct.productId', 'productId')
@@ -45,10 +74,10 @@ export class OrderService {
             .where('order.created_at >= ' + dateCondition)
             .groupBy('orderProduct.productId')
             .orderBy('totalQuantity', 'DESC')
-            .getRawMany(); 
+            .getRawMany();
     }
-    
-    
+
+
 
     private CheckRoleUser(user: UserEntity) {
         if (!user.role.includes("ADMIN") && !user.role.includes("SALES")) {
@@ -68,7 +97,7 @@ export class OrderService {
         return product
     }
     async SearchOrderWithOptionsServices(dto: SearchOrderDto, user: UserEntity) {
-        this.CheckRoleUser(user);
+        // this.CheckRoleUser(user);
 
         const query = this.orderRepository.createQueryBuilder('order')
             .leftJoinAndSelect('order.customerInfo', 'customerInfo')
@@ -81,24 +110,52 @@ export class OrderService {
         }
 
         if (dto.email) {
-            query.andWhere('customerInfo.email = :email', { email: dto.email });
+            query.andWhere('LOWER(customerInfo.email) LIKE :email', { email: `%${dto.email.toLowerCase()}%` });
         }
 
         if (dto.firstName) {
-            query.andWhere('customerInfo.firstName = :firstName', { firstName: dto.firstName });
+            query.andWhere('LOWER(customerInfo.firstName) LIKE :firstName', { firstName: `%${dto.firstName.toLowerCase()}%` });
         }
 
         if (dto.lastName) {
-            query.andWhere('customerInfo.lastName = :lastName', { lastName: dto.lastName });
+            query.andWhere('LOWER(customerInfo.lastName) LIKE :lastName', { lastName: `%${dto.lastName.toLowerCase()}%` });
         }
 
         if (dto.phoneNumber) {
-            query.andWhere('customerInfo.phoneNumber = :phoneNumber', { phoneNumber: dto.phoneNumber });
+            query.andWhere('customerInfo.phoneNumber LIKE :phoneNumber', { phoneNumber: `%${dto.phoneNumber}%` });
+        }
+        if (dto.rangeMoney && dto.rangeMoney.length === 2) {
+            const [minPrice, maxPrice] = dto.rangeMoney;
+            query.andWhere('order.totalPrice BETWEEN :minPrice AND :maxPrice', { minPrice, maxPrice });
+        }
+
+        if (dto.sort) {
+            switch (dto.sort) {
+                case 'price_asc':
+                    query.orderBy('order.totalPrice', 'ASC');
+                    break;
+                case 'price_desc':
+                    query.orderBy('order.totalPrice', 'DESC');
+                    break;
+                case 'created_at_asc':
+                    query.orderBy('order.created_at', 'ASC');
+                    break;
+                case 'created_at_desc':
+                    query.orderBy('order.created_at', 'DESC');
+                    break;
+                default:
+                    break;
+            }
+        }
+        const maxValue = await query.getCount();
+
+        if (dto.index !== undefined && dto.count !== undefined) {
+            query.skip(dto.index).take(dto.count);
         }
 
         const orders = await query.getMany();
 
-        return orders;
+        return { maxValue, data: orders };
     }
 
     async CreateOrderService(dto: createOrderDto, user: UserEntity) {

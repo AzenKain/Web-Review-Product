@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import React, { useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation';
 import ShapeCard from '@/components/Card/ShapeCard'

@@ -1,15 +1,11 @@
 import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+  BadRequestException, Injectable, UnauthorizedException, } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 
 import { JwtPayload } from '../interfaces';
 import { AuthService } from '../auth.service';
 import { ConfigService } from '@nestjs/config';
-
 
 @Injectable()
 export class JwtGraphqlStrategy extends PassportStrategy(Strategy, 'jwt-graphql') {

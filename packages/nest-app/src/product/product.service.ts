@@ -9,7 +9,7 @@ import { OrderService } from 'src/order/order.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
-import { Readable } from 'stream';
+
 
 @Injectable()
 export class ProductService {
@@ -30,17 +30,25 @@ export class ProductService {
             throw new ForbiddenException('The user does not have permission');
         }
     }
+
     async GetReportProduct(dto: SearchProductDto) {
         const dataRequest: ProductEntity[] = (await this.SearchProductWithOptionsService(dto)).data;
 
+        const requestBody = {
+            data: dataRequest,
+            type: 'ReportProduct'
+        };
+
         const response = await firstValueFrom(
-          this.httpService.post('http://localhost:8000/export-file', dataRequest, {
-            responseType: 'arraybuffer',  
-          }),
+        this.httpService.post('http://localhost:8000/export-file', requestBody, {
+            responseType: 'arraybuffer',
+        }),
         );
-    
-        return response.data
+
+        return response.data;
     }
+
+
     async SearchProductWithOptionsService(dto: SearchProductDto) {
         const queryBuilder = this.productRepository.createQueryBuilder('product');
 

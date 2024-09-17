@@ -10,12 +10,12 @@ import { JwtPayload } from '../interfaces';
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     constructor(
-        config: ConfigService,
-        private authService: AuthService,
+        private readonly authService: AuthService,
+        private configService: ConfigService,
         ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: config.get('JWT_REFRESH_SECRET'),
+            secretOrKey: configService.get('JWT_REFRESH_SECRET'),
             passReqToCallback: true,
             ignoreExpiration: false,
         });

@@ -3,43 +3,20 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
 import { AuthGuard } from "@nestjs/passport";
 
 
 @Injectable()
-export class JwtGuardRestApiRefresh extends AuthGuard(['jwt-refresh']) {
-    constructor(
-        private readonly jwtService: JwtService,
-        private config: ConfigService,
-    ) {
-        super();
+export class JwtGuardRestApiRefresh extends AuthGuard('jwt-refresh') {
+    canActivate(context: ExecutionContext) {
+
+        return super.canActivate(context);
     }
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        const token = this.extractTokenFromHeader(request);
-        if (!token) {
-            throw new UnauthorizedException();
+
+    handleRequest(err, user, info) {
+        if (err || !user) {
+            throw err || new UnauthorizedException();
         }
-        try {
-            const payload = await this.jwtService.verifyAsync(
-                token,
-                {
-                    secret: this.config.get('JWT_REFRESH_SECRET')
-                }
-            );
-  
-            request['user'] = payload;
-        } catch {
-            throw new UnauthorizedException();
-        }
-        return true;
-    }
-    
-    private extractTokenFromHeader(request: Request): string | undefined {
-        const [type, token] = request.headers.authorization?.split(' ') ?? [];
-        return type === 'Bearer' ? token : undefined;
+        return user;
     }
 }
