@@ -1,28 +1,105 @@
 ﻿"use client";
-import React from "react";
-import { Button, Form, Input, InputNumber, Radio, Select } from "antd";
-import { InputAdd, Editor, UploadImage } from "@/components/Input";
+import React, { useState } from "react";
+import { Button, Form, Input, InputNumber, Radio, Select, Table, Space } from "antd";
 const { TextArea } = Input;
 
 type FieldType = {
-    firstName?: string,
-    lastName?: string,
-    email?: string,
-    phoneNumber?: number,
-    notes?: string,
-    isPaid?: boolean,
-    productId?: string,
-    quantity?: number,
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phoneNumber?: number;
+    notes?: string;
+    isPaid?: boolean;
+    products?: ProductType[];
+};
+
+type ProductType = {
+    name: string;
+    quantity: number;
 };
 
 const App: React.FC = () => {
+    const [form] = Form.useForm();
+    const [products, setProducts] = useState<ProductType[]>([]);
+    const [editingProductIndex, setEditingProductIndex] = useState<number | null>(null);
+
     const onFinish = (values: FieldType) => {
-        console.log("Success:", values);
+        console.log("Success:", { ...values, products });
     };
 
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
+
+    const handleAddProduct = () => {
+        const productNames = form.getFieldValue("productId");
+        const quantity = form.getFieldValue("quantity");
+        if (productNames && quantity) {
+            const currentProducts = form.getFieldValue("products") || [];
+            const newProducts = productNames.map((productName: string) => ({
+                name: productName,
+                quantity,
+            }));
+            setProducts([...currentProducts, ...newProducts]);
+            form.setFieldsValue({ productId: [], quantity: undefined });
+        }
+    };
+
+    const handleEditProduct = (index: number) => {
+        const productToEdit = products[index];
+        form.setFieldsValue({
+            productId: [productToEdit.name],
+            quantity: productToEdit.quantity,
+        });
+        setEditingProductIndex(index);
+    };
+
+    const handleDeleteProduct = (index: number) => {
+        const newProducts = [...products];
+        newProducts.splice(index, 1);
+        setProducts(newProducts);
+    };
+
+    const handleSaveProduct = () => {
+        const productNames = form.getFieldValue("productId");
+        const quantity = form.getFieldValue("quantity");
+        if (productNames && quantity) {
+            const updatedProducts = [...products];
+            if (editingProductIndex !== null) {
+                productNames.forEach((productName: string) => {
+                    updatedProducts[editingProductIndex] = { name: productName, quantity };
+                });
+            }
+            setProducts(updatedProducts);
+            setEditingProductIndex(null);
+            form.resetFields(["productId", "quantity"]);
+        }
+    };
+
+    const columns = [
+        {
+            title: "Product Name",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "Quantity",
+            dataIndex: "quantity",
+            key: "quantity",
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            render: (_: any, __: any, index: number) => (
+                <Space>
+                    <Button onClick={() => handleEditProduct(index)}>Edit</Button>
+                    <Button danger onClick={() => handleDeleteProduct(index)}>
+                        Delete
+                    </Button>
+                </Space>
+            ),
+        },
+    ];
 
     return (
         <Form
@@ -33,51 +110,39 @@ const App: React.FC = () => {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
+            form={form}
         >
             <div className="m-8">
-                <Form.Item wrapperCol={{ offset: 8, span: 16, style: { textAlign: 'right' } }}>
-                    <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}> Submit </Button>
-                    <Button htmlType="reset">reset</Button>
+                <Form.Item wrapperCol={{ offset: 8, span: 16, style: { textAlign: "right" } }}>
+                    <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}>
+                        Submit
+                    </Button>
+                    <Button htmlType="reset">Reset</Button>
                 </Form.Item>
-                <div className="flex flex-row ">
+                <div className="flex flex-row">
                     <div className="w-[40%] mr-[5%]">
-                    <Form.Item<FieldType>
-                        label="firstName"
-                        name="firstName"
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Form.Item<FieldType> label="firstName" name="firstName">
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="lastName"
-                        name="lastName"
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Form.Item<FieldType> label="lastName" name="lastName">
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="email"
-                        name="email"
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Form.Item<FieldType> label="email" name="email">
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="phoneNumber"
-                        name="phoneNumber"
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Form.Item<FieldType> label="phoneNumber" name="phoneNumber">
+                            <Input />
+                        </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="isPaid"
-                        name="isPaid"
-                    >
-                        <Radio.Group>
-                            <Radio value="true">true</Radio>
-                            <Radio value="false">false</Radio>
-                        </Radio.Group>
-                    </Form.Item>
+                        <Form.Item<FieldType> label="isPaid" name="isPaid">
+                            <Radio.Group>
+                                <Radio value="true">true</Radio>
+                                <Radio value="false">false</Radio>
+                            </Radio.Group>
+                        </Form.Item>
                     </div>
                     <div className="w-[55%]">
                         <div className="flex flex-row">
@@ -85,40 +150,45 @@ const App: React.FC = () => {
                                 <Form.Item<FieldType>
                                     label="productId"
                                     name="productId"
-                                    rules={[{ required: true, message: "Must fill" }]}
                                 >
-                                    <Select
-                                        
-                                    >
-                                        <Select.Option>awd</Select.Option>
+                                    <Select mode="tags">
+                                        <Select.Option value="product1">Product 1</Select.Option>
+                                        <Select.Option value="product2">Product 2</Select.Option>
                                     </Select>
                                 </Form.Item>
 
                                 <Form.Item<FieldType>
                                     label="quantity"
                                     name="quantity"
-                                    rules={[{ required: true, message: "Must fill" }]}
                                 >
-                                    <InputNumber style={{width: "100%"}} />
+                                    <InputNumber style={{ width: "100%" }} />
                                 </Form.Item>
                             </div>
-                            <Button className="w-8 ml-4 h-[88px]">+</Button>
+                            {editingProductIndex === null ? (
+                                <Button className="w-8 ml-4 h-[88px]" onClick={handleAddProduct}>
+                                    +
+                                </Button>
+                            ) : (
+                                <Button className="w-8 ml-4 h-[88px]" onClick={handleSaveProduct}>
+                                    Save
+                                </Button>
+                            )}
                         </div>
 
-                        <Form.Item<FieldType>
-                            label="notes"
-                            name="notes"
-                            labelCol={{ span: 24 }}
-                            wrapperCol={{ span: 24 }}
-                        >
-                            <TextArea
-                                showCount
-                                maxLength={300}
-                                placeholder="..."
-                            />
+                        <Form.Item<FieldType> label="notes" name="notes" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                            <TextArea showCount maxLength={300} placeholder="..." />
                         </Form.Item>
+
                     </div>
                 </div>
+                <Table
+                    dataSource={products.map((product, index) => ({
+                        key: index,
+                        ...product,
+                    }))}
+                    columns={columns}
+                    pagination={false}
+                />
             </div>
         </Form>
     );
