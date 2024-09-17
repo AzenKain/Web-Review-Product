@@ -1,7 +1,7 @@
+import axios from 'axios';
 import { Perfume, ProductType, TagsDetailType, Product } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
-import axios from 'axios';
 import { SearchProductDto } from "./dtos/product";
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
@@ -336,6 +336,85 @@ export async function SearchProductWithOptions(name: string | null) {
         return res;
     } catch (error) {
         console.error("Error fetching: ", error);
+        throw error;
+    }
+}
+
+export async function CreateUser(userData: {
+    email?: string,
+    birthday?: string,
+    address?: string,
+    firstName?: string,
+    gender?: string,
+    lastName?: string,
+    password?: string,
+    phoneNumber?: string,
+    role?: string,
+    userId?: string,
+    username?: string,
+}) {
+    const mutation = `
+        mutation CreateUser {
+            CreateUser(
+                CreateUser: {
+                    email: "${userData.email}"
+                    birthday: "${userData.birthday}"
+                    address: "${userData.address}"
+                    firstName: "${userData.firstName}"
+                    gender: "${userData.gender}"
+                    lastName: "${userData.lastName}"
+                    password: "${userData.password}"
+                    phoneNumber: "${userData.phoneNumber}"
+                    role: "${userData.role}"
+                    userId: "${userData.userId}"
+                    username: "${userData.username}"
+                }
+            ) {
+                created_at
+                email
+                hash
+                id
+                isDisplay
+                refreshToken
+                role
+                secretKey
+                updated_at
+                username
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: mutation,
+        });
+
+        return response.data.data.CreateUser;
+    } catch (error) {
+        console.error('Error creating user: ', error);
+        throw error;
+    }
+}
+
+export async function getAllUserName() {
+    const query = `
+            query SearchUserWithOption {
+                SearchUserWithOption(SearchUser: { index: 1 }) {
+                    data {
+                        username
+                        id
+                    }
+                }
+            }
+        `
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        return response.data.data.SearchUserWithOption;
+    } catch (error) {
+        console.error('Error creating user: ', error);
         throw error;
     }
 }
