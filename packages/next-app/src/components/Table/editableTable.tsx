@@ -115,7 +115,7 @@ const App: React.FC = () => {
             title: 'ID',
             dataIndex: 'id',
             width: '10%',
-            fixed: 'left',
+            fixed: true,
             editable: true,
         },
         {
@@ -148,7 +148,7 @@ const App: React.FC = () => {
             title: 'Operation',
             dataIndex: 'operation',
             width: '150px',
-            fixed: 'right',
+            fixed: 'right' as 'right',
             render: (_: any, record: Item) => {
                 const editable = isEditing(record);
                 return editable ? (

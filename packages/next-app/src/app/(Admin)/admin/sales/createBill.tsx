@@ -1,7 +1,8 @@
 ﻿"use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Input, InputNumber, Radio, Select, Table, Space } from "antd";
 const { TextArea } = Input;
+import { SearchProductWithOptions } from '@/lib/api'
 
 type FieldType = {
     firstName?: string;
@@ -11,9 +12,12 @@ type FieldType = {
     notes?: string;
     isPaid?: boolean;
     products?: ProductType[];
+    productId?: string,
+    quantity?: number,
 };
 
 type ProductType = {
+    id: string;
     name: string;
     quantity: number;
 };
@@ -22,6 +26,20 @@ const App: React.FC = () => {
     const [form] = Form.useForm();
     const [products, setProducts] = useState<ProductType[]>([]);
     const [editingProductIndex, setEditingProductIndex] = useState<number | null>(null);
+    const [nameSuggest, setNameSuggest] = useState<{ name: string, id: string }[]>([]);
+
+    const getName = async () => {
+        try {
+            const data = await SearchProductWithOptions(null);
+            setNameSuggest(data?.data || []);
+        } catch (error) {
+            console.error("Error fetching product names", error);
+        }
+    };
+
+    useEffect(() => {
+        getName();
+    }, []);
 
     const onFinish = (values: FieldType) => {
         console.log("Success:", { ...values, products });
@@ -32,14 +50,18 @@ const App: React.FC = () => {
     };
 
     const handleAddProduct = () => {
-        const productNames = form.getFieldValue("productId");
+        const productIds = form.getFieldValue("productId");
         const quantity = form.getFieldValue("quantity");
-        if (productNames && quantity) {
+        if (productIds && quantity) {
             const currentProducts = form.getFieldValue("products") || [];
-            const newProducts = productNames.map((productName: string) => ({
-                name: productName,
-                quantity,
-            }));
+            const newProducts = productIds.map((productId: string) => {
+                const selectedProduct = nameSuggest.find((product) => product.id === productId);
+                return {
+                    id: productId,
+                    name: selectedProduct?.name || '',
+                    quantity,
+                };
+            });
             setProducts([...currentProducts, ...newProducts]);
             form.setFieldsValue({ productId: [], quantity: undefined });
         }
@@ -48,7 +70,7 @@ const App: React.FC = () => {
     const handleEditProduct = (index: number) => {
         const productToEdit = products[index];
         form.setFieldsValue({
-            productId: [productToEdit.name],
+            productId: [productToEdit.id],
             quantity: productToEdit.quantity,
         });
         setEditingProductIndex(index);
@@ -61,13 +83,18 @@ const App: React.FC = () => {
     };
 
     const handleSaveProduct = () => {
-        const productNames = form.getFieldValue("productId");
+        const productIds = form.getFieldValue("productId");
         const quantity = form.getFieldValue("quantity");
-        if (productNames && quantity) {
+        if (productIds && quantity) {
             const updatedProducts = [...products];
             if (editingProductIndex !== null) {
-                productNames.forEach((productName: string) => {
-                    updatedProducts[editingProductIndex] = { name: productName, quantity };
+                productIds.forEach((productId: string) => {
+                    const selectedProduct = nameSuggest.find((product) => product.id === productId);
+                    updatedProducts[editingProductIndex] = {
+                        id: productId,
+                        name: selectedProduct?.name || '',
+                        quantity,
+                    };
                 });
             }
             setProducts(updatedProducts);
@@ -147,20 +174,17 @@ const App: React.FC = () => {
                     <div className="w-[55%]">
                         <div className="flex flex-row">
                             <div className="flex-1">
-                                <Form.Item<FieldType>
-                                    label="productId"
-                                    name="productId"
-                                >
-                                    <Select mode="tags">
-                                        <Select.Option value="product1">Product 1</Select.Option>
-                                        <Select.Option value="product2">Product 2</Select.Option>
+                                <Form.Item<FieldType> label="productId" name="productId">
+                                    <Select mode="multiple" placeholder="Select products">
+                                        {nameSuggest.map((product) => (
+                                            <Select.Option key={product.id} value={product.id}>
+                                                {product.name}
+                                            </Select.Option>
+                                        ))}
                                     </Select>
                                 </Form.Item>
 
-                                <Form.Item<FieldType>
-                                    label="quantity"
-                                    name="quantity"
-                                >
+                                <Form.Item<FieldType> label="quantity" name="quantity">
                                     <InputNumber style={{ width: "100%" }} />
                                 </Form.Item>
                             </div>
@@ -178,7 +202,6 @@ const App: React.FC = () => {
                         <Form.Item<FieldType> label="notes" name="notes" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
                             <TextArea showCount maxLength={300} placeholder="..." />
                         </Form.Item>
-
                     </div>
                 </div>
                 <Table
