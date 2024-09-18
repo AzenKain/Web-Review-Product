@@ -19,14 +19,15 @@ export const InputAdd: React.FC<{
     const [name, setName] = useState("");
     const inputRef = useRef<InputRef>(null);
 
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => { setName(event.target.value); };
-
     const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         e.preventDefault();
         if (name) {
             const newItems = [...items, { type: typeTag, value: name }];
             setItems(newItems);
-            if (onChange) { onChange(multi ? [...items.map(i => i.value), name] : [name]); }
+            // Gọi hàm onChange để cập nhật giá trị trong Form.Item
+            if (onChange) {
+                onChange(multi ? [...items.map(i => i.value), name] : name);
+            }
             setName("");
             setTimeout(() => { inputRef.current?.focus(); }, 0);
         }
@@ -37,7 +38,6 @@ export const InputAdd: React.FC<{
             .then((data) => {
                 const tagItems = data.map((val) => ({ type: typeTag, value: val.value }));
                 setItems(tagItems);
-                if (onChange) { onChange(multi ? tagItems.map((item) => item.value) : tagItems[0]?.value);  }
             })
             .catch(() => console.log("error"));
     }, [typeTag]);
@@ -47,7 +47,9 @@ export const InputAdd: React.FC<{
             className="w-full"
             placeholder={`Select ${typeTag}`}
             mode={multi ? "multiple" : undefined}
-            onChange={onChange}  // Controlled onChange from Form.Item
+            onChange={(value) => {
+                if (onChange) onChange(value);  // Gọi hàm onChange của Form.Item khi có thay đổi
+            }}
             dropdownRender={(menu) => (
                 <>
                     {menu}
@@ -57,7 +59,7 @@ export const InputAdd: React.FC<{
                             placeholder="Please enter item"
                             ref={inputRef}
                             value={name}
-                            onChange={onNameChange}
+                            onChange={(e) => setName(e.target.value)}
                             onKeyDown={(e) => e.stopPropagation()}
                         />
                         <Button type="text" icon={<PlusOutlined />} onClick={addItem}>

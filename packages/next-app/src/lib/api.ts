@@ -3,6 +3,7 @@ import { Perfume, ProductType, TagsDetailType, Product } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import { SearchProductDto } from "./dtos/product";
+import { ProductData, ProductDetails } from '@/lib/dtos/product'
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
@@ -121,7 +122,7 @@ export async function GetHotSaleProductForHome(sex: string) {
                 id: item.id
             } as Perfume)
         }
-        return {maxValue: maxValue, data: dataReturn};
+        return { maxValue: maxValue, data: dataReturn };
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
@@ -186,7 +187,7 @@ export async function GetProductForSearch(dto: SearchProductDto) {
             } as Perfume);
         }
 
-        return {maxValue: maxValue, data: dataReturn};
+        return { maxValue: maxValue, data: dataReturn };
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
@@ -276,7 +277,6 @@ export async function GetProductById(id: number) {
                 }
             }
         }
-
   `;
 
     try {
@@ -299,19 +299,19 @@ export async function GetProductById(id: number) {
 export async function uploadFile(data: File, accessToken: string) {
     try {
         const formData = new FormData();
-        formData.append('file', data); 
+        formData.append('file', data);
         const response = await axios.post('/media/upload', formData, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'multipart/form-data', 
+                'Content-Type': 'multipart/form-data',
             },
         });
         if (response.status == 200) {
-            return Backend_URL + response.data['url'];  
+            return Backend_URL + response.data['url'];
         }
     } catch (error: any) {
         console.error('Upload failed:', error.response ? error.response.data : error.message);
-        throw error; 
+        throw error;
     }
 }
 
@@ -441,6 +441,25 @@ export async function getUserById(id: string, token: string) {
                 secretKey
                 updated_at
                 username
+                details {
+                    address
+                    gender
+                    id
+                    imgDisplay
+                    phoneNumber
+                    birthday
+                    firstName
+                    lastName
+                }
+                created_at
+                actionLog {
+                    action
+                    created_at
+                    details
+                    entityId
+                    entityName
+                    id
+                }
             }
         }
     `;
@@ -464,7 +483,7 @@ export async function getUserById(id: string, token: string) {
     }
 }
 
-export async function getAnalyticsRevenue(dto : any, accessToken?: string) {
+export async function getAnalyticsRevenue(dto: any, accessToken?: string) {
     const query = `
         query AnalyticRevenue {
             AnalyticRevenue{
@@ -504,12 +523,69 @@ export async function getAnalyticsRevenue(dto : any, accessToken?: string) {
         return response.data.data.AnalyticRevenue;
     } catch (error) {
         console.error("Error fetching users: ", error);
+    }
+}
+export async function getAllProduct() {
+    const query = `
+        query SearchProductWithOptions {
+            SearchProductWithOptions(SearchProduct: { index: 1 }) {
+                maxValue
+                data {
+                    buyCount
+                    category
+                    created_at
+                    displayCost
+                    id
+                    isDisplay
+                    name
+                    originCost
+                    rating
+                    stockQuantity
+                    updated_at
+                    details {
+                        id
+                        brand {
+                            value
+                        }
+                        concentration {
+                            value
+                        }
+                        fragranceNotes {
+                            value
+                        }
+                        longevity {
+                            value
+                        }
+                        sex {
+                            value
+                        }
+                        sillage {
+                            value
+                        }
+                        size {
+                            value
+                        }
+                    }
+                }
+            }
+        }
+    `
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', { query });
+
+        const dataReturn: ProductData[] = response.data.data.SearchProductWithOptions.data;
+        const maxValue = response.data.data.SearchProductWithOptions.maxValue
+
+        return { maxValue: maxValue, data: dataReturn };
+    } catch (error) {
+        console.error('Error fetching: ', error);
         throw error;
     }
 }
 
 
-export async function getAnalyticsFavorite(dto : any, accessToken?: string) {
+export async function getAnalyticsFavorite(dto: any, accessToken?: string) {
     const query = `
         query AnalyticFavorite {
             AnalyticFavorite {
@@ -544,7 +620,7 @@ export async function getAnalyticsFavorite(dto : any, accessToken?: string) {
     }
 }
 
-export async function getAnalyticsProduct(dto : any, accessToken?: string) {
+export async function getAnalyticsProduct(dto: any, accessToken?: string) {
     const query = `
         query AnalyticProduct {
             AnalyticProduct {
@@ -576,6 +652,56 @@ export async function getAnalyticsProduct(dto : any, accessToken?: string) {
         return response.data.data.AnalyticProduct;
     } catch (error) {
         console.error("Error fetching users: ", error);
+    }
+}
+export async function getProductById(id: number) {
+    const query = `
+        query GetProductById {
+            GetProductById(productId: ${id}) {
+                buyCount
+                displayCost
+                id
+                name
+                stockQuantity
+                details {
+                    id
+                    brand {
+                        value
+                    }
+                    concentration {
+                        value
+                    }
+                    fragranceNotes {
+                        value
+                    }
+                    longevity {
+                        value
+                    }
+                    sex {
+                        value
+                    }
+                    sillage {
+                        value
+                    }
+                    size {
+                        value
+                    }
+                }
+                originCost
+            }
+        }
+
+    `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        const productData = response.data?.data?.GetProductById;
+        return productData;
+    } catch (error) {
+        console.error('Error fetching product by id:', error);
         throw error;
     }
 }
