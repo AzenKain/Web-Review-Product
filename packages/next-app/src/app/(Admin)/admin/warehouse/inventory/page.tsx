@@ -16,6 +16,10 @@ export default function Page() {
         setActiveKey(id);
     }
 
+    const changeUpdateKey = (id: number) => {
+        setUpdateKey(id);
+    }
+
     const onChange = (key: any) => {
         console.log(key);
     };
@@ -29,7 +33,7 @@ export default function Page() {
         {
             key: '2',
             label: <div onClick={() => { chageActiveKey('2') }}>Danh mục sản phẩm</div>,
-            children: <SearchProduct />,
+            children: <SearchProduct setUpdateKey={changeUpdateKey} changeTab={chageActiveKey} />,
         },
         {
             key: '3',

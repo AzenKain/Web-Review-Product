@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Button, Form, Input, InputNumber } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
-import { getProductById } from '@/lib/api'
 
 type FieldType = {
+    id: string;
     name: string;
     displayCost: string;
     originCost?: string;
@@ -21,14 +21,12 @@ type FieldType = {
     link?: string[];
 };
 
-interface UpdateProductProps {
-    updateKey?: number;
-    changeTab?: (key: string) => void;
+type updateProductprops = {
+    updateKey?: number,
+    changeTab?: (a : string) => void
 }
 
-const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
-    const [form] = Form.useForm();
-    const formRef = useRef(form);
+const App: React.FC<updateProductprops> = ({updateKey, changeTab}) => {
     const onFinish = (values: FieldType) => {
         console.log("Success:", values);
     };
@@ -37,20 +35,10 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
         console.log("Failed:", errorInfo);
     };
 
-    const fetchData = async (id: number) => {
-        if (id) {
-            const data = await getProductById(id);
-        }
-    }
-
-    useEffect(() => {
-        fetchData(updateKey!)
-    }, [updateKey])
-
     return (
         <Form
             className="m-8 box-border"
-            name="basic"
+            name="updateProduct"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             onFinish={onFinish}
@@ -59,6 +47,14 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
         >
             <div className="flex w-full flex-row">
                 <div className="w-[60%] mr-[5%]">
+                    <Form.Item<FieldType>
+                        label="id"
+                        name="id"
+                        rules={[{ required: true, message: "Must fill" }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
                     <Form.Item<FieldType>
                         label="name"
                         name="name"
@@ -85,6 +81,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="brand"
                         name="brand"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="brand" />
                     </Form.Item>
@@ -92,6 +89,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="longevity"
                         name="longevity"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="longevity" />
                     </Form.Item>
@@ -99,6 +97,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="concentration"
                         name="concentration"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="concentration" />
                     </Form.Item>
@@ -106,6 +105,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="fragranceNotes"
                         name="fragranceNotes"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="fragranceNotes" />
                     </Form.Item>
@@ -113,6 +113,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="sex"
                         name="sex"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="sex" />
                     </Form.Item>
@@ -120,6 +121,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="sillage"
                         name="sillage"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="sillage" />
                     </Form.Item>
@@ -127,6 +129,7 @@ const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
                     <Form.Item<FieldType>
                         label="size"
                         name="size"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="size" multi={true} />
                     </Form.Item>

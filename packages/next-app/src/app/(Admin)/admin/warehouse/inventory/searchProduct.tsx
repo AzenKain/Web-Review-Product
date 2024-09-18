@@ -1,11 +1,11 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
 import type { TableColumnsType, TableProps } from 'antd';
 import { Button, Space, Table, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { InputRef, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
-import { getAllProduct } from '@/lib/api'
+import { getAllProduct, deleteProductById } from '@/lib/api'
 import { ProductData } from '@/lib/dtos/product'
 type OnChange = NonNullable<TableProps<DataType>['onChange']>;
 type Filters = Parameters<OnChange>[1];
@@ -33,191 +33,12 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-const data: DataType[] = [
-    {
-        id: '1',
-        key: '1',
-        name: 'John Brown',
-        buyCount: 32,
-        created_at: '2023-01-01',
-        updated_at: '2023-02-01',
-        displayCost: 100,
-        originCost: '90',
-        stockQuantity: 20,
-        brand: 'Brand A',
-        concentration: 'Medium',
-        fragranceNotes: 'Floral',
-        longevity: 'Long',
-        sex: 'Male',
-        sillage: 'Strong',
-        size: '100ml',
-    },
-    {
-        id: '2',
-        key: '2',
-        name: 'Jane Doe',
-        buyCount: 45,
-        created_at: '2023-03-10',
-        updated_at: '2023-04-15',
-        displayCost: 120,
-        originCost: '110',
-        stockQuantity: 35,
-        brand: 'Brand B',
-        concentration: 'High',
-        fragranceNotes: 'Citrus',
-        longevity: 'Moderate',
-        sex: 'Female',
-        sillage: 'Mild',
-        size: '50ml',
-    },
-    {
-        id: '3',
-        key: '3',
-        name: 'Mike Smith',
-        buyCount: 27,
-        created_at: '2023-05-01',
-        updated_at: '2023-06-01',
-        displayCost: 80,
-        originCost: '70',
-        stockQuantity: 15,
-        brand: 'Brand C',
-        concentration: 'Light',
-        fragranceNotes: 'Woody',
-        longevity: 'Short',
-        sex: 'Male',
-        sillage: 'Weak',
-        size: '75ml',
-    },
-    {
-        id: '4',
-        key: '4',
-        name: 'Alice Johnson',
-        buyCount: 60,
-        created_at: '2023-02-14',
-        updated_at: '2023-03-01',
-        displayCost: 150,
-        originCost: '140',
-        stockQuantity: 50,
-        brand: 'Brand D',
-        concentration: 'Very High',
-        fragranceNotes: 'Fruity',
-        longevity: 'Very Long',
-        sex: 'Female',
-        sillage: 'Strong',
-        size: '150ml',
-    },
-    {
-        id: '5',
-        key: '5',
-        name: 'Robert Green',
-        buyCount: 18,
-        created_at: '2023-07-20',
-        updated_at: '2023-08-10',
-        displayCost: 95,
-        originCost: '85',
-        stockQuantity: 10,
-        brand: 'Brand E',
-        concentration: 'Medium',
-        fragranceNotes: 'Spicy',
-        longevity: 'Moderate',
-        sex: 'Male',
-        sillage: 'Mild',
-        size: '100ml',
-    },
-    {
-        id: '6',
-        key: '6',
-        name: 'Emily White',
-        buyCount: 52,
-        created_at: '2023-09-01',
-        updated_at: '2023-09-20',
-        displayCost: 110,
-        originCost: '100',
-        stockQuantity: 40,
-        brand: 'Brand F',
-        concentration: 'Low',
-        fragranceNotes: 'Vanilla',
-        longevity: 'Long',
-        sex: 'Female',
-        sillage: 'Strong',
-        size: '125ml',
-    },
-    {
-        id: '7',
-        key: '7',
-        name: 'David Lee',
-        buyCount: 38,
-        created_at: '2023-10-05',
-        updated_at: '2023-11-01',
-        displayCost: 140,
-        originCost: '130',
-        stockQuantity: 30,
-        brand: 'Brand G',
-        concentration: 'Medium',
-        fragranceNotes: 'Floral',
-        longevity: 'Short',
-        sex: 'Male',
-        sillage: 'Mild',
-        size: '50ml',
-    },
-    {
-        id: '8',
-        key: '8',
-        name: 'Sophia Black',
-        buyCount: 22,
-        created_at: '2023-12-12',
-        updated_at: '2024-01-01',
-        displayCost: 85,
-        originCost: '75',
-        stockQuantity: 25,
-        brand: 'Brand H',
-        concentration: 'Light',
-        fragranceNotes: 'Woody',
-        longevity: 'Moderate',
-        sex: 'Female',
-        sillage: 'Weak',
-        size: '100ml',
-    },
-    {
-        id: '9',
-        key: '9',
-        name: 'Henry Brown',
-        buyCount: 29,
-        created_at: '2023-11-11',
-        updated_at: '2023-12-01',
-        displayCost: 130,
-        originCost: '120',
-        stockQuantity: 28,
-        brand: 'Brand I',
-        concentration: 'High',
-        fragranceNotes: 'Citrus',
-        longevity: 'Very Long',
-        sex: 'Male',
-        sillage: 'Strong',
-        size: '75ml',
-    },
-    {
-        id: '10',
-        key: '10',
-        name: 'Olivia Davis',
-        buyCount: 33,
-        created_at: '2024-01-02',
-        updated_at: '2024-02-01',
-        displayCost: 105,
-        originCost: '95',
-        stockQuantity: 12,
-        brand: 'Brand J',
-        concentration: 'Very High',
-        fragranceNotes: 'Spicy',
-        longevity: 'Very Long',
-        sex: 'Female',
-        sillage: 'Very Strong',
-        size: '150ml',
-    },
-];
+type searchProductprops = {
+    setUpdateKey: (a : number) => void,
+    changeTab: (a: string) => void
+}
 
-
-const App: React.FC = () => {
+const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
     const [filteredInfo, setFilteredInfo] = useState<Filters>({});
     const [sortedInfo, setSortedInfo] = useState<Sorts>({});
     const [searchText, setSearchText] = useState('');
@@ -267,6 +88,10 @@ const App: React.FC = () => {
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
     };
+
+    const deleteCell = (cell: DataType) => {
+        setData(e => e.filter(i => i != cell))
+    }
 
     const handleReset = (clearFilters: () => void) => {
         clearFilters();
@@ -449,7 +274,7 @@ const App: React.FC = () => {
                 .filter(Boolean))).map(brand => ({
                     text: brand!,
                     value: brand!
-            })),
+                })),
             filteredValue: filteredInfo.brand || null,
             onFilter: (value, record) => record.brand?.includes(value as string)!,
             ellipsis: true,
@@ -463,7 +288,7 @@ const App: React.FC = () => {
                 .filter(Boolean))).map(concentration => ({
                     text: concentration!,
                     value: concentration!
-            })),
+                })),
             sortOrder: sortedInfo.columnKey === 'concentration' ? sortedInfo.order : null,
             ellipsis: true,
         },
@@ -528,14 +353,42 @@ const App: React.FC = () => {
             sortOrder: sortedInfo.columnKey === 'size' ? sortedInfo.order : null,
             ellipsis: true,
         },
+        {
+            title: '',
+            width: 50,
+            dataIndex: 'update',
+            key: 'update',
+            fixed: 'right' as 'right',
+            render: (_, record) => (
+                <Button
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                        setUpdateKey(Number(record.id));
+                        changeTab('4')
+                    }}
+                />
+            ),
+        },
+        {
+            title: '',
+            width: 50,
+            dataIndex: 'delete',
+            key: 'delete',
+            fixed: 'right' as 'right',
+            render: (_, record) => (
+                <Button
+                    icon={<DeleteOutlined />}
+                    onClick={() => {
+                        deleteCell(record)
+                        deleteProductById(Number(record.id))
+                    }}
+                />
+            ),
+        },
     ];
 
     return (
         <div className="w-full">
-            <Space style={{ marginBottom: 16, textAlign: "right", width: "100%" }} className="m-8">
-                <Button onClick={clearFilters}>Clear filters</Button>
-                <Button onClick={clearAll}>Clear filters and sorters</Button>
-            </Space>
             <Table columns={columns} className="m-8" dataSource={data} onChange={handleChange} scroll={{ x: 1300 }} />
         </div>
     );

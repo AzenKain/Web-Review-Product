@@ -593,3 +593,24 @@ export async function getProductById(id: number) {
         throw error;
     }
 }
+
+export async function deleteProductById(id: number) {
+    const query = `
+        mutation DeleteProduct {
+            DeleteProduct(DeleteProduct: { productId: ${id} }) {
+                message
+            }
+        }
+    `
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        const productData = response.data?.data?.GetProductById;
+        return productData;
+    } catch (error) {
+        console.error('Error fetching product by id:', error);
+        throw error;
+    } 
+}
