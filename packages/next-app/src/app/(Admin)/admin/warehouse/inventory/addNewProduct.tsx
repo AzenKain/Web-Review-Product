@@ -4,6 +4,7 @@ import { Button, Form, Input, InputNumber } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
 
 type FieldType = {
+    id: string;
     name: string;
     displayCost: string;
     originCost?: string;
@@ -32,7 +33,7 @@ const App: React.FC = () => {
     return (
         <Form
             className="m-8 box-border"
-            name="basic"
+            name="updateProduct"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 16 }}
             onFinish={onFinish}
@@ -41,6 +42,14 @@ const App: React.FC = () => {
         >
             <div className="flex w-full flex-row">
                 <div className="w-[60%] mr-[5%]">
+                    <Form.Item<FieldType>
+                        label="id"
+                        name="id"
+                        rules={[{ required: true, message: "Must fill" }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
                     <Form.Item<FieldType>
                         label="name"
                         name="name"
