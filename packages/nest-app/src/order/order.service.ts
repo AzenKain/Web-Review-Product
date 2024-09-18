@@ -97,7 +97,7 @@ export class OrderService {
         return product
     }
     async SearchOrderWithOptionsServices(dto: SearchOrderDto, user: UserEntity) {
-        // this.CheckRoleUser(user);
+        this.CheckRoleUser(user);
 
         const query = this.orderRepository.createQueryBuilder('order')
             .leftJoinAndSelect('order.customerInfo', 'customerInfo')

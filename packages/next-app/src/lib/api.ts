@@ -7,15 +7,15 @@ import { ProductData, ProductDetails } from '@/lib/dtos/product'
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
-        const response = await fetch(Backend_URL + "/auth/refreshToken", {
-            method: "GET",
+        const response = await fetch(Backend_URL + "/auth/refresh", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${refreshToken}`
             },
         });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
             const data = await response.json();
             return data.access_token;
         } else {
@@ -122,7 +122,7 @@ export async function GetHotSaleProductForHome(sex: string) {
                 id: item.id
             } as Perfume)
         }
-        return {maxValue: maxValue, data: dataReturn};
+        return { maxValue: maxValue, data: dataReturn };
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
@@ -187,7 +187,7 @@ export async function GetProductForSearch(dto: SearchProductDto) {
             } as Perfume);
         }
 
-        return {maxValue: maxValue, data: dataReturn};
+        return { maxValue: maxValue, data: dataReturn };
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
@@ -299,19 +299,19 @@ export async function GetProductById(id: number) {
 export async function uploadFile(data: File, accessToken: string) {
     try {
         const formData = new FormData();
-        formData.append('file', data); 
+        formData.append('file', data);
         const response = await axios.post('/media/upload', formData, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'multipart/form-data', 
+                'Content-Type': 'multipart/form-data',
             },
         });
         if (response.status == 200) {
-            return Backend_URL + response.data['url'];  
+            return Backend_URL + response.data['url'];
         }
     } catch (error: any) {
         console.error('Upload failed:', error.response ? error.response.data : error.message);
-        throw error; 
+        throw error;
     }
 }
 
@@ -483,6 +483,48 @@ export async function getUserById(id: string, token: string) {
     }
 }
 
+export async function getAnalyticsRevenue(dto: any, accessToken?: string) {
+    const query = `
+        query AnalyticRevenue {
+            AnalyticRevenue{
+                dataAllTime {
+                    totalOrder
+                    totalProduct
+                    totalProfit
+                    totalRevenue
+                }
+                dataMonth {
+                    Date
+                    productSold
+                    profit
+                    revenue
+                }
+                dataWeek {
+                    name
+                    xData
+                    yData
+                }
+            }
+        }
+  `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.AnalyticRevenue;
+    } catch (error) {
+        console.error("Error fetching users: ", error);
+    }
+}
 export async function getAllProduct() {
     const query = `
         query SearchProductWithOptions {
@@ -542,6 +584,85 @@ export async function getAllProduct() {
     }
 }
 
+
+export async function getAnalyticsFavorite(dto: any, accessToken?: string) {
+    const query = `
+        query AnalyticFavorite {
+            AnalyticFavorite {
+                dataBrand {
+                    type
+                    value
+                }
+                dataProduct {
+                    brand
+                    displayCost
+                    imgDisplay
+                    name
+                    totalProfit
+                    totalQuantity
+                }
+                dataSex {
+                    type
+                    value
+                }
+            }
+        }
+
+  `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.AnalyticFavorite;
+    } catch (error) {
+        console.error("Error fetching users: ", error);
+        throw error;
+    }
+}
+
+export async function getAnalyticsProduct(dto: any, accessToken?: string) {
+    const query = `
+        query AnalyticProduct {
+            AnalyticProduct {
+                dataBrand {
+                    type
+                    value
+                }
+                dataSex {
+                    type
+                    value
+                }
+            }
+        }
+
+  `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.AnalyticProduct;
+    } catch (error) {
+        console.error("Error fetching users: ", error);
+    }
+}
 export async function getProductById(id: number) {
     const query = `
         query GetProductById {

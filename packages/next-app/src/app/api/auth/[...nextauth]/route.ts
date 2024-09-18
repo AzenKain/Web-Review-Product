@@ -21,7 +21,7 @@ class JwtPayload {
 
 
 async function refreshToken(token: JWT): Promise<JWT> {
-    const res = await fetch(Backend_URL + "/auth/refreshToken", {
+    const res = await fetch(Backend_URL + "/auth/refresh", {
         method: "POST",
         headers: {
             authorization: `Refresh ${token.refreshToken}`,
