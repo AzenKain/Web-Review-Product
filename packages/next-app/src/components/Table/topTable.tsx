@@ -1,41 +1,15 @@
+import { FavoriteElementProductType } from "@/types";
 import Image from "next/image";
 
-const productData = [
-  {
-    image: "/images/product/product-01.png",
-    name: "Apple Watch Series 7",
-    brand: "Electronics",
-    price: 296,
-    sold: 22,
-    profit: 45,
-  },
-  {
-    image: "/images/product/product-02.png",
-    name: "Macbook Pro M1",
-    brand: "Electronics",
-    price: 546,
-    sold: 12,
-    profit: 125,
-  },
-  {
-    image: "/images/product/product-03.png",
-    name: "Dell Inspiron 15",
-    brand: "Electronics",
-    price: 443,
-    sold: 64,
-    profit: 247,
-  },
-  {
-    image: "/images/product/product-04.png",
-    name: "HP Probook 450",
-    brand: "Electronics",
-    price: 499,
-    sold: 72,
-    profit: 103,
-  },
-];
 
-const TableTop = () => {
+interface TableTopProps {
+  productData: FavoriteElementProductType[];
+}
+
+const TableTop = ({ productData }: TableTopProps) => {
+  if (!productData || productData.length === 0) {
+    return <div>No data available</div>; 
+  }
   return (
     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="px-4 py-6 md:px-6 xl:px-7.5">
@@ -71,7 +45,7 @@ const TableTop = () => {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="h-12.5 w-15 rounded-md">
                 <Image
-                  src={product.image}
+                  src={product.imgDisplay}
                   width={60}
                   height={50}
                   alt="Product"
@@ -89,19 +63,19 @@ const TableTop = () => {
           </div>
           <div className="col-span-1 flex items-center">
             <p className="text-sm text-black dark:text-white">
-              ${product.price}
+              {product.displayCost.toLocaleString('vi-VN')}đ
             </p>
           </div>
           <div className="col-span-1 flex items-center">
-            <p className="text-sm text-black dark:text-white">{product.sold}</p>
+            <p className="text-sm text-black dark:text-white">{product.totalQuantity}</p>
           </div>
           <div className="col-span-1 flex items-center">
-            <p className="text-sm text-meta-3">${product.profit}</p>
+            <p className="text-sm text-meta-3">{product.totalProfit.toLocaleString('vi-VN')}đ</p>
           </div>
         </div>
       ))}
     </div>
-  );
+  )
 };
 
 export default TableTop;

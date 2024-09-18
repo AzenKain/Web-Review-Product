@@ -94,7 +94,17 @@ input DeliveryInfoInp {
 
 type Favorite {
   dataBrand: [FavoriteElementWeekType!]!
+  dataProduct: [FavoriteElementProductType!]!
   dataSex: [FavoriteElementWeekType!]!
+}
+
+type FavoriteElementProductType {
+  brand: String!
+  displayCost: Float!
+  imgDisplay: String!
+  name: String!
+  totalProfit: Float!
+  totalQuantity: Float!
 }
 
 type FavoriteElementWeekType {

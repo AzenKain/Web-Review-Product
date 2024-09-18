@@ -23,7 +23,8 @@ const initialState: InitialState = {
     },
     dataFavoritePage: {
         dataBrand: [],
-        dataSex: []
+        dataSex: [],
+        dataProduct: []
     },
     dataProductPage: {
         dataBrand: [],

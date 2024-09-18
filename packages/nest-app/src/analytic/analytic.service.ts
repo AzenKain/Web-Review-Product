@@ -1,11 +1,13 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RevenueType } from 'src/types/analytics';
+import { FavoriteElementProductType, RevenueType } from 'src/types/analytics';
 import { CustomerInfoEntity, DeliveryInfoEntity, OrderEntity, OrderProductEntity } from 'src/types/order';
 import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } from 'src/types/product';
 import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
+
+
 
 @Injectable()
 export class AnalyticService {
@@ -169,6 +171,7 @@ export class AnalyticService {
             .leftJoinAndSelect('order.orderProducts', 'orderProducts')
             .leftJoinAndSelect('orderProducts.product', 'product')
             .leftJoinAndSelect('product.details', 'details')
+            .leftJoinAndSelect('details.imgDisplay', 'imgDisplay')
             .leftJoinAndSelect('details.brand', 'brand')
             .leftJoinAndSelect('details.sex', 'sex')
 
@@ -214,7 +217,35 @@ export class AnalyticService {
             dataBrandPer.push({ type: b, value: dataBrand[b] })
         }
 
-        return {dataBrand : dataBrandPer, dataSex: dataSexPer}
+        const productStats: { [productId: string]: FavoriteElementProductType } = {};
+
+        orders.forEach(order => {
+            order.orderProducts.forEach(orderProduct => {
+                const productId = orderProduct.product.id;
+
+                if (!productStats[productId]) {
+                    productStats[productId] = {
+                        name: orderProduct.product.name,
+                        imgDisplay: orderProduct.product.details?.imgDisplay[0]?.url ? orderProduct.product.details?.imgDisplay[0]?.url : '', 
+                        brand: orderProduct.product.details?.brand?.value ? orderProduct.product.details?.brand?.value : '', 
+                        totalQuantity: 0,                       
+                        totalProfit: 0,                            
+                        displayCost: orderProduct.product?.displayCost
+                    };
+                }
+        
+                productStats[productId].totalQuantity += orderProduct.quantity;
+                productStats[productId].totalProfit += orderProduct.quantity * (orderProduct.unitPrice - (orderProduct.unitPrice * orderProduct?.discount ? orderProduct.discount : 0)) - orderProduct.quantity * orderProduct.product.originCost
+            });
+        });
+        
+      
+        const topProducts = Object.values(productStats)
+            .sort((a, b) => b.totalQuantity - a.totalQuantity)
+            .slice(0, 10); 
+        
+
+        return {dataBrand : dataBrandPer, dataSex: dataSexPer, dataProduct: topProducts}
     }
 
     async analyticsProduct(user: UserEntity) {

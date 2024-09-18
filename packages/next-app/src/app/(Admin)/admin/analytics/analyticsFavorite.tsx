@@ -95,7 +95,7 @@ const AppFavorite: React.FC = () => {
             <div ref={columnContainerRef} id="containerColumProduct" style={{ width: '90%', height: '400px', margin: '50px' }}></div>
             <div className='font-bold text-lg mt-[50px]'>Biểu đồ xu hướng của mua hàng theo giới tính</div>
             <div ref={pieContainerRef} id="containerPieProduct" style={{ width: '90%', height: '400px', margin: '50px' }}></div>
-            <div className='m-[50px]'><TableTop></TableTop></div>
+            <div className='m-[50px]'><TableTop productData={dataFavoritePage.dataProduct}></TableTop></div>
         </>
     );
 };

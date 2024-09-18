@@ -593,12 +593,21 @@ export async function getAnalyticsFavorite(dto: any, accessToken?: string) {
                     type
                     value
                 }
+                dataProduct {
+                    brand
+                    displayCost
+                    imgDisplay
+                    name
+                    totalProfit
+                    totalQuantity
+                }
                 dataSex {
                     type
                     value
                 }
             }
         }
+
   `;
 
     try {
