@@ -92,6 +92,16 @@ input DeliveryInfoInp {
   district: String
 }
 
+type Favorite {
+  dataBrand: [FavoriteElementWeekType!]!
+  dataSex: [FavoriteElementWeekType!]!
+}
+
+type FavoriteElementWeekType {
+  type: String!
+  value: Float!
+}
+
 type ImageDetail {
   id: ID!
   link: [String!]
@@ -168,6 +178,16 @@ type Product {
   updated_at: DateTime!
 }
 
+type ProductAnalytic {
+  dataBrand: [ProductAnalyticElementWeekType!]!
+  dataSex: [ProductAnalyticElementWeekType!]!
+}
+
+type ProductAnalyticElementWeekType {
+  type: String!
+  value: Float!
+}
+
 type ProductDetail {
   brand: TagsDetail
   concentration: TagsDetail
@@ -196,6 +216,9 @@ input ProductDetailInp {
 }
 
 type Query {
+  AnalyticFavorite: Favorite!
+  AnalyticProduct: ProductAnalytic!
+  AnalyticRevenue: Revenue!
   GetBlogById(blogId: Float!): Blog!
   GetOrderById(orderId: Float!): Order!
   GetProductById(productId: Float!): Product!
@@ -210,6 +233,32 @@ type Query {
 
 type ResponseType {
   message: String!
+}
+
+type Revenue {
+  dataAllTime: RevenueAllTimeType!
+  dataMonth: [RevenueElementMonthType!]!
+  dataWeek: [RevenueElementWeekType!]!
+}
+
+type RevenueAllTimeType {
+  totalOrder: Float!
+  totalProduct: Float!
+  totalProfit: Float!
+  totalRevenue: Float!
+}
+
+type RevenueElementMonthType {
+  Date: String!
+  productSold: Float
+  profit: Float
+  revenue: Float
+}
+
+type RevenueElementWeekType {
+  name: String!
+  xData: String!
+  yData: Float!
 }
 
 input SearchBlogDto {

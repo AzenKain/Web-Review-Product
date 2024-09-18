@@ -6,15 +6,15 @@ import { SearchProductDto } from "./dtos/product";
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
-        const response = await fetch(Backend_URL + "/auth/refreshToken", {
-            method: "GET",
+        const response = await fetch(Backend_URL + "/auth/refresh", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${refreshToken}`
             },
         });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
             const data = await response.json();
             return data.access_token;
         } else {
@@ -460,6 +460,122 @@ export async function getUserById(id: string, token: string) {
         return response.data.data.GetUserById;
     } catch (error) {
         console.error('Error fetching user: ', error);
+        throw error;
+    }
+}
+
+export async function getAnalyticsRevenue(dto : any, accessToken?: string) {
+    const query = `
+        query AnalyticRevenue {
+            AnalyticRevenue{
+                dataAllTime {
+                    totalOrder
+                    totalProduct
+                    totalProfit
+                    totalRevenue
+                }
+                dataMonth {
+                    Date
+                    productSold
+                    profit
+                    revenue
+                }
+                dataWeek {
+                    name
+                    xData
+                    yData
+                }
+            }
+        }
+  `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.AnalyticRevenue;
+    } catch (error) {
+        console.error("Error fetching users: ", error);
+        throw error;
+    }
+}
+
+
+export async function getAnalyticsFavorite(dto : any, accessToken?: string) {
+    const query = `
+        query AnalyticFavorite {
+            AnalyticFavorite {
+                dataBrand {
+                    type
+                    value
+                }
+                dataSex {
+                    type
+                    value
+                }
+            }
+        }
+  `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.AnalyticFavorite;
+    } catch (error) {
+        console.error("Error fetching users: ", error);
+        throw error;
+    }
+}
+
+export async function getAnalyticsProduct(dto : any, accessToken?: string) {
+    const query = `
+        query AnalyticProduct {
+            AnalyticProduct {
+                dataBrand {
+                    type
+                    value
+                }
+                dataSex {
+                    type
+                    value
+                }
+            }
+        }
+
+  `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            { query: query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        return response.data.data.AnalyticProduct;
+    } catch (error) {
+        console.error("Error fetching users: ", error);
         throw error;
     }
 }

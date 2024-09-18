@@ -10,7 +10,7 @@ export default function layout({
 }) {
 
     return (
-        <div className="bg-white min-h-screen">
+        <div  className="bg-white min-h-screen ">
             <Header />
             {/*<Breadcrumb />*/}
             <main className="">
