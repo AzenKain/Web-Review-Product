@@ -5,6 +5,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
+import { getAllProduct } from '@/lib/api'
+import { ProductData } from '@/lib/dtos/product'
 type OnChange = NonNullable<TableProps<DataType>['onChange']>;
 type Filters = Parameters<OnChange>[1];
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -220,7 +222,41 @@ const App: React.FC = () => {
     const [sortedInfo, setSortedInfo] = useState<Sorts>({});
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
+    const [data, setData] = useState<DataType[]>([])
     const searchInput = useRef<InputRef>(null);
+
+    const fetchData = async () => {
+        const { data } = await getAllProduct()
+        return data
+    }
+
+    useEffect(() => {
+        const fetchAndSetData = async () => {
+            const products = await fetchData();
+            console.log(products)
+
+            setData(products.map((e: ProductData) => ({
+                id: e.id,
+                key: e.id,
+                name: e.name,
+                buyCount: e.buyCount,
+                created_at: e.created_at,
+                updated_at: e.updated_at,
+                displayCost: e.displayCost,
+                originCost: e.originCost?.toString(),
+                stockQuantity: e.stockQuantity,
+                brand: e.details?.brand?.value,
+                concentration: e.details?.concentration?.value,
+                fragranceNotes: e.details?.fragranceNotes?.value,
+                longevity: e.details?.longevity?.value,
+                sex: e.details?.sex?.value,
+                sillage: e.details?.sillage?.value,
+                size: e.details?.size?.map(s => s?.value).filter(Boolean).join(', '),
+            })));
+        };
+
+        fetchAndSetData();
+    }, []);
 
     const handleSearch = (
         selectedKeys: string[],
@@ -336,15 +372,13 @@ const App: React.FC = () => {
             key: 'id',
             ellipsis: true,
             width: 50,
+            fixed: true
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
             width: 300,
-            filters: [
-                { text: 'John Brown', value: 'John Brown' },
-            ],
             filteredValue: filteredInfo.name || null,
             onFilter: (value, record) => record.name?.includes(value as string)!,
             sorter: (a, b) => a.name?.length! - b.name?.length!,
@@ -355,7 +389,7 @@ const App: React.FC = () => {
         {
             title: 'Buy Count',
             dataIndex: 'buyCount',
-            width: 50,
+            width: 100,
             key: 'buyCount',
             sorter: (a, b) => a.buyCount! - b.buyCount!,
             sortOrder: sortedInfo.columnKey === 'buyCount' ? sortedInfo.order : null,
@@ -411,10 +445,11 @@ const App: React.FC = () => {
             width: 200,
             dataIndex: 'brand',
             key: 'brand',
-            filters: [
-                { text: 'Brand A', value: 'Brand A' },
-                { text: 'Brand B', value: 'Brand B' },
-            ],
+            filters: Array.from(new Set(data.map(item => item.brand)
+                .filter(Boolean))).map(brand => ({
+                    text: brand!,
+                    value: brand!
+            })),
             filteredValue: filteredInfo.brand || null,
             onFilter: (value, record) => record.brand?.includes(value as string)!,
             ellipsis: true,
@@ -424,7 +459,11 @@ const App: React.FC = () => {
             width: 150,
             dataIndex: 'concentration',
             key: 'concentration',
-            sorter: (a, b) => a.concentration?.length! - b.concentration?.length!,
+            filters: Array.from(new Set(data.map(item => item.concentration)
+                .filter(Boolean))).map(concentration => ({
+                    text: concentration!,
+                    value: concentration!
+            })),
             sortOrder: sortedInfo.columnKey === 'concentration' ? sortedInfo.order : null,
             ellipsis: true,
         },
@@ -432,6 +471,11 @@ const App: React.FC = () => {
             title: 'Fragrance Notes',
             width: 200,
             dataIndex: 'fragranceNotes',
+            filters: Array.from(new Set(data.map(item => item.fragranceNotes)
+                .filter(Boolean))).map(fragranceNotes => ({
+                    text: fragranceNotes!,
+                    value: fragranceNotes!
+                })),
             key: 'fragranceNotes',
             ellipsis: true,
         },
@@ -440,7 +484,11 @@ const App: React.FC = () => {
             width: 150,
             dataIndex: 'longevity',
             key: 'longevity',
-            sorter: (a, b) => a.longevity?.length! - b.longevity?.length!,
+            filters: Array.from(new Set(data.map(item => item.longevity)
+                .filter(Boolean))).map(longevity => ({
+                    text: longevity!,
+                    value: longevity!
+                })),
             sortOrder: sortedInfo.columnKey === 'longevity' ? sortedInfo.order : null,
             ellipsis: true,
         },
@@ -449,10 +497,11 @@ const App: React.FC = () => {
             width: 100,
             dataIndex: 'sex',
             key: 'sex',
-            filters: [
-                { text: 'Male', value: 'Male' },
-                { text: 'Female', value: 'Female' },
-            ],
+            filters: Array.from(new Set(data.map(item => item.sex)
+                .filter(Boolean))).map(sex => ({
+                    text: sex!,
+                    value: sex!
+                })),
             filteredValue: filteredInfo.sex || null,
             onFilter: (value, record) => record.sex?.includes(value as string)!,
             ellipsis: true,
@@ -462,7 +511,11 @@ const App: React.FC = () => {
             dataIndex: 'sillage',
             width: 150,
             key: 'sillage',
-            sorter: (a, b) => a.sillage?.length! - b.sillage?.length!,
+            filters: Array.from(new Set(data.map(item => item.sillage)
+                .filter(Boolean))).map(sillage => ({
+                    text: sillage!,
+                    value: sillage!
+                })),
             sortOrder: sortedInfo.columnKey === 'sillage' ? sortedInfo.order : null,
             ellipsis: true,
         },

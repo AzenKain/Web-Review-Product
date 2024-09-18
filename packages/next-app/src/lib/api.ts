@@ -3,6 +3,7 @@ import { Perfume, ProductType, TagsDetailType, Product } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import { SearchProductDto } from "./dtos/product";
+import { ProductData, ProductDetails } from '@/lib/dtos/product'
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
@@ -276,7 +277,6 @@ export async function GetProductById(id: number) {
                 }
             }
         }
-
   `;
 
     try {
@@ -479,6 +479,117 @@ export async function getUserById(id: string, token: string) {
         return response.data.data.GetUserById;
     } catch (error) {
         console.error('Error fetching user: ', error);
+        throw error;
+    }
+}
+
+export async function getAllProduct() {
+    const query = `
+        query SearchProductWithOptions {
+            SearchProductWithOptions(SearchProduct: { index: 1 }) {
+                maxValue
+                data {
+                    buyCount
+                    category
+                    created_at
+                    displayCost
+                    id
+                    isDisplay
+                    name
+                    originCost
+                    rating
+                    stockQuantity
+                    updated_at
+                    details {
+                        id
+                        brand {
+                            value
+                        }
+                        concentration {
+                            value
+                        }
+                        fragranceNotes {
+                            value
+                        }
+                        longevity {
+                            value
+                        }
+                        sex {
+                            value
+                        }
+                        sillage {
+                            value
+                        }
+                        size {
+                            value
+                        }
+                    }
+                }
+            }
+        }
+    `
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', { query });
+
+        const dataReturn: ProductData[] = response.data.data.SearchProductWithOptions.data;
+        const maxValue = response.data.data.SearchProductWithOptions.maxValue
+
+        return { maxValue: maxValue, data: dataReturn };
+    } catch (error) {
+        console.error('Error fetching: ', error);
+        throw error;
+    }
+}
+
+export async function getProductById(id: number) {
+    const query = `
+        query GetProductById {
+            GetProductById(productId: ${id}) {
+                buyCount
+                displayCost
+                id
+                name
+                stockQuantity
+                details {
+                    id
+                    brand {
+                        value
+                    }
+                    concentration {
+                        value
+                    }
+                    fragranceNotes {
+                        value
+                    }
+                    longevity {
+                        value
+                    }
+                    sex {
+                        value
+                    }
+                    sillage {
+                        value
+                    }
+                    size {
+                        value
+                    }
+                }
+                originCost
+            }
+        }
+
+    `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+
+        const productData = response.data?.data?.GetProductById;
+        return productData;
+    } catch (error) {
+        console.error('Error fetching product by id:', error);
         throw error;
     }
 }

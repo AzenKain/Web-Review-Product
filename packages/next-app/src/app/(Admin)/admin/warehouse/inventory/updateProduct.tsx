@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Button, Form, Input, InputNumber } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
+import { getProductById } from '@/lib/api'
 
 type FieldType = {
     name: string;
@@ -20,7 +21,14 @@ type FieldType = {
     link?: string[];
 };
 
-const App: React.FC = () => {
+interface UpdateProductProps {
+    updateKey?: number;
+    changeTab?: (key: string) => void;
+}
+
+const App: React.FC<UpdateProductProps> = ({ changeTab, updateKey }) => {
+    const [form] = Form.useForm();
+    const formRef = useRef(form);
     const onFinish = (values: FieldType) => {
         console.log("Success:", values);
     };
@@ -28,6 +36,16 @@ const App: React.FC = () => {
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
+
+    const fetchData = async (id: number) => {
+        if (id) {
+            const data = await getProductById(id);
+        }
+    }
+
+    useEffect(() => {
+        fetchData(updateKey!)
+    }, [updateKey])
 
     return (
         <Form
@@ -67,7 +85,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="brand"
                         name="brand"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="brand" />
                     </Form.Item>
@@ -75,7 +92,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="longevity"
                         name="longevity"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="longevity" />
                     </Form.Item>
@@ -83,7 +99,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="concentration"
                         name="concentration"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="concentration" />
                     </Form.Item>
@@ -91,7 +106,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="fragranceNotes"
                         name="fragranceNotes"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="fragranceNotes" />
                     </Form.Item>
@@ -99,7 +113,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="sex"
                         name="sex"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="sex" />
                     </Form.Item>
@@ -107,7 +120,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="sillage"
                         name="sillage"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="sillage" />
                     </Form.Item>
@@ -115,7 +127,6 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="size"
                         name="size"
-                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="size" multi={true} />
                     </Form.Item>

@@ -19,7 +19,6 @@ export const InputAdd: React.FC<{
     const [name, setName] = useState("");
     const inputRef = useRef<InputRef>(null);
 
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => { setName(event.target.value); };
 
     const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
         e.preventDefault();
@@ -57,7 +56,6 @@ export const InputAdd: React.FC<{
                             placeholder="Please enter item"
                             ref={inputRef}
                             value={name}
-                            onChange={onNameChange}
                             onKeyDown={(e) => e.stopPropagation()}
                         />
                         <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
