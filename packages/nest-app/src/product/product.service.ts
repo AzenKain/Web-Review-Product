@@ -1,10 +1,10 @@
 import { ForbiddenException, HttpException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity } from 'src/types/product';
+import { ImageDetailEntity, ProductDetailEntity, ProductEntity, TagsEntity, TempWareHouseType } from 'src/types/product';
 import { UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
-import { CreateProductDto, DeleteProductDto, ProductDetailInp, SearchProductDto, TagsProductDto, UpdateProductDto } from './dtos';
+import { CreateProductDto, DeleteProductDto, GetTempWarehouseDto, ProductDetailInp, SearchProductDto, TagsProductDto, UpdateProductDto, UpdateWarehouseDto } from './dtos';
 import { OrderService } from 'src/order/order.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
@@ -386,5 +386,56 @@ export class ProductService {
 
         return await this.productRepository.save(product);
 
+    }
+
+    async UpdateWarehouseService(dto: UpdateWarehouseDto) {
+
+        const product = await this.productRepository.findOne({
+            where: { id: dto.productId, isDisplay: true },
+        });
+
+        if (!product) {
+            throw new ForbiddenException('Product not found or is not available for update');
+        }
+
+        if (dto.stockQuantity) product.stockQuantity += dto.stockQuantity;
+    
+        return await this.productRepository.save(product);
+    }
+    async GetListTempWarehouseService(dto: GetTempWarehouseDto[], user: UserEntity) {
+        this.CheckRoleUser(user);
+        const dataReturn = []
+        for (const e of dto) {
+            dataReturn.push(await this.GetTempWarehouseService(e))
+
+        }
+        return dataReturn
+    }
+
+    async UpdateListWarehouseService(dto: UpdateWarehouseDto[], user: UserEntity) {
+        this.CheckRoleUser(user);
+        const dataReturn = []
+        for (const e of dto) {
+            dataReturn.push(await this.UpdateWarehouseService(e))
+
+        }
+        return dataReturn
+    }
+
+    async GetTempWarehouseService(dto: GetTempWarehouseDto) {
+        const product = await this.productRepository.findOne({
+            where: { id: dto.productId, isDisplay: true },
+        });
+
+        if (!product) {
+            throw new ForbiddenException('Product not found or is not available for update');
+        }
+
+        return {
+            id: product.id,
+            name: product.name,
+            count: dto.stockQuantity,
+            summary: product.stockQuantity + dto.stockQuantity
+        } as TempWareHouseType
     }
 }

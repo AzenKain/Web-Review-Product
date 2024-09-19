@@ -182,9 +182,9 @@ async def analyze_file(file: UploadFile = File(...), typeFile = Form(...)):
             for _, row in df.iterrows():
                 product_json = {
                     "name": row['name'],
-                    "originCost": row['originCost'],
-                    "displayCost": row['displayCost'],
-                    "stockQuantity": row['stockQuantity'],
+                    "originCost": int(row['originCost']),
+                    "displayCost": int(row['displayCost']),
+                    "stockQuantity": int(row['stockQuantity']),
                     "category": row['category'],
                     "details": {
                         "brand": {
@@ -255,6 +255,16 @@ async def analyze_file(file: UploadFile = File(...), typeFile = Form(...)):
                 }
                 orders.append(order_json)
             return orders
+        elif dataType['type'] == "UpdateWarehouse":
+            warehouse = []
+            for _, row in df.iterrows():
+                user_json = {
+                    "id": int(row['id']), 
+                    "count": int(row['count']) 
+                }
+                warehouse.append(user_json)
+            return warehouse
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

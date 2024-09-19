@@ -11,7 +11,8 @@ export class MediaController {
   constructor(
     private readonly mediaService: MediaService
   ) { }
-
+  
+  @UseGuards(JwtGuardRestApi)
   @Post('read-file')
   @UseInterceptors(FileInterceptor('file'))
   async readFile(

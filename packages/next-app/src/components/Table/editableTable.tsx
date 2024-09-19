@@ -1,34 +1,19 @@
 ﻿import React, { useState } from 'react';
 import type { TableProps } from 'antd';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography, Divider } from 'antd';
+import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
+import { useSession } from 'next-auth/react';
+import { TempWareHouseType } from '@/types';
+import { DeleteTempWarehouser, TempWarehouse, UpdateTempWarehouser } from '@/app/redux/features/tempWarehouse';
 
-interface Item {
-    id: string;
-    key: string;
-    name: string;
-    count: number;
-    summary: number;
-    update_at: string;
-}
 
-const originData: Item[] = [];
-for (let i = 0; i < 100; i++) {
-    originData.push({
-        id: `${i}`,
-        key: i.toString(),
-        name: `Item ${i}`,
-        count: i + 10,
-        summary: (i + 10) * 100,
-        update_at: new Date().toISOString(),
-    });
-}
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean;
     dataIndex: string;
     title: any;
     inputType: 'number' | 'text';
-    record: Item;
+    record: TempWareHouseType;
     index: number;
 }
 
@@ -68,18 +53,22 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
 
 const App: React.FC = () => {
     const [form] = Form.useForm();
-    const [data, setData] = useState(originData);
+    // const [data, setData] = useState(originData);
     const [editingKey, setEditingKey] = useState('');
 
-    const isEditing = (record: Item) => record.key === editingKey;
+    const isEditing = (record: TempWareHouseType) => record.key === editingKey;
 
-    const edit = (record: Partial<Item> & { key: React.Key }) => {
+    const edit = (record: TempWareHouseType) => {
         form.setFieldsValue({ name: '', count: '', summary: '', ...record });
-        setEditingKey(record.key);
+        setEditingKey(record.key ? record.key : '');
     };
+    
+    const data = useAppSelector((state) => state.TempWarehouse.value)
+    const dispatch = useAppDispatch()
+    const { data: session } = useSession()
 
-    const deleteCell = (cell: Item) => {
-        setData(e => e.filter(i => i != cell))
+    const deleteCell = (cell: TempWareHouseType) => {
+        dispatch(DeleteTempWarehouser(cell))
     }
 
     const cancel = () => {
@@ -88,7 +77,7 @@ const App: React.FC = () => {
 
     const save = async (key: React.Key) => {
         try {
-            const row = (await form.validateFields()) as Item;
+            const row = (await form.validateFields()) as TempWareHouseType;
 
             const newData = [...data];
             const index = newData.findIndex((item) => key === item.key);
@@ -98,11 +87,11 @@ const App: React.FC = () => {
                     ...item,
                     ...row,
                 });
-                setData(newData);
+                dispatch(UpdateTempWarehouser(newData));
                 setEditingKey('');
             } else {
                 newData.push(row);
-                setData(newData);
+                dispatch(UpdateTempWarehouser(newData));
                 setEditingKey('');
             }
         } catch (errInfo) {
@@ -149,11 +138,11 @@ const App: React.FC = () => {
             dataIndex: 'operation',
             width: '150px',
             fixed: 'right' as 'right',
-            render: (_: any, record: Item) => {
+            render: (_: any, record: TempWareHouseType) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link onClick={() => save(record.key)} style={{ marginInlineEnd: 8 }}>
+                        <Typography.Link onClick={() => save(record.key ? record.key : '')} style={{ marginInlineEnd: 8 }}>
                             Save
                         </Typography.Link>
                         <Typography.Link onClick={cancel} style={{ marginInlineEnd: 8 }}>
@@ -175,13 +164,13 @@ const App: React.FC = () => {
         },
     ];
 
-    const mergedColumns: TableProps<Item>['columns'] = columns.map((col) => {
+    const mergedColumns: TableProps<TempWareHouseType>['columns'] = columns.map((col) => {
         if (!col.editable) {
             return col;
         }
         return {
             ...col,
-            onCell: (record: Item) => ({
+            onCell: (record: TempWareHouseType) => ({
                 record,
                 inputType: col.dataIndex === 'count' || col.dataIndex === 'summary' ? 'number' : 'text',
                 dataIndex: col.dataIndex,

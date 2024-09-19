@@ -1,9 +1,15 @@
 ﻿"use client"
 import React from 'react';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, message, Popconfirm } from 'antd';
 import { FileUpload } from '@/components/Input'
 import EditableTable from '@/components/Table/editableTable'
+import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
+import { useSession } from 'next-auth/react';
+import { UpdateWarehouseDto } from '@/types';
+import { makeRequestApi, updateWareHouse } from '@/lib/api';
+import { UpdateTempWarehouser } from '@/app/redux/features/tempWarehouse';
+import type { PopconfirmProps } from 'antd'
 
 type FieldType = {
     username?: string;
@@ -12,9 +18,41 @@ type FieldType = {
 };
 
 export default function AddByFile() {
+    
+    const data = useAppSelector((state) => state.TempWarehouse.value);
+    const dispatch = useAppDispatch();
+    const { data: session } = useSession();
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
+
+    const handleSubmit = async () => {
+        if (data.length === 0) {
+            message.error('No data for upload!');
+            return;
+        }
+        try {
+            const dto: UpdateWarehouseDto[] = data
+                .filter(item => item.id) 
+                .map(item => ({
+                    productId: item.id ? Number(item.id) : -1,
+                    stockQuantity: item.count,
+                }));
+    
+            await makeRequestApi(updateWareHouse, dto, session?.refresh_token, session?.access_token);
+    
+            message.success('Data uploaded successfully.');
+            dispatch(UpdateTempWarehouser([]));
+        } catch (error) {
+            console.error('Error updating warehouse:', error);
+            message.error('Failed to upload data.');
+        }
+    };
+
+    const confirm: PopconfirmProps['onConfirm'] = () => {
+        handleSubmit();
+    };
+
+    const cancel: PopconfirmProps['onCancel'] = () => {
+        message.error('Upload cancelled.');
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
@@ -30,7 +68,7 @@ export default function AddByFile() {
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
                 initialValues={{ remember: true }}
-                onFinish={onFinish}
+                onFinish={handleSubmit} 
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
@@ -38,9 +76,17 @@ export default function AddByFile() {
                     <Form.Item wrapperCol={{
                         offset: 8, span: 16, style: { textAlign: 'right' }
                     }}>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
+                        <Popconfirm
+                            title="Are you sure you want to submit the data?"
+                            onConfirm={confirm}
+                            onCancel={cancel}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button type="primary" htmlType="button">
+                                Submit
+                            </Button>
+                        </Popconfirm>
                     </Form.Item>
                     <FileUpload />
                     <EditableTable />

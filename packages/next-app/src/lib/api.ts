@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { Perfume, ProductType, TagsDetailType } from "@/types";
+import { GetTempWarehouseDto, Perfume, ProductType, TagsDetailType, TempWareHouseType, UpdateWarehouseDto } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import { SearchProductDto, UpdateProductDto } from "./dtos/product";
 import { ProductData, ProductDetails } from '@/lib/dtos/product'
 import { CreateOrderDto } from './dtos/order';
+import { ReadFileDto } from './dtos/media';
 
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
@@ -184,7 +185,7 @@ export async function GetProductForSearch(dto: SearchProductDto) {
                 img: item.details?.imgDisplay?.[0]?.url || null,
                 name: item.name,
                 brand: item.details?.brand?.value || null,
-                cost: item.displayCost &&  item.displayCost.toLocaleString('vi-VN') + ' VNĐ' ,
+                cost: item.displayCost && item.displayCost.toLocaleString('vi-VN') + ' VNĐ',
                 id: item.id
             } as Perfume);
         }
@@ -287,7 +288,7 @@ export async function GetProductById(id: number) {
             query: query,
         });
 
-   
+
         return response.data.data.GetProductById as ProductType
     } catch (error) {
         console.error('Error fetching: ', error);
@@ -733,7 +734,7 @@ export async function deleteProductById(id: number, accessToken?: string) {
     } catch (error) {
         console.error('Error fetching product by id:', error);
         throw error;
-    } 
+    }
 }
 
 
@@ -863,3 +864,99 @@ export async function CreateOrderApi(dto: CreateOrderDto, accessToken?: string) 
         throw error;
     }
 }
+
+export async function readFileApi(dto: ReadFileDto, accessToken?: string) {
+    const formData = new FormData();
+    formData.append('file', dto.file);
+    formData.append('type', dto.type);
+
+    try {
+        const response = await axios.post(Backend_URL + '/media/read-file', formData, {
+            headers: {
+                'Authorization': accessToken ? `Bearer ${accessToken}` : '',
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        throw error;
+    }
+};
+
+
+export async function getTempWareHouse(dto: GetTempWarehouseDto[], accessToken?: string) {
+    const query = `
+    query GetTempWareHouse($input: [GetTempWarehouseDto!]!) {
+      GetTempWareHouse(TempWarehouse: $input) {
+        count
+        id
+        name
+        summary
+      }
+    }
+  `;
+
+    try {
+        const response = await axios.post(
+            Backend_URL + '/graphql',
+            {
+                query: query,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data?.data?.GetTempWareHouse as TempWareHouseType[];
+    } catch (error) {
+        console.error('Error fetching temp warehouse:', error);
+        throw error;
+    }
+};
+
+
+export async function updateWareHouse(dto: UpdateWarehouseDto[], accessToken?: string) {
+    const mutation = `
+    mutation UpdateWareHouse($input: [UpdateWarehouseDto!]!) {
+        UpdateWareHouse(TempWarehouse: $input) {
+            buyCount
+            category
+            created_at
+            displayCost
+            id
+            isDisplay
+            name
+            originCost
+            rating
+            stockQuantity
+            updated_at
+        }
+    }
+    `;
+
+    try {
+        const response = await axios.post(
+            Backend_URL + '/graphql',
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data?.data?.UpdateWareHouse as ProductType[];
+    } catch (error) {
+        console.error('Error updating warehouse:', error);
+        throw error;
+    }
+};
