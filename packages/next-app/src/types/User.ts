@@ -1,9 +1,11 @@
+import type { Dayjs } from 'dayjs'
+
 export type UserDetailType = {
     id?: number;
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;
-    birthday?: Date;
+    birthday?: Date | Dayjs; 
     address?: string;
     gender?: string;
     imgDisplay?: string;
@@ -15,6 +17,7 @@ export type UserType = {
     email: string;
     secretKey: string;
     isDisplay?: boolean;
+    password?: string,
     username?: string;
     role?: string[];
     details?: UserDetailType;

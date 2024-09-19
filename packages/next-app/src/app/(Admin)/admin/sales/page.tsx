@@ -15,7 +15,7 @@ export default function Page() {
         },
         {
             key: '2',
-            label: 'truy xuất hóa đơn',
+            label: 'Truy xuất hóa đơn',
             children: <TraceabilityBill />,
         },
     ];

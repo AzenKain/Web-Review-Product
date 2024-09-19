@@ -1,6 +1,6 @@
 ﻿"use client";
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, InputNumber, Radio, Select, Table, Space } from "antd";
+import { Button, Form, Input, InputNumber, Radio, Select, Table, Space, message } from "antd";
 const { TextArea } = Input;
 import { CreateOrderApi, makeRequestApi, SearchProductWithOptions } from '@/lib/api'
 import { useDispatch } from "react-redux";
@@ -80,13 +80,15 @@ const App: React.FC = () => {
 
             if (response) {
 
-                console.log("Bill created successfully:", response);
+                message.success("Bill created successfully:");
+                form.resetFields();
+                resetTable()
 
             } else {
-                console.log("Bill creation failed.");
+                message.error("Bill creation failed.");
             }
         } catch (error) {
-            console.error("Error creating bill:", error);
+            message.error("Error creating bill:");
         }
     };
 

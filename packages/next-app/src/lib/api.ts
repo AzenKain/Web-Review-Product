@@ -1065,6 +1065,78 @@ export async function updateUser(dto: UpdateUserDto, accessToken?: string) {
     }
 }
 
+export async function createProduct(dto: CreateProductDto, accessToken?: string) {
+    const mutation = `
+    mutation CreateProduct($input: CreateProductDto!) {
+        CreateProduct(CreateProduct: $input) {
+            buyCount
+            category
+            created_at
+            details {
+                description
+                id
+                brand {
+                    id
+                    type
+                    value
+                }
+                fragranceNotes {
+                    id
+                    type
+                    value
+                }
+                concentration {
+                    id
+                    type
+                    value
+                }
+                sex {
+                    id
+                    type
+                    value
+                }
+                imgDisplay {
+                    id
+                    link
+                    url
+                }
+                size {
+                    id
+                    type
+                    value
+                }
+            }
+            name
+            isDisplay
+            originCost
+            rating
+            stockQuantity
+            updated_at
+        }
+    }`;
+
+    try {
+        const response = await axios.post(
+            Backend_URL + '/graphql',
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        return response.data?.data?.CreateProduct;
+    } catch (error) {
+        console.error('Error creating product:', error);
+        throw error;
+    }
+}
+}
+
 export async function getTopPerfume() {
     const query = `
     query GetTopBrand {

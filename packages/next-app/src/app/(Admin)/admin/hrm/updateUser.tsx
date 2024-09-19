@@ -38,7 +38,7 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
     const dataEditId = useAppSelector((state) => state.UserData.userEditId);
     const dataEdit = useAppSelector((state) => state.UserData.userEdit);
     const dispatch = useAppDispatch();
-    
+    console.log(dataEditId)
     useEffect(() => {
         const fetchData = async () => {
             if (dataEditId) { 
@@ -137,7 +137,7 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
                 </Form.Item>
 
                 <Form.Item<UserType>
-                    // name="password"
+                    name="password"
                     label="Password"
                     rules={[{ required: true, message: 'Please input your password!' }]}
                 >

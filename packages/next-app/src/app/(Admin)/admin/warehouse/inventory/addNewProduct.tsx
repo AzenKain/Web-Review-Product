@@ -1,12 +1,16 @@
 "use client";
 import React from "react";
-import { Button, Form, Input, InputNumber } from "antd";
+import { Button, Form, Input, InputNumber, message } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
+import DefaultUploadFile from "@/components/Input/defaultUploadFile";
+import { CreateProductDto, ImageDetailInp } from "@/lib/dtos/product";
+import { useSession } from "next-auth/react";
+import { createProduct, makeRequestApi } from "@/lib/api";
 
 type FieldType = {
     name: string;
-    displayCost: string;
-    originCost?: string;
+    displayCost: number;
+    originCost?: number;
     brand?: string;
     longevity?: string;
     concentration?: string;
@@ -16,12 +20,47 @@ type FieldType = {
     size?: string[];
     description?: string;
     tutorial?: string;
-    url?: string[];
+    stockQuantity: number;
+    imgDisplay?: ImageDetailInp[];
 };
 
 const App: React.FC = () => {
-    const onFinish = (values: FieldType) => {
-        console.log("Success:", values);
+    const { data: session } = useSession();
+    const [form] = Form.useForm();
+    const onFinish = async (values: FieldType) => {
+        
+        try {
+            const dto: CreateProductDto = {
+                category: "Perfume",
+                details: {
+                    brand: values?.brand ? { type: 'brand', value: values?.brand } : undefined,
+                    concentration: values?.concentration ? { type: 'concentration', value: values?.concentration } : undefined,
+                    description: values.description || undefined,
+                    fragranceNotes: values.fragranceNotes ? { type: 'fragranceNotes', value: values?.fragranceNotes } : undefined,
+                    imgDisplay: values.imgDisplay || undefined, 
+                    longevity: values.longevity  ? { type: 'longevity', value: values?.longevity } : undefined,
+                    sex: values.sex ? { type: 'sex', value: values?.sex } : undefined,
+                    sillage: values.sillage ? { type: 'sillage', value: values?.sillage } : undefined,
+                    size: values.size ? values.size.map(e => ({ type: 'size', value: e })) : [],
+                    tutorial: values.tutorial || undefined,
+                },
+                displayCost: values.displayCost ? Number(values.displayCost) : 0,
+                name: values.name,
+                originCost: values.originCost ? Number(values.originCost) : 0, 
+                stockQuantity: values.stockQuantity ? Number(values.stockQuantity) : 0, 
+            };
+
+            const dataReturn = await makeRequestApi(createProduct, dto, session?.refresh_token, session?.access_token);
+            if (dataReturn) {
+                message.success('Create product successfully.');
+                form.resetFields();
+            }
+            else {
+                message.error('Failed to upload data.');
+            }
+        } catch (error) {
+            message.error('Failed to upload data.');
+        }
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -30,6 +69,7 @@ const App: React.FC = () => {
 
     return (
         <Form
+            form={form}
             className="m-8 box-border"
             name="createProduct"
             labelCol={{ span: 8 }}
@@ -38,7 +78,16 @@ const App: React.FC = () => {
             onFinishFailed={onFinishFailed}
             autoComplete="off"
         >
+
+            <Form.Item wrapperCol={{ offset: 12, span: 16, style: { textAlign: "right" } }}>
+                    <div className="flex flex-row justify-end">
+                        <DefaultUploadFile />
+                        <Button type="primary" htmlType="submit" style={{ marginRight: "12px", marginLeft: '12px' }}> Submit </Button>
+                        <Button htmlType="reset">reset</Button>
+                    </div>
+                </Form.Item>
             <div className="flex w-full flex-row">
+
                 <div className="w-[60%] mr-[5%]">
                     <Form.Item<FieldType>
                         label="name"
@@ -59,10 +108,17 @@ const App: React.FC = () => {
                     <Form.Item<FieldType>
                         label="displayCost"
                         name="displayCost"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputNumber min={0} style={{ width: "100%" }} />
                     </Form.Item>
-
+                    <Form.Item<FieldType>
+                        label="stockQuantity"
+                        name="stockQuantity"
+                        rules={[{ required: true, message: "Must fill" }]}
+                    >
+                        <InputNumber min={0} style={{ width: "100%" }} />
+                    </Form.Item>
                     <Form.Item<FieldType>
                         label="brand"
                         name="brand"
@@ -141,7 +197,7 @@ const App: React.FC = () => {
 
                         <Form.Item<FieldType>
                             label="image"
-                            name="url"
+                            name="imgDisplay"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
@@ -150,10 +206,6 @@ const App: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}> Submit </Button>
-                <Button htmlType="reset">reset</Button>
-            </Form.Item>
         </Form>
     );
 };
