@@ -36,9 +36,7 @@ export default function HomeLayout({
         <>
             <div className="p-2 z-[10] bg-base-100 flex flex-row">
                 <Suspense>
-                    <div className="p-4" style={{
-                        flex: '0 0 350px'
-                    }}>
+                    <div className="xl:block">
                         <FilterSidebar brand={brand as string[]} perfumeType={perfumeType as typePerfumeType[]} />
                     </div>
                     <div className="flex-1 p-4">
