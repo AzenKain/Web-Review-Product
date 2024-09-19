@@ -8,7 +8,7 @@ import Highlighter from 'react-highlight-words';
 import { getAllProduct, deleteProductById } from '@/lib/api'
 import { ProductData } from '@/lib/dtos/product'
 import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
-import { DeleteProduct, UpdateListProduct, UpdateProductEditId } from '@/app/redux/features/iventoryData';
+import { DeleteProduct, UpdateListProduct, UpdateProductEdit, UpdateProductEditId } from '@/app/redux/features/iventoryData';
 import { ProductFormType } from '@/types';
 
 type OnChange = NonNullable<TableProps<ProductFormType>['onChange']>;
@@ -332,6 +332,7 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
                         dispatch(
                             UpdateProductEditId(Number(record.id))
                         )
+                        dispatch(UpdateProductEdit(null))
                         setUpdateKey(Number(record.id));
                         changeTab('4')
                     }}

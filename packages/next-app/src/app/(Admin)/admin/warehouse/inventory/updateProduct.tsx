@@ -1,10 +1,10 @@
 ﻿"use client";
 import React, { useEffect } from "react";
-import { Button, Form, Input, InputNumber } from "antd";
+import { Button, Form, Input, InputNumber, message } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
 import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
 import { GetProductById, makeRequestApi, UpdateProductApi } from "@/lib/api";
-import { UpdateOneProduct, UpdateProductEdit } from "@/app/redux/features/iventoryData";
+import { UpdateOneProduct, UpdateProductEdit, UpdateProductEditId } from "@/app/redux/features/iventoryData";
 import { ProductType } from "@/types";
 import { useSession } from "next-auth/react";
 import { UpdateProductDto } from "@/lib/dtos/product";
@@ -80,10 +80,13 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
             const response = await makeRequestApi(UpdateProductApi, dto, session?.refresh_token, session?.access_token);
     
             if (response) {
+                dispatch(UpdateOneProduct(response))
+                dispatch(UpdateProductEdit(null))
+                dispatch(UpdateProductEditId(null))
                 if (changeTab) {
-                    dispatch(UpdateOneProduct(response))
                     changeTab("2"); 
                 }
+                message.success("Update product successfully!")
             } else {
                 console.log("Product update failed.");
             }
@@ -216,15 +219,6 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
                         <Editor typeTag="tutorial" />
                     </Form.Item>
                     <div className="flex flex row">
-                        <Form.Item<FieldType>
-                            label="thubnail"
-                            name="url"
-                            labelCol={{ span: 24 }}
-                            wrapperCol={{ span: 24 }}
-                        >
-                            <UploadImage typeTag="url" maxImage={1} />
-                        </Form.Item>
-
                         <Form.Item<ProductType>
                             label="Image"
                             name={['details', 'imgDisplay']}
