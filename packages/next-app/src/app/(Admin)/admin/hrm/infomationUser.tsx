@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { UserType } from '@/types';
 import { useAppDispatch } from '@/app/redux/hooks';
 import { UpdateUserEditId } from '@/app/redux/features/userData';
-
+import dayjs from 'dayjs';
 
 interface AppProps {
     changeTab: (tabKey: string) => void;
@@ -52,7 +52,17 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
         }
     }, [session]);
 
-
+    const getFormattedDate = (date: Date | dayjs.Dayjs | undefined): string => {
+        if (!date) return "no information";
+        if (dayjs.isDayjs(date)) {
+            return date.toDate().toUTCString();
+        }
+        if (date instanceof Date) {
+            return date.toUTCString();
+        }
+        return "no information";
+    };
+    
     const onChange = (value: string, option: any) => {
         fetchUser(option.key as string)
             .then(data => {
@@ -82,7 +92,7 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
                     {
                         key: '7',
                         label: 'Birthday',
-                        children: data?.details?.birthday ? new Date(data?.details?.birthday).toUTCString() : "no infomation",
+                        children: getFormattedDate(data?.details?.birthday),
                     },
                     {
                         key: '5',

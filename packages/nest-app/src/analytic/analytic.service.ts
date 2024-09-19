@@ -298,4 +298,27 @@ export class AnalyticService {
 
         return {dataBrand : dataBrandPer, dataSex: dataSexPer}
     }
+
+
+    async GetTopBrand() {
+        const query = await this.orderRepository.createQueryBuilder('order')
+            .leftJoin('order.orderProducts', 'orderProducts')
+            .leftJoin('orderProducts.product', 'product')
+            .leftJoin('product.details', 'details')
+            .leftJoin('details.brand', 'brand')
+            .select('brand.value', 'brandName')
+            .addSelect('SUM(orderProducts.quantity)', 'totalSales')
+            .groupBy('brand.value')
+            .orderBy('totalSales', 'DESC')
+            .limit(20);
+    
+        const result = await query.getRawMany();
+
+        const formattedResult = {
+            data: result.map(row => row.brandName).filter(e => e !== null).slice(0, 10)
+        };
+
+        return formattedResult;
+    }
+    
 }

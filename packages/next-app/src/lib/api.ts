@@ -3,7 +3,7 @@ import axios from 'axios';
 import { GetTempWarehouseDto, Perfume, ProductType, TagsDetailType, TempWareHouseType, UpdateWarehouseDto, UserType } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
-import { SearchProductDto, UpdateProductDto } from "./dtos/product";
+import { CreateProductDto, SearchProductDto, UpdateProductDto } from "./dtos/product";
 import { ProductData, ProductDetails } from '@/lib/dtos/product'
 import { CreateOrderDto } from './dtos/order';
 import { ReadFileDto } from './dtos/media';
@@ -1061,6 +1061,77 @@ export async function updateUser(dto: UpdateUserDto, accessToken?: string) {
         return response.data?.data?.UpdateUser as UserType;
     } catch (error) {
         console.error('Error updating user:', error);
+        throw error;
+    }
+}
+
+export async function createProduct(dto: CreateProductDto, accessToken?: string) {
+    const mutation = `
+    mutation CreateProduct($input: CreateProductDto!) {
+        CreateProduct(CreateProduct: $input) {
+            buyCount
+            category
+            created_at
+            details {
+                description
+                id
+                brand {
+                    id
+                    type
+                    value
+                }
+                fragranceNotes {
+                    id
+                    type
+                    value
+                }
+                concentration {
+                    id
+                    type
+                    value
+                }
+                sex {
+                    id
+                    type
+                    value
+                }
+                imgDisplay {
+                    id
+                    link
+                    url
+                }
+                size {
+                    id
+                    type
+                    value
+                }
+            }
+            name
+            isDisplay
+            originCost
+            rating
+            stockQuantity
+            updated_at
+        }
+    }`;
+
+    try {
+        const response = await axios.post(
+            Backend_URL + '/graphql',
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        return response.data?.data?.CreateProduct;
+    } catch (error) {
+        console.error('Error creating product:', error);
         throw error;
     }
 }

@@ -240,6 +240,7 @@ type Query {
   GetReportProduct(ReportProduct: SearchProductDto!): SearchProduct!
   GetTagsProduct(GetTagsProduct: TagsProductDto!): [TagsDetail!]!
   GetTempWareHouse(TempWarehouse: [GetTempWarehouseDto!]!): [TempWareHouse!]!
+  GetTopBrand: TopType!
   GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
   SearchOrderWithOption(SearchOrder: SearchOrderDto!): SearchOrder!
@@ -359,6 +360,10 @@ type TempWareHouse {
   id: ID!
   name: String!
   summary: Int
+}
+
+type TopType {
+  data: [String!]!
 }
 
 input UpdateBlogDto {

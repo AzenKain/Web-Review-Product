@@ -140,10 +140,17 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
                     <Form.Item<ProductType>
                         label="Display Cost"
                         name="displayCost"
+                        rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputNumber min={0} style={{ width: "100%" }} />
                     </Form.Item>
-
+                    <Form.Item<ProductType>
+                        label="stockQuantity"
+                        name="stockQuantity"
+                        rules={[{ required: true, message: "Must fill" }]}
+                    >
+                        <InputNumber min={0} style={{ width: "100%" }} />
+                    </Form.Item>
                     <Form.Item<ProductType>
                         label="Brand"
                         name={['details', 'brand', "value"]}

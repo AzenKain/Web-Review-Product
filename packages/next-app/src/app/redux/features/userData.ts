@@ -1,7 +1,7 @@
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserType } from '@/types'
-
+import dayjs from 'dayjs';
 
 type InitialState = {
     userEditId: string | null,
@@ -21,7 +21,21 @@ export const UserData = createSlice({
             state.userEditId = action.payload;
         },
         UpdateUserEdit: (state, action: PayloadAction<UserType| null>) => {
-            state.userEdit = action.payload;
+            const user = action.payload;
+
+            if (user) {
+                if (user.details) {
+                    user.details.birthday = user.details.birthday
+                        ? dayjs(user.details.birthday)
+                        : dayjs();
+                }
+        
+                if (user.password === undefined) {
+                    user.password = "";
+                }
+        
+                state.userEdit = user
+            }
         },
     }
 })
