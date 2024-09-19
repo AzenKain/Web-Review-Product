@@ -1,7 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateProductDto, DeleteProductDto, SearchProductDto, TagsProductDto, UpdateProductDto } from './dtos';
-import { ProductType, SearchProductType, TagsDetailType } from 'src/types/product';
+import { CreateProductDto, DeleteProductDto, GetTempWarehouseDto, SearchProductDto, TagsProductDto, UpdateProductDto, UpdateWarehouseDto } from './dtos';
+import { ProductType, SearchProductType, TagsDetailType, TempWareHouseType } from 'src/types/product';
 import { ResponseType } from 'src/types/response.type';
 import { JwtGuardGraphql } from 'src/auth/guard';
 import { ProductService } from './product.service';
@@ -79,5 +79,23 @@ export class ProductResolver {
         @Args('UpdateProduct') dto: UpdateProductDto
     ): Promise<ProductType> {
         return await this.productService.UpdateProductService(dto, user);
+    }
+
+    @UseGuards(JwtGuardGraphql)
+    @Mutation(() => [ProductType])
+    async UpdateWareHouse(
+        @CurrentUserGraphql() user: UserEntity,
+        @Args({ name: 'TempWarehouse', type: () => [UpdateWarehouseDto] }) dto: UpdateWarehouseDto[]
+    ): Promise<ProductType[]> {
+        return await this.productService.UpdateListWarehouseService(dto, user);
+    }
+
+    @UseGuards(JwtGuardGraphql)
+    @Query(() => [TempWareHouseType])
+    async GetTempWareHouse(
+        @CurrentUserGraphql() user: UserEntity,
+        @Args({ name: 'TempWarehouse', type: () => [GetTempWarehouseDto] }) dto: GetTempWarehouseDto[]
+    ): Promise<TempWareHouseType[]> {
+        return await this.productService.GetListTempWarehouseService(dto, user);
     }
 }

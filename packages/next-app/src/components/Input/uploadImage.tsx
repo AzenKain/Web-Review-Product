@@ -65,6 +65,54 @@ export const UploadImage: React.FC<{
             <div style={{ marginTop: 8 }}>Upload</div>
         </button>
     );
+    const customRequest: UploadProps['customRequest'] = async ({ file, onSuccess, onError }) => {
+
+        if (fileList.some(f => f.name === `image-${fileList.length}`)) {
+            message.error(`File image-${fileList.length} already exists.`);
+            if (onError) {
+                onError(new Error('Duplicate file detected.'));
+            }
+            return;
+        }
+
+        try {
+            const url = await makeRequestApi(uploadFile, file as RcFile, session?.refresh_token, session?.access_token);
+
+            const newFile: UploadFile = {
+                uid: `${fileList.length}`,
+                name: `image-${fileList.length}`,
+                status: 'done',
+                url: url,
+
+            };
+
+            setFileList(prevFileList => {
+                const newFileList = [...prevFileList, newFile];
+                if (onChange) {
+                    const filteredFileList = newFileList
+                        .map(file => ({
+                            url: file.url as string,
+                            link: []
+                        }))
+                        .filter(file => file.url != undefined);
+
+                    onChange(filteredFileList);
+                }
+                return newFileList;
+            });
+
+            onSuccess && onSuccess(url);
+        } catch (error) {
+
+            if (onError) {
+                const uploadError = {
+                    name: 'Upload Error',
+                    message: error as string
+                };
+                onError(uploadError);
+            }
+        }
+    };
 
     return (
         <>

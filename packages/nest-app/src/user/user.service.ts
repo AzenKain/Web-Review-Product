@@ -4,13 +4,14 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDetailEntity, UserEntity } from 'src/types/user';
 import { Repository } from 'typeorm';
-import { CreateUserDto, SearchUserDto } from './dtos';
+import { CreateUserDto, SearchUserDto, UpdateUserDto } from './dtos';
 import * as argon from 'argon2';
 import { v5 as uuidv5 } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
+import { use } from 'passport';
 
 @Injectable()
 export class UserService {
@@ -128,6 +129,70 @@ export class UserService {
         return { maxValue, data: users };
     }
     
+    async UpdateUserService(dto: UpdateUserDto, userCurrent: UserEntity): Promise<UserEntity> {
+        this.CheckRoleUser(userCurrent);
+
+        const user = await this.userRepository.findOne({
+            where: { secretKey: dto.userId },
+            relations: ['details'], 
+        });
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (dto.email && dto.email !== user.email) {
+            const checkMail = await this.userRepository.findOne({
+                where: { email: dto.email },
+            });
+
+            if (checkMail && checkMail.email !== user.email) {
+                throw new ForbiddenException('This email is already in use');
+            }
+        }
+
+        if (dto.password) {
+            user.hash = await argon.hash(dto.password);
+        }
+
+        user.email = dto.email || user.email;
+        user.username = dto.username || user.username;
+        user.details.firstName = dto.firstName || user.details.firstName;
+        user.details.lastName = dto.lastName || user.details.lastName;
+        user.details.phoneNumber = dto.phoneNumber || user.details.phoneNumber;
+        user.details.birthday = dto.birthday || user.details.birthday;
+        user.details.address = dto.address || user.details.address;
+        user.details.gender = dto.gender || user.details.gender;
+        user.isDisplay = dto.isDisplay !== undefined ? dto.isDisplay : user.isDisplay;
+        user.role = dto.role || user.role;
+
+
+        if (dto.firstName || dto.lastName || dto.phoneNumber || dto.birthday || dto.address || dto.gender) {
+            if (user.details) {
+                user.details.firstName = dto.firstName || user.details.firstName;
+                user.details.lastName = dto.lastName || user.details.lastName;
+                user.details.phoneNumber = dto.phoneNumber || user.details.phoneNumber;
+                user.details.birthday = dto.birthday || user.details.birthday;
+                user.details.address = dto.address || user.details.address;
+                user.details.gender = dto.gender || user.details.gender;
+
+                await this.userDetailRepository.save(user.details);
+            } else {
+                const userDetail = this.userDetailRepository.create({
+                    firstName: dto.firstName || '',
+                    lastName: dto.lastName || '',
+                    phoneNumber: dto.phoneNumber || '',
+                    birthday: dto.birthday || null,
+                    address: dto.address || '',
+                    gender: dto.gender || '',
+                });
+
+                user.details = await this.userDetailRepository.save(userDetail);
+            }
+        }
+
+        return await this.userRepository.save(user);
+    }
     async CreateUserService(dto: CreateUserDto, userCurrent: UserEntity): Promise<UserEntity> {
         this.CheckRoleUser(userCurrent)
 

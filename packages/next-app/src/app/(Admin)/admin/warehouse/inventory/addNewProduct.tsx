@@ -16,8 +16,7 @@ type FieldType = {
     size?: string[];
     description?: string;
     tutorial?: string;
-    url?: string;
-    link?: string[];
+    url?: string[];
 };
 
 const App: React.FC = () => {
@@ -139,22 +138,14 @@ const App: React.FC = () => {
                         <Editor typeTag="tutorial" />
                     </Form.Item>
                     <div className="flex flex row">
+
                         <Form.Item<FieldType>
-                            label="thubnail"
+                            label="image"
                             name="url"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="url" maxImage={1} isOpen={false}/>
-                        </Form.Item>
-
-                        <Form.Item<FieldType>
-                            label="image"
-                            name="link"
-                            labelCol={{ span: 24 }}
-                            wrapperCol={{ span: 24 }}
-                        >
-                            <UploadImage typeTag="link" isOpen={false}/>
+                            <UploadImage typeTag="url" isOpen={false}/>
                         </Form.Item>
                     </div>
                 </div>

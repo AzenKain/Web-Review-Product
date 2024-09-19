@@ -38,16 +38,15 @@ input CreateProductDto {
 }
 
 input CreateUserDto {
-  address: String!
-  birthday: DateTime!
+  address: String
+  birthday: DateTime
   email: String!
   firstName: String!
-  gender: String!
+  gender: String
   lastName: String!
   password: String!
-  phoneNumber: String!
+  phoneNumber: String
   role: [String!]!
-  userId: ID
   username: String!
 }
 
@@ -72,11 +71,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 input DeleteBlogDto {
-  blogId: ID!
+  blogId: Float!
 }
 
 input DeleteProductDto {
-  productId: ID!
+  productId: Float!
 }
 
 type DeliveryInfo {
@@ -112,6 +111,11 @@ type FavoriteElementWeekType {
   value: Float!
 }
 
+input GetTempWarehouseDto {
+  productId: Float!
+  stockQuantity: Float!
+}
+
 type ImageDetail {
   id: ID!
   link: [String!]
@@ -138,7 +142,8 @@ type Mutation {
   UpdateBlog(UpdateBlog: UpdateBlogDto!): Blog!
   UpdateOrder(UpdateOrder: updateOrderDto!): Order!
   UpdateProduct(UpdateProduct: UpdateProductDto!): Product!
-  UpdateUser(UpdateUser: CreateUserDto!): UserType!
+  UpdateUser(UpdateUser: UpdateUserDto!): UserType!
+  UpdateWareHouse(TempWarehouse: [UpdateWarehouseDto!]!): [Product!]!
 }
 
 type Order {
@@ -234,6 +239,7 @@ type Query {
   GetProductById(productId: Float!): Product!
   GetReportProduct(ReportProduct: SearchProductDto!): SearchProduct!
   GetTagsProduct(GetTagsProduct: TagsProductDto!): [TagsDetail!]!
+  GetTempWareHouse(TempWarehouse: [GetTempWarehouseDto!]!): [TempWareHouse!]!
   GetUserById(id: String!): UserType!
   SearchBlogWithOptions(SearchBlog: SearchBlogDto!): [Blog!]!
   SearchOrderWithOption(SearchOrder: SearchOrderDto!): SearchOrder!
@@ -272,7 +278,7 @@ type RevenueElementWeekType {
 }
 
 input SearchBlogDto {
-  blogId: ID
+  blogId: Float
   title: String
   typeBlog: String
 }
@@ -348,8 +354,15 @@ input TagsProductDto {
   tags: String
 }
 
+type TempWareHouse {
+  count: Int
+  id: ID!
+  name: String!
+  summary: Int
+}
+
 input UpdateBlogDto {
-  blogId: ID!
+  blogId: Float!
   content: String!
   title: String
   typeBlog: String
@@ -362,9 +375,29 @@ input UpdateProductDto {
   displayCost: Float
   name: String
   originCost: Float
-  productId: ID!
+  productId: Float!
   rating: Float
   stockQuantity: Int
+}
+
+input UpdateUserDto {
+  address: String
+  birthday: DateTime
+  email: String!
+  firstName: String!
+  gender: String
+  isDisplay: Boolean
+  lastName: String!
+  password: String!
+  phoneNumber: String
+  role: [String!]!
+  userId: String!
+  username: String!
+}
+
+input UpdateWarehouseDto {
+  productId: Float!
+  stockQuantity: Float!
 }
 
 type UserDetail {
@@ -403,6 +436,6 @@ input createOrderDto {
 
 input updateOrderDto {
   isPaid: Boolean
-  orderId: ID!
+  orderId: Float!
   status: String
 }
