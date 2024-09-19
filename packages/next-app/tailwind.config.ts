@@ -334,7 +334,12 @@ const config: Config = {
     },
   },
   daisyui: {
-      themes: ["light","luxury", "disable"],
+      themes: ["light", "luxury", "disable", {
+          bumblebee: {
+              ...require("daisyui/src/theming/themes"),
+              baseContent: "#dca44c"
+          }
+      }],
   },
   plugins: [
       require("daisyui"),
