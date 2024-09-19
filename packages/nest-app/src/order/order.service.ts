@@ -175,6 +175,7 @@ export class OrderService {
             isDisplay: true,
             isPaid: false,
             totalAmount: 0,
+            orderProducts: []
         });
         const savedOrder = await this.orderRepository.save(order);
         let totalAmount = 0;
@@ -189,10 +190,12 @@ export class OrderService {
             });
     
             totalAmount += orderProduct.unitPrice * product.quantity;
-            await this.orderProductRepository.save(orderProduct);
+            const tmpOrderProduct = await this.orderProductRepository.save(orderProduct);
+            order.orderProducts.push(tmpOrderProduct)
         }
 
         savedOrder.totalAmount = totalAmount;
+       
         await this.orderRepository.save(savedOrder);
     
         return savedOrder;

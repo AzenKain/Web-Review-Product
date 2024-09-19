@@ -4,6 +4,7 @@ import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import { SearchProductDto, UpdateProductDto } from "./dtos/product";
 import { ProductData, ProductDetails } from '@/lib/dtos/product'
+import { CreateOrderDto } from './dtos/order';
 
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
@@ -799,6 +800,66 @@ export async function UpdateProductApi(dto: UpdateProductDto, accessToken?: stri
         return productData;
     } catch (error) {
         console.error('Error updating product:', error);
+        throw error;
+    }
+}
+
+
+export async function CreateOrderApi(dto: CreateOrderDto, accessToken?: string) {
+    const mutation = `
+    mutation CreateOrder($input: createOrderDto!) {
+        CreateOrder(CreateOrder: $input) {
+            created_at
+            id
+            isDisplay
+            isPaid
+            notes
+            status
+            totalAmount
+            updated_at
+            customerInfo {
+                email
+                firstName
+                id
+                lastName
+                phoneNumber
+            }
+            deliveryInfo {
+                address
+                city
+                district
+                id
+            }
+            orderProducts {
+                discount
+                id
+                orderId
+                productId
+                quantity
+                unitPrice
+            }
+        }
+    }
+    `;
+
+    try {
+        const response = await axios.post(
+            Backend_URL + '/graphql',
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                },
+            }
+        );
+
+        const orderData = response.data?.data?.CreateOrder;
+        return orderData;
+    } catch (error) {
+        console.error('Error creating order:', error);
         throw error;
     }
 }

@@ -215,7 +215,15 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
                     >
                         <Editor typeTag="tutorial" />
                     </Form.Item>
-                    <div className="flex flex-row">
+                    <div className="flex flex row">
+                        <Form.Item<FieldType>
+                            label="thubnail"
+                            name="url"
+                            labelCol={{ span: 24 }}
+                            wrapperCol={{ span: 24 }}
+                        >
+                            <UploadImage typeTag="url" maxImage={1} />
+                        </Form.Item>
 
                         <Form.Item<ProductType>
                             label="Image"
