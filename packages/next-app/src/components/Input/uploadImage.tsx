@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Image, Upload } from 'antd';
-import type { GetProp, UploadFile, UploadProps } from 'antd';
+import { Image, Upload, UploadFile, UploadProps, message } from 'antd';
+import type { RcFile } from 'antd/es/upload/interface';
+import { ImageDetailType } from '@/types';
+import { makeRequestApi, uploadFile } from '@/lib/api';
+import { useSession } from 'next-auth/react';
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
+const getBase64 = (file: File): Promise<string> =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -16,31 +17,97 @@ const getBase64 = (file: FileType): Promise<string> =>
 export const UploadImage: React.FC<{
     typeTag: string,
     maxImage?: number,
+    value?: ImageDetailType | ImageDetailType[],
+    isOpen: boolean,
     onChange?: (value: any) => void;
-}> = ({typeTag, maxImage, onChange}) => {
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState('');
-    const [fileList, setFileList] = useState<UploadFile[]>([
-/*        {
-            uid: '-1',
-            name: 'image.png',
-            status: 'done',
-            url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },*/
-        
-    ]);
+}> = ({ typeTag, maxImage, value, isOpen, onChange }) => {
+    const [previewOpen, setPreviewOpen] = useState(isOpen);
+    const [previewImage, setPreviewImage] = useState<string>('');
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const { data: session } = useSession();
+
+    useEffect(() => {
+        if (Array.isArray(value)) {
+            setFileList(value.map((img, index) => ({
+                uid: `${index}`,
+                name: `image-${index}`,
+                status: 'done',
+                url: img.url,
+            })));
+        }  else {
+            setFileList([]);
+        }
+    }, [value]);
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
+            file.preview = await getBase64(file.originFileObj as File);
         }
 
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList, file }) => {
+        if (file.status === 'done') {
+            message.success(`${file.name} file uploaded successfully`);
+        } else if (file.status === 'error') {
+            message.error(`${file.name} file upload failed.`);
+        }
+
         setFileList(newFileList);
+
+
+    };
+
+    const customRequest: UploadProps['customRequest'] = async ({ file, onSuccess, onError }) => {
+
+        if (fileList.some(f => f.name === `image-${fileList.length}`)) {
+            message.error(`File image-${fileList.length} already exists.`);
+            if (onError) {
+                onError(new Error('Duplicate file detected.'));
+            }
+            return;
+        }
+
+        try {
+            const url = await makeRequestApi(uploadFile, file as RcFile, session?.refresh_token, session?.access_token);
+
+            const newFile: UploadFile = {
+                uid: `${fileList.length}`,
+                name: `image-${fileList.length}`,
+                status: 'done',
+                url: url,
+
+            };
+
+            setFileList(prevFileList => {
+                const newFileList = [...prevFileList, newFile];
+                if (onChange) {
+                    const filteredFileList = newFileList
+                        .map(file => ({
+                            url: file.url as string,
+                            link: []
+                        }))
+                        .filter(file => file.url != undefined);
+
+                    onChange(filteredFileList);
+                }
+                return newFileList;
+            });
+
+            onSuccess && onSuccess(url);
+        } catch (error) {
+            // Handle error
+            if (onError) {
+                const uploadError = {
+                    name: 'Upload Error',
+                    message: error as string
+                };
+                onError(uploadError);
+            }
+        }
+    };
 
     const uploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
@@ -48,17 +115,19 @@ export const UploadImage: React.FC<{
             <div style={{ marginTop: 8 }}>Upload</div>
         </button>
     );
+
     return (
         <>
             <Upload
-                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                customRequest={customRequest}
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
                 maxCount={maxImage}
+                defaultFileList={[]}
             >
-                {fileList.length >= 8 ? null : uploadButton}
+                {fileList.length >= (maxImage || 8) ? null : uploadButton}
             </Upload>
             {previewImage && (
                 <Image

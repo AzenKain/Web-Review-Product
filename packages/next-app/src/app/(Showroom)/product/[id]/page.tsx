@@ -1,6 +1,6 @@
 ﻿import ImageGallery from '@/components/Gallery'
 import TopPerfumeCarousel from '@/components/Carousel/TopPerfumeCarousel'
-import { Perfume, Product } from '@/types';
+import { Perfume, ProductType } from '@/types';
 import { GetProductForSearch, GetProductById } from '@/lib/api';
 import { SearchProductDto } from '@/lib/dtos/product'
 import slugify from 'slugify'
@@ -12,28 +12,32 @@ export default async function Page({
     params: { id: number }
 }) {
 
-    const product: Product = await GetProductById(params.id)
+    const product: ProductType = await GetProductById(params.id)
 
     const brandFilter: SearchProductDto = {
         index: 1,
         count: 10,
-        brand: [{ type: "brand", value: product.details.brand.value }]
+        brand: [{ type: "brand", value: product?.details?.brand && product.details.brand.value }]
     }
 
     const linkedPerfume = (await GetProductForSearch(brandFilter)).data
 
-    const imageUrls = product.details.imgDisplay.map(img => img.url)
+    const imageUrls: string[] = product?.details?.imgDisplay
+        ? product.details.imgDisplay
+            .map(img => img.url)
+            .filter((url): url is string => url !== undefined)
+        : [];
 
     return (
         <div className="bg-base-100">
             <div className="pt-8 m-auto flex flex-row xl:container">
                 <div className="w-[300px]">
-                    <ImageGallery images={imageUrls} />
+                    <ImageGallery images={imageUrls ? imageUrls : []} />
                 </div>
                 <div className="sumary-product flex-1 p-6">
                     <div className="flex flex-row">
                         <h1 className="text-3xl font-bold">{product.name}</h1>
-                        <div className="badge badge-secondary ml-2 self-center">{product.details.sex.value}</div>
+                        <div className="badge badge-secondary ml-2 self-center">{product?.details?.sex?.value}</div>
                         <div className="flex-1"></div>
                         <input type="checkbox" className="self-center checkbox checkbox-error mask mask-heart bg-red-400" />
                     </div>
@@ -71,10 +75,16 @@ export default async function Page({
                                 }}
                             ></div>
                             <h3 className="ml-3 h-5 self-center">Thương hiệu: </h3>
-                            <a href={`/showroom/brand/${slugify(product.details.brand.value, { strict: true, lower: true })}`}
-                                className="h-5 self-center underline">
-                                {product.details.brand.value}
-                            </a>
+                            <div>
+                                {product?.details?.brand?.value && (
+                                    <a
+                                        href={`/showroom/brand/${slugify(product?.details?.brand?.value, { strict: true, lower: true })}`}
+                                        className="h-5 self-center underline"
+                                    >
+                                        {product?.details?.brand?.value}
+                                    </a>
+                                )}
+                            </div>
                         </div>
                         <div className="h-16 flex flex-row border-b border-neutral">
                             <div
@@ -86,12 +96,15 @@ export default async function Page({
                                 }}
                             ></div>
                             <h3 className="ml-3 h-5 self-center">Dung tích: </h3>
-                            {product.details.size.map((item, index) => (
-                                <a key={index} href={`/showroom/size/${slugify(item.value, { strict: true, lower: true })}`}
+                            {product?.details?.size && product?.details?.size.map((item, index) => (
+                                 (item?.value && (
+                                    <a key={index} href={`/showroom/size/${slugify(item?.value, { strict: true, lower: true })}`}
                                     className="h-5 self-center underline">
                                     {item.value}
                                 </a>
-                            )) }
+                                 ))
+
+                            ))}
                         </div>
                         <div className="h-16 flex flex-row border-b border-neutral">
                             <div
@@ -102,7 +115,7 @@ export default async function Page({
                                     WebkitMask: 'url(/icons/ic-info-3.svg) no-repeat center',
                                 }}
                             ></div>
-                            <h3 className="ml-3 h-5 self-center">Lưu hương: {product.details.sillage.value}</h3>
+                            <h3 className="ml-3 h-5 self-center">Lưu hương: {product?.details?.sillage?.value}</h3>
                         </div>
                         <div className="h-16 flex flex-row border-b border-neutral">
                             <div
@@ -113,7 +126,7 @@ export default async function Page({
                                     WebkitMask: 'url(/icons/ic-info-4.svg) no-repeat center',
                                 }}
                             ></div>
-                            <h3 className="ml-3 h-5 self-center">Tỏa hương: {product.details.longevity.value}</h3>
+                            <h3 className="ml-3 h-5 self-center">Tỏa hương: {product?.details?.longevity?.value}</h3>
                         </div>
                         <div className="h-16 flex flex-row">
                             <div
@@ -125,10 +138,12 @@ export default async function Page({
                                 }}
                             ></div>
                             <h3 className="ml-3 h-5 self-center">Giới tính: </h3>
-                            <a href={`/showroom/sex/${slugify(product.details.sex.value, { strict: true, lower: true })}`} 
-                                className="h-5 self-center underline">
-                                {product.details.sex.value}
-                            </a>
+                            {product?.details?.sex?.value && (
+                                <a href={`/showroom/sex/${slugify(product?.details?.sex?.value, { strict: true, lower: true })}`}
+                                    className="h-5 self-center underline">
+                                    {product?.details?.sex?.value}
+                                </a>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -138,17 +153,17 @@ export default async function Page({
                     <div role="tablist" className="tabs tabs-lifted">
                         <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" value="haizz" aria-label="Mô tả sản phẩm" defaultChecked />
                         <div role="tabpanel" style={{ whiteSpace: 'pre-line' }} className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <div>{product.details.description}</div>
+                            <div>{product?.details?.description}</div>
                         </div>
 
-                        <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" aria-label="Sử dụng và Bảo quản"  />
+                        <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" aria-label="Sử dụng và Bảo quản" />
                         <div role="tabpanel" style={{ whiteSpace: 'pre-line' }} className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <div>{product.details.tutorial}</div>
+                            <div>{product?.details?.tutorial}</div>
                         </div>
                     </div>
                 </div>
                 <div className="p-4 w-[400px] border-4 rounded-lg border-neutral block" style={{
-                        height: "fit-content"
+                    height: "fit-content"
                 }}>
                     <h1 className="font-bold uppercase">QUYỂN LỢI KHÁCH HÀNG</h1>
                     <div className="product-property flex flex-col">

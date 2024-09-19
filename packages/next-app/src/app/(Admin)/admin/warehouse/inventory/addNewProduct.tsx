@@ -145,7 +145,7 @@ const App: React.FC = () => {
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="url" maxImage={1} />
+                            <UploadImage typeTag="url" maxImage={1} isOpen={false}/>
                         </Form.Item>
 
                         <Form.Item<FieldType>
@@ -154,7 +154,7 @@ const App: React.FC = () => {
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="link" />
+                            <UploadImage typeTag="link" isOpen={false}/>
                         </Form.Item>
                     </div>
                 </div>

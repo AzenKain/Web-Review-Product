@@ -3,10 +3,6 @@ import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validat
 
 @InputType()
 export class CreateUserDto {
-    @IsOptional()
-    @Field(() => ID, {nullable: true})
-    userId?: number;
-
     @IsString()
     @IsNotEmpty()
     @IsEmail()

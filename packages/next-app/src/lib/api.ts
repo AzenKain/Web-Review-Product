@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { Perfume, ProductType, TagsDetailType, Product } from "@/types";
+import { Perfume, ProductType, TagsDetailType } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
-import { SearchProductDto } from "./dtos/product";
+import { SearchProductDto, UpdateProductDto } from "./dtos/product";
 import { ProductData, ProductDetails } from '@/lib/dtos/product'
+
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
     try {
@@ -118,7 +119,7 @@ export async function GetHotSaleProductForHome(sex: string) {
                 img: item.details?.imgDisplay?.[0]?.url || null,
                 name: item.name,
                 brand: item.details?.brand?.value || null,
-                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ',
+                cost: item.displayCost && item.displayCost.toLocaleString('vi-VN') + ' VNĐ',
                 id: item.id
             } as Perfume)
         }
@@ -182,7 +183,7 @@ export async function GetProductForSearch(dto: SearchProductDto) {
                 img: item.details?.imgDisplay?.[0]?.url || null,
                 name: item.name,
                 brand: item.details?.brand?.value || null,
-                cost: item.displayCost.toLocaleString('vi-VN') + ' VNĐ',
+                cost: item.displayCost &&  item.displayCost.toLocaleString('vi-VN') + ' VNĐ' ,
                 id: item.id
             } as Perfume);
         }
@@ -230,6 +231,7 @@ export async function GetProductById(id: number) {
                 rating
                 stockQuantity
                 updated_at
+                created_at
                 buyCount
                 details {
                     brand {
@@ -284,11 +286,8 @@ export async function GetProductById(id: number) {
             query: query,
         });
 
-        const res: Product = {
-            ...response.data.data.GetProductById,
-            displayCost: response.data.data.GetProductById.displayCost.toLocaleString('vi-VN') + ' VNĐ'
-        }
-        return res
+   
+        return response.data.data.GetProductById as ProductType
     } catch (error) {
         console.error('Error fetching: ', error);
         throw error;
@@ -300,14 +299,14 @@ export async function uploadFile(data: File, accessToken: string) {
     try {
         const formData = new FormData();
         formData.append('file', data);
-        const response = await axios.post('/media/upload', formData, {
+        const response = await axios.post(Backend_URL + '/media/upload', formData, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'multipart/form-data',
             },
         });
-        if (response.status == 200) {
-            return Backend_URL + response.data['url'];
+        if (response.status == 201) {
+            return Backend_URL + '/media' + response.data['url'];
         }
     } catch (error: any) {
         console.error('Upload failed:', error.response ? error.response.data : error.message);
@@ -715,7 +714,7 @@ export async function getProductById(id: number) {
     }
 }
 
-export async function deleteProductById(id: number) {
+export async function deleteProductById(id: number, accessToken?: string) {
     const query = `
         mutation DeleteProduct {
             DeleteProduct(DeleteProduct: { productId: ${id} }) {
@@ -734,4 +733,72 @@ export async function deleteProductById(id: number) {
         console.error('Error fetching product by id:', error);
         throw error;
     } 
+}
+
+
+export async function UpdateProductApi(dto: UpdateProductDto, accessToken?: string) {
+    const mutation = `
+    mutation UpdateProduct($input: UpdateProductDto!) {
+        UpdateProduct(UpdateProduct: $input) {
+            id
+            name
+            originCost
+            displayCost
+            stockQuantity
+            category
+            buyCount
+            rating
+            details {
+                brand {
+                    value
+                }
+                longevity {
+                    value
+                }
+                concentration {
+                    value
+                }
+                fragranceNotes {
+                    value
+                }
+                sex {
+                    value
+                }
+                sillage {
+                    value
+                }
+                size {
+                    value
+                }
+                imgDisplay {
+                    id
+                    url
+                }
+                description
+                tutorial
+            }
+        }
+    }
+    `;
+
+    try {
+        const response = await axios.post(
+            Backend_URL + '/graphql',
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                },
+            }
+        );
+
+        const productData = response.data?.data?.UpdateProduct;
+        return productData;
+    } catch (error) {
+        console.error('Error updating product:', error);
+        throw error;
+    }
 }

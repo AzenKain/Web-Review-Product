@@ -5,6 +5,6 @@ import { IsString, IsNotEmpty,IsOptional, IsNumber } from "class-validator";
 export class DeleteProductDto {
   @IsNotEmpty()
   @IsNumber()
-  @Field(() => ID)
+  @Field()
   productId : number;
 }

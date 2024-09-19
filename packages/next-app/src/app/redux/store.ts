@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import filterSearch from './features/filterSearch'
 import AnalyticData from './features/analyticsData'
+import InventoryData  from './features/iventoryData'
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
             filterSearch,
-            AnalyticData
+            AnalyticData,
+            InventoryData
         }
     })
 }

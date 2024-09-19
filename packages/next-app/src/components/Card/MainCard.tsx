@@ -12,7 +12,7 @@ const MainCard: React.FC<{ item: Perfume }> = ({ item }) => {
             <figure className="w-full h-[60%]">
                 <a href={`/product/${item.id}`}>
                     <Image
-                        src={item.img as string}
+                        src={item.img  ? item.img : ''}
                         alt={item.name}
                         className="bg-white w-full"
                         style={{ aspectRatio: 1 }}

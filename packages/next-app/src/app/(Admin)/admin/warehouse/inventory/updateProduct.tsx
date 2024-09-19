@@ -1,35 +1,97 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Input, InputNumber } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
-
-type FieldType = {
-    id: string;
-    name: string;
-    displayCost: string;
-    originCost?: string;
-    brand?: string;
-    longevity?: string;
-    concentration?: string;
-    fragranceNotes?: string;
-    sex?: string;
-    sillage?: string;
-    size?: string[];
-    description?: string;
-    tutorial?: string;
-    url?: string;
-    link?: string[];
-};
+import { useAppDispatch, useAppSelector } from "@/app/redux/hooks";
+import { GetProductById, makeRequestApi, UpdateProductApi } from "@/lib/api";
+import { UpdateOneProduct, UpdateProductEdit } from "@/app/redux/features/iventoryData";
+import { ProductType } from "@/types";
+import { useSession } from "next-auth/react";
+import { UpdateProductDto } from "@/lib/dtos/product";
 
 type updateProductprops = {
     updateKey?: number,
-    changeTab?: (a : string) => void
+    changeTab?: (a: string) => void
 }
 
-const App: React.FC<updateProductprops> = ({updateKey, changeTab}) => {
-    const onFinish = (values: FieldType) => {
-        console.log("Success:", values);
+const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
+    const { data: session } = useSession()
+    const dataEditId = useAppSelector((state) => state.InventoryData.productEditId);
+    const dataEdit = useAppSelector((state) => state.InventoryData.productEdit);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (dataEditId) { 
+                const data = await GetProductById(dataEditId);
+                if (data) {
+                    dispatch(UpdateProductEdit(data));
+                }
+            }
+        };
+        fetchData();
+    }, [dataEditId, dispatch]);
+
+    if (!dataEdit && dataEditId) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <span className="loading loading-spinner loading-lg"></span>
+                <h1 className="text-3xl font-bold">Loading Data ...</h1>
+            </div>
+        );
+    }
+
+    if (!dataEdit) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <h1 className="text-3xl font-bold">Không có dữ liệu để chỉnh sửa</h1>
+            </div>
+        );
+    }
+
+    const onFinish = async (values: ProductType) => {
+
+        const dto: UpdateProductDto = {
+            productId: Number(values.id),
+            name: values.name,
+            originCost: Number(values.originCost),
+            displayCost: Number(values.displayCost),
+            details: values.details ? {
+                brand: values.details?.brand ? { value: values.details?.brand.value as string, type: 'brand' } : undefined,
+                longevity: values.details?.longevity ? { value: values.details.longevity.value as string,  type: 'longevity'} : undefined,
+                concentration: values.details?.concentration ? { value: values.details.concentration.value as string,  type: 'concentration' } : undefined,
+                fragranceNotes: values.details?.fragranceNotes  ? { value: values.details.fragranceNotes.value as string,  type: 'fragranceNotes' } : undefined,
+                sex: values.details?.sex ? { value: values.details.sex.value as string,  type: 'sex' } : undefined,
+                sillage: values.details?.sillage ? { value: values.details.sillage.value as string,  type: 'sillage' } : undefined,
+                size: Array.isArray(values.details?.size) ? values.details.size.map((size: any) => ({
+                    type: 'size',
+                    value: size.value ? size.value : size as string,
+                })) : undefined,
+                description: values.details?.description,
+                tutorial: values.details?.tutorial,
+                imgDisplay: Array.isArray(values.details?.imgDisplay) ? values.details.imgDisplay.map((img: any) => ({
+                    link: img.link,
+                    url: img.url
+                })) : undefined
+            } : undefined
+        };
+
+        try {
+            const response = await makeRequestApi(UpdateProductApi, dto, session?.refresh_token, session?.access_token);
+    
+            if (response) {
+                if (changeTab) {
+                    dispatch(UpdateOneProduct(response))
+                    changeTab("2"); 
+                }
+            } else {
+                console.log("Product update failed.");
+            }
+        } catch (error) {
+            console.error("Error updating product:", error);
+        }
     };
+    
 
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
@@ -44,138 +106,139 @@ const App: React.FC<updateProductprops> = ({updateKey, changeTab}) => {
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
+            initialValues={dataEdit}
         >
             <div className="flex w-full flex-row">
                 <div className="w-[60%] mr-[5%]">
-                    <Form.Item<FieldType>
-                        label="id"
+                    <Form.Item<ProductType>
+                        label="ID"
                         name="id"
                         rules={[{ required: true, message: "Must fill" }]}
                     >
-                        <Input />
+                        <Input disabled />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="name"
+                    <Form.Item<ProductType>
+                        label="Name"
                         name="name"
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="originCost"
+                    <Form.Item<ProductType>
+                        label="Origin Cost"
                         name="originCost"
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputNumber min={0} style={{ width: "100%" }} />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="displayCost"
+                    <Form.Item<ProductType>
+                        label="Display Cost"
                         name="displayCost"
                     >
                         <InputNumber min={0} style={{ width: "100%" }} />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="brand"
-                        name="brand"
+                    <Form.Item<ProductType>
+                        label="Brand"
+                        name={['details', 'brand', "value"]}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="brand" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="longevity"
-                        name="longevity"
+                    <Form.Item<ProductType>
+                        label="Longevity"
+                        name={['details', 'longevity', "value"]}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="longevity" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="concentration"
-                        name="concentration"
+                    <Form.Item<ProductType>
+                        label="Concentration"
+                        name={['details', 'concentration', "value"]}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="concentration" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="fragranceNotes"
-                        name="fragranceNotes"
+                    <Form.Item<ProductType>
+                        label="Fragrance Notes"
+                        name={['details', 'fragranceNotes', "value"]}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="fragranceNotes" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="sex"
-                        name="sex"
+                    <Form.Item<ProductType>
+                        label="Sex"
+                        name={['details', 'sex', "value"]}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="sex" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="sillage"
-                        name="sillage"
+                    <Form.Item<ProductType>
+                        label="Sillage"
+                        name={['details', 'sillage', "value"]}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="sillage" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="size"
-                        name="size"
+                    <Form.Item<ProductType>
+                        label="Size"
+                        name={['details', 'size']}
                         rules={[{ required: true, message: "Must fill" }]}
                     >
                         <InputAdd typeTag="size" multi={true} />
                     </Form.Item>
                 </div>
                 <div>
-                    <Form.Item<FieldType>
-                        label="description"
-                        name="description"
+                    <Form.Item<ProductType>
+                        label="Description"
+                        name={['details', 'description']}
                         labelCol={{ span: 24 }}
                         wrapperCol={{ span: 24 }}
                     >
                         <Editor typeTag="description" />
                     </Form.Item>
 
-                    <Form.Item<FieldType>
-                        label="tutorial"
-                        name="tutorial"
+                    <Form.Item<ProductType>
+                        label="Tutorial"
+                        name={['details', 'tutorial']}
                         labelCol={{ span: 24 }}
                         wrapperCol={{ span: 24 }}
                     >
                         <Editor typeTag="tutorial" />
                     </Form.Item>
-                    <div className="flex flex row">
-                        <Form.Item<FieldType>
-                            label="thubnail"
-                            name="url"
+                    <div className="flex flex-row">
+                        <Form.Item<ProductType>
+                            label="Thumbnail"
+                            name={['details', 'imgDisplay', 0]}
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="url" maxImage={1} />
+                            <UploadImage typeTag="url" isOpen={true} maxImage={1} />
                         </Form.Item>
 
-                        <Form.Item<FieldType>
-                            label="image"
-                            name="link"
+                        <Form.Item<ProductType>
+                            label="Image"
+                            name={['details', 'imgDisplay']}
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="link" />
+                            <UploadImage typeTag="link" isOpen={true}/>
                         </Form.Item>
                     </div>
                 </div>
             </div>
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                 <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}> Submit </Button>
-                <Button htmlType="reset">reset</Button>
+                <Button htmlType="reset">Reset</Button>
             </Form.Item>
         </Form>
     );
