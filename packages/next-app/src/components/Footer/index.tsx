@@ -2,7 +2,7 @@
     return (
         <div className="top-0 left-0 fixed z-0 flex h-screen w-screen flex-col text-6xl">
             <div className="base-100 text-neutral-content text-center flex-grow flex justify-center items-center">
-                <h1 className="my-auto text-white">ĐunKain PARFUMS</h1>
+                <h1 className="my-auto text-base-content">ĐunKain PARFUMS</h1>
             </div>
             <div className="flex flex-col sm:flex-row xl:container justify-around m-auto">
                 <a href="/showroom"><button className="btn btn-lg btn-outline glass">Mua sắm</button></a>
