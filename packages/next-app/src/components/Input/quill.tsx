@@ -37,7 +37,7 @@ export const Editor: React.FC<{
         "font",
     ];
 
-    const [code, setCode] = useState<string>("");
+    const [code, setCode] = useState<string>(value);
 
     const handleProcedureContentChange = (
         content: string,
@@ -50,7 +50,7 @@ export const Editor: React.FC<{
     };
 
     return (
-        <>
+        <div className="max-w-[600px]">
             <ReactQuill
                 theme="snow"
                 modules={modules}
@@ -58,6 +58,6 @@ export const Editor: React.FC<{
                 value={code}
                 onChange={handleProcedureContentChange}
             />
-        </>
+        </div>
     );
 };

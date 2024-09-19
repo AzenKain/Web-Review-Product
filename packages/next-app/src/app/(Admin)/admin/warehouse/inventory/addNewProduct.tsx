@@ -139,14 +139,6 @@ const App: React.FC = () => {
                         <Editor typeTag="tutorial" />
                     </Form.Item>
                     <div className="flex flex row">
-                        <Form.Item<FieldType>
-                            label="thubnail"
-                            name="url"
-                            labelCol={{ span: 24 }}
-                            wrapperCol={{ span: 24 }}
-                        >
-                            <UploadImage typeTag="url" maxImage={1} />
-                        </Form.Item>
 
                         <Form.Item<FieldType>
                             label="image"
@@ -154,7 +146,7 @@ const App: React.FC = () => {
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="link" />
+                            <UploadImage typeTag="link" isOpen={false}/>
                         </Form.Item>
                     </div>
                 </div>

@@ -1,8 +1,4 @@
-
-export type TagsDetailInp = {
-    type: string;
-    value?: string;
-}
+import { TagsDetailInp } from "./createProduct.dto";
 
 
 export type SearchProductDto = {

@@ -297,25 +297,25 @@ export class ProductService {
             details.size = sizeTags;
         }
 
-        if (dtoDetails.brand) {
+        if (dtoDetails.brand && dtoDetails.brand.value) {
             details.brand = await this.findOrCreateTag(dtoDetails.brand.value, 'brand');
         }
 
-        if (dtoDetails.fragranceNotes) {
+        if (dtoDetails.fragranceNotes && dtoDetails.fragranceNotes.value) {
             details.fragranceNotes = await this.findOrCreateTag(dtoDetails.fragranceNotes.value, 'fragranceNotes');
         }
 
-        if (dtoDetails.concentration) {
+        if (dtoDetails.concentration && dtoDetails.concentration.value) {
             details.concentration = await this.findOrCreateTag(dtoDetails.concentration.value, 'concentration');
         }
 
-        if (dtoDetails.sex) {
+        if (dtoDetails.sex && dtoDetails.sex.value) {
             details.sex = await this.findOrCreateTag(dtoDetails.sex.value, 'sex');
         }
-        if (dtoDetails.sillage) {
+        if (dtoDetails.sillage && dtoDetails.sillage.value) {
             details.sillage = await this.findOrCreateTag(dtoDetails.sillage.value, 'sillage');
         }
-        if (dtoDetails.longevity) {
+        if (dtoDetails.longevity && dtoDetails.longevity.value) {
             details.longevity = await this.findOrCreateTag(dtoDetails.longevity.value, 'longevity');
         }
         if (dtoDetails.description) {
@@ -326,21 +326,28 @@ export class ProductService {
         }
 
         if (dtoDetails.imgDisplay) {
-            const existingImageDetails = await this.imageDetailRepository.find();
-            const existingImageUrls = new Set(existingImageDetails.map(img => img.url));
-            const newImages = await Promise.all(dtoDetails.imgDisplay.map(img => {
-                if (!existingImageUrls.has(img.url)) {
+            details.imgDisplay = [];
+            const imgDetails = [];
+            for (const img of dtoDetails.imgDisplay) {
+
+                const existingImageDetails = await this.imageDetailRepository.find({
+                    where: { url: img.url }
+                });
+    
+                if (!existingImageDetails.length) {
                     const newImageDetail = this.imageDetailRepository.create({
                         url: img.url,
-                        link: img.link || [],
+                        link: img?.link || []
                     });
-                    return this.imageDetailRepository.save(newImageDetail);
+                    imgDetails.push(await this.imageDetailRepository.save(newImageDetail));
                 }
-                return null;
-            }));
-            const filteredNewImages = newImages.filter(img => img !== null);
-            details.imgDisplay = [...existingImageDetails, ...filteredNewImages];
+                else {
+                    imgDetails.push(existingImageDetails)
+                }
+            }
+            details.imgDisplay = imgDetails;
         }
+        
         return await this.productDetailRepository.save(details);
     }
 
@@ -350,6 +357,17 @@ export class ProductService {
 
         const product = await this.productRepository.findOne({
             where: { id: dto.productId, isDisplay: true },
+            relations: [
+                'details',
+                'details.imgDisplay',
+                'details.size',
+                'details.brand',
+                'details.fragranceNotes',
+                'details.concentration',
+                'details.sex',
+                'details.sillage',
+                'details.longevity',
+            ],
         });
 
         if (!product) {

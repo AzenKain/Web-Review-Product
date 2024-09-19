@@ -7,31 +7,17 @@ import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { getAllProduct, deleteProductById } from '@/lib/api'
 import { ProductData } from '@/lib/dtos/product'
-type OnChange = NonNullable<TableProps<DataType>['onChange']>;
+import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
+import { DeleteProduct, UpdateListProduct, UpdateProductEditId } from '@/app/redux/features/iventoryData';
+import { ProductFormType } from '@/types';
+
+type OnChange = NonNullable<TableProps<ProductFormType>['onChange']>;
 type Filters = Parameters<OnChange>[1];
 type GetSingle<T> = T extends (infer U)[] ? U : never;
 type Sorts = GetSingle<Parameters<OnChange>[2]>;
 
-interface DataType {
-    id?: string;
-    key?: string;
-    name?: string;
-    buyCount?: number;
-    created_at?: string;
-    updated_at?: string;
-    displayCost?: number;
-    originCost?: string;
-    stockQuantity?: number;
-    brand?: string;
-    concentration?: string;
-    fragranceNotes?: string;
-    longevity?: string;
-    sex?: string;
-    sillage?: string;
-    size?: string;
-}
 
-type DataIndex = keyof DataType;
+type DataIndex = keyof ProductFormType;
 
 type searchProductprops = {
     setUpdateKey: (a : number) => void,
@@ -43,41 +29,21 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
     const [sortedInfo, setSortedInfo] = useState<Sorts>({});
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
-    const [data, setData] = useState<DataType[]>([])
     const searchInput = useRef<InputRef>(null);
 
-    const fetchData = async () => {
-        const { data } = await getAllProduct()
-        return data
-    }
+    const data = useAppSelector((state) => state.InventoryData.listProduct)
+    const dispatch = useAppDispatch()
+
+
 
     useEffect(() => {
         const fetchAndSetData = async () => {
-            const products = await fetchData();
-            console.log(products)
-
-            setData(products.map((e: ProductData) => ({
-                id: e.id,
-                key: e.id,
-                name: e.name,
-                buyCount: e.buyCount,
-                created_at: e.created_at,
-                updated_at: e.updated_at,
-                displayCost: e.displayCost,
-                originCost: e.originCost?.toString(),
-                stockQuantity: e.stockQuantity,
-                brand: e.details?.brand?.value,
-                concentration: e.details?.concentration?.value,
-                fragranceNotes: e.details?.fragranceNotes?.value,
-                longevity: e.details?.longevity?.value,
-                sex: e.details?.sex?.value,
-                sillage: e.details?.sillage?.value,
-                size: e.details?.size?.map(s => s?.value).filter(Boolean).join(', '),
-            })));
+            const products = (await getAllProduct()).data;
+            dispatch(UpdateListProduct(products))
         };
 
         fetchAndSetData();
-    }, []);
+    }, [dispatch]);
 
     const handleSearch = (
         selectedKeys: string[],
@@ -89,8 +55,8 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
         setSearchedColumn(dataIndex);
     };
 
-    const deleteCell = (cell: DataType) => {
-        setData(e => e.filter(i => i != cell))
+    const deleteCell = (cell: ProductFormType) => {
+        dispatch(DeleteProduct(cell))
     }
 
     const handleReset = (clearFilters: () => void) => {
@@ -113,7 +79,7 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
         setSortedInfo({});
     };
 
-    const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<DataType> => ({
+    const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<ProductFormType> => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input
@@ -190,7 +156,7 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
             ),
     });
 
-    const columns: TableColumnsType<DataType> = [
+    const columns: TableColumnsType<ProductFormType> = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -363,6 +329,9 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
                 <Button
                     icon={<EditOutlined />}
                     onClick={() => {
+                        dispatch(
+                            UpdateProductEditId(Number(record.id))
+                        )
                         setUpdateKey(Number(record.id));
                         changeTab('4')
                     }}

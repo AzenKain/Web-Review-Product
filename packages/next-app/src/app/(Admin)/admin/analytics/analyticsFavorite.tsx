@@ -12,6 +12,7 @@ const AppFavorite: React.FC = () => {
     const dataFavoritePage = useAppSelector((state) => state.AnalyticData.dataFavoritePage)
     const dispatch = useAppDispatch()
     const { data: session } = useSession()
+    
     useEffect(() => {
       console.log(session)
       const fetchData = async () => {

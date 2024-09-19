@@ -1,11 +1,11 @@
-import { Field, ID, InputType } from "@nestjs/graphql";
+import { Field, InputType } from "@nestjs/graphql";
 import { IsString, IsNotEmpty, IsOptional, IsNumber } from "class-validator";
 
 @InputType()
 export class updateOrderDto {
   @IsNotEmpty()
   @IsNumber()
-  @Field(() => ID)
+  @Field()
   orderId: number;
 
   @IsOptional()
