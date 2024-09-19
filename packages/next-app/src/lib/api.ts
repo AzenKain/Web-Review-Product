@@ -1,11 +1,13 @@
 import axios from 'axios';
-import { GetTempWarehouseDto, Perfume, ProductType, TagsDetailType, TempWareHouseType, UpdateWarehouseDto } from "@/types";
+
+import { GetTempWarehouseDto, Perfume, ProductType, TagsDetailType, TempWareHouseType, UpdateWarehouseDto, UserType } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import { SearchProductDto, UpdateProductDto } from "./dtos/product";
 import { ProductData, ProductDetails } from '@/lib/dtos/product'
 import { CreateOrderDto } from './dtos/order';
 import { ReadFileDto } from './dtos/media';
+import { CreateUserDto, UpdateUserDto } from './dtos/user';
 
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
@@ -397,7 +399,7 @@ export async function CreateUser(userData: {
     }
 }
 
-export async function getAllUserName(accessToken?: string) {
+export async function getAllUserName(dto: any, accessToken?: string) {
     const query = `
     query SearchUserWithOption {
       SearchUserWithOption(SearchUser: { index: 1 }) {
@@ -960,3 +962,105 @@ export async function updateWareHouse(dto: UpdateWarehouseDto[], accessToken?: s
         throw error;
     }
 };
+
+
+export async function createUser(dto: CreateUserDto, accessToken?: string) {
+    const mutation = `
+        mutation CreateUser($input: CreateUserDto!) {
+            CreateUser(CreateUser: $input) {
+                email
+                hash
+                id
+                isDisplay
+                refreshToken
+                role
+                secretKey
+                updated_at
+                username
+                details {
+                    address
+                    birthday
+                    firstName
+                    gender
+                    id
+                    imgDisplay
+                    lastName
+                    phoneNumber
+                }
+                created_at
+            }
+        }
+    `;
+
+    try {
+
+        const response = await axios.post(
+            `${Backend_URL}/graphql`, 
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data?.data?.CreateUser as UserType;
+    } catch (error) {
+        console.error('Error creating user:', error);
+        throw error;
+    }
+}
+
+export async function updateUser(dto: UpdateUserDto, accessToken?: string) {
+    const mutation = `
+        mutation UpdateUser($input: UpdateUserDto!) {
+            UpdateUser(UpdateUser: $input) {
+                created_at
+                email
+                hash
+                id
+                isDisplay
+                refreshToken
+                role
+                secretKey
+                updated_at
+                username
+                details {
+                    address
+                    birthday
+                    firstName
+                    gender
+                    id
+                    imgDisplay
+                    lastName
+                    phoneNumber
+                }
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`, 
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data?.data?.UpdateUser as UserType;
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw error;
+    }
+}

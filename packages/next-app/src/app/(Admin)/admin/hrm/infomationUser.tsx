@@ -1,48 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Descriptions } from 'antd';
+import { Button, Descriptions, message } from 'antd';
 import type { DescriptionsProps } from 'antd';
 import { Select } from 'antd';
-import { getAllUserName, getUserById } from '@/lib/api'
+import { getAllUserName, getUserById, makeRequestApi } from '@/lib/api'
 import { useSession } from "next-auth/react";
+import { UserType } from '@/types';
+import { useAppDispatch } from '@/app/redux/hooks';
+import { UpdateUserEditId } from '@/app/redux/features/userData';
 
 
-const items: DescriptionsProps['items'] = [
-    {
-        key: '1',
-        label: 'UserName',
-        children: 'Zhou Maomao',
-    },
-    {
-        key: '2',
-        label: 'Telephone',
-        children: '1810000000',
-    },
-    {
-        key: '3',
-        label: 'Live',
-        children: 'Hangzhou, Zhejiang',
-    },
-    {
-        key: '4',
-        label: 'Address',
-        span: 2,
-        children: 'No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China',
-    },
-    {
-        key: '5',
-        label: 'Remark',
-        children: 'empty',
-    },
-];
+interface AppProps {
+    changeTab: (tabKey: string) => void;
+}
 
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ changeTab }) => {
+
     const { data: session } = useSession();
     const [userSearch, setUserSearch] = useState<{ id: string, name: string }[]>([])
     const [items, setItems] = useState<DescriptionsProps['items']>([])
+    const [userCurrent, setUserCurrent] = useState('')
+
+    const dispatch = useAppDispatch();
 
     const fetchData = async () => {
         try {
-            const users: { username: string, secretKey: string }[] = await getAllUserName(session?.access_token);
+            const users: { username: string, secretKey: string }[] = await makeRequestApi(getAllUserName, null, session?.refresh_token, session?.access_token)
             return users;
         } catch (error) {
             console.error("Error fetching users: ", error);
@@ -52,7 +34,7 @@ const App: React.FC = () => {
     const fetchUser = async (id: string) => {
         if (session?.access_token) {
             try {
-                const user = await getUserById(id, session?.access_token);
+                const user: UserType = await makeRequestApi(getUserById, id, session?.refresh_token, session?.access_token)
                 return user;
             } catch (error) {
                 console.error('Error fetching user by ID: ', error);
@@ -74,7 +56,7 @@ const App: React.FC = () => {
     const onChange = (value: string, option: any) => {
         fetchUser(option.key as string)
             .then(data => {
-                console.log(data)
+                setUserCurrent(data?.secretKey || '')
                 setItems([
                     {
                         key: '1',
@@ -89,18 +71,18 @@ const App: React.FC = () => {
                     {
                         key: '3',
                         label: 'Gender',
-                        children: data?.detail?.gender || "no infomation",
+                        children: data?.details?.gender || "no infomation",
                     },
                     {
                         key: '4',
                         label: 'Created_at',
                         span: 2,
-                        children: data?.created_at || "no infomation",
+                        children: data?.created_at ? new Date(data?.created_at).toUTCString() : "no infomation",
                     },
                     {
                         key: '7',
                         label: 'Birthday',
-                        children: data?.detail?.birthday || "no infomation",
+                        children: data?.details?.birthday ? new Date(data?.details?.birthday).toUTCString() : "no infomation",
                     },
                     {
                         key: '5',
@@ -111,17 +93,19 @@ const App: React.FC = () => {
                     {
                         key: '6',
                         label: 'Role',
-                        children: data?.detail?.role || "no infomation",
+                        children: data?.role && data.role.length > 0
+                            ? data.role.join(', ')
+                            : "No information",
                     },
                     {
                         key: '8',
                         label: 'FirstName',
-                        children: data?.detail?.firstName || "no infomation",
+                        children: data?.details?.firstName || "no infomation",
                     },
                     {
                         key: '9',
                         label: 'LastName',
-                        children: data?.detail?.lastName || "no infomation",
+                        children: data?.details?.lastName || "no infomation",
                     },
                 ])
             })
@@ -130,6 +114,14 @@ const App: React.FC = () => {
     const onSearch = (value: string) => {
         console.log('search:', value);
     };
+
+    const handlerUpdate = () => {
+        if (userCurrent == '') {
+            message.error("No user selected!")
+        }
+        dispatch(UpdateUserEditId(userCurrent))
+        changeTab('3')
+    }
 
     return (
         <div className="m-8">
@@ -145,7 +137,16 @@ const App: React.FC = () => {
                     key: e.id,
                 }))}
             />
+            <Button
+                type="primary"
+                className='ml-3'
+                onClick={() => handlerUpdate()}
+                disabled={userCurrent == ''}
+            >
+                Update User
+            </Button>
             <Descriptions title="User Info" layout="vertical" items={items} className="my-8" />
+
         </div>
     )
 }

@@ -3,6 +3,7 @@ import filterSearch from './features/filterSearch'
 import AnalyticData from './features/analyticsData'
 import InventoryData  from './features/iventoryData'
 import TempWarehouse  from './features/tempWarehouse'
+import UserData from './features/userData'
 
 export const makeStore = () => {
     return configureStore({
@@ -10,7 +11,8 @@ export const makeStore = () => {
             filterSearch,
             AnalyticData,
             InventoryData,
-            TempWarehouse
+            TempWarehouse,
+            UserData
         }
     })
 }

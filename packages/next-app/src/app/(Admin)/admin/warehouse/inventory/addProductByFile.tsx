@@ -37,10 +37,14 @@ export default function AddByFile() {
                     stockQuantity: item.count,
                 }));
     
-            await makeRequestApi(updateWareHouse, dto, session?.refresh_token, session?.access_token);
-    
-            message.success('Data uploaded successfully.');
-            dispatch(UpdateTempWarehouser([]));
+            const dataReturn = await makeRequestApi(updateWareHouse, dto, session?.refresh_token, session?.access_token);
+            if (dataReturn) {
+                message.success('Data uploaded successfully.');
+                dispatch(UpdateTempWarehouser([]));
+            }
+            else {
+                message.error('Failed to upload data.');
+            }
         } catch (error) {
             console.error('Error updating warehouse:', error);
             message.error('Failed to upload data.');
