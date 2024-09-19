@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Input, InputNumber, Radio, Select, Table, Space } from "antd";
 const { TextArea } = Input;
 import { SearchProductWithOptions } from '@/lib/api'
+import DefaultUploadFile from '@/components/Input/defaultUploadFile'
 
 type FieldType = {
     firstName?: string;
@@ -144,11 +145,14 @@ const App: React.FC = () => {
             form={form}
         >
             <div className="m-8">
-                <Form.Item wrapperCol={{ offset: 8, span: 16, style: { textAlign: "right" } }}>
-                    <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}>
-                        Submit
-                    </Button>
-                    <Button htmlType="reset" onClick={resetTable}>Reset</Button>
+                <Form.Item wrapperCol={{ offset: 12, span: 16, style: { textAlign: "right" }}}>
+                    <div className="flex flex-row justify-end">
+                        <DefaultUploadFile/>
+                        <Button type="primary" htmlType="submit" style={{ marginRight: "12px", marginLeft: '12px' }}>
+                            Submit
+                        </Button>
+                        <Button htmlType="reset" onClick={resetTable}>Reset</Button>
+                    </div>
                 </Form.Item>
                 <div className="flex flex-row">
                     <div className="w-[40%] mr-[5%]">

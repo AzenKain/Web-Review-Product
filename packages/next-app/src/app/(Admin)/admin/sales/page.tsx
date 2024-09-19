@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 const Tabs = dynamic(() => import('antd').then(mod => mod.Tabs), { ssr: false });
 const CreateBill = dynamic(() => import('./createBill'), { ssr: false });
+const TraceabilityBill = dynamic(() => import('./traceabilityBill'), { ssr: false });
 
 export default function Page() {
     const items = [
@@ -12,16 +13,11 @@ export default function Page() {
             label: 'Thêm hóa đơn',
             children: <CreateBill />,
         },
-        /*        {
-                    key: '2',
-                    label: 'Thêm file sản phẩm mới',
-                    children: <AddNewProductByFile />,
-                },*/
-/*        {
-            key: '3',
-            label: 'Nhập hàng',
-            children: <AddProductByFile />,
-        },*/
+        {
+            key: '2',
+            label: 'truy xuất hóa đơn',
+            children: <TraceabilityBill />,
+        },
     ];
 
     return (

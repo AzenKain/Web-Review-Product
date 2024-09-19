@@ -39,7 +39,6 @@ export default async function Page({
                         <h1 className="text-3xl font-bold">{product.name}</h1>
                         <div className="badge badge-secondary ml-2 self-center">{product?.details?.sex?.value}</div>
                         <div className="flex-1"></div>
-                        <input type="checkbox" className="self-center checkbox checkbox-error mask mask-heart bg-red-400" />
                     </div>
                     <div className="divider"></div>
                     <div className="flex flex-row justify-between">
