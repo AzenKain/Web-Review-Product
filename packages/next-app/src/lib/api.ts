@@ -1064,3 +1064,23 @@ export async function updateUser(dto: UpdateUserDto, accessToken?: string) {
         throw error;
     }
 }
+
+export async function getTopPerfume() {
+    const query = `
+    query GetTopBrand {
+      GetTopBrand {
+        data
+      }
+    }
+  `;
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql', {
+            query: query,
+        });
+        return response.data.data.GetTopBrand.data;
+    } catch (error) {
+        console.error('Error fetching top perfumes:', error);
+        throw error;
+    }
+}

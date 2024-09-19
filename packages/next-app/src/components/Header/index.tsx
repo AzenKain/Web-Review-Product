@@ -1,7 +1,10 @@
 ﻿'use client'
+import $ from 'jquery';
+import dynamic from 'next/dynamic'
 import React, { useState, useEffect } from 'react';
 import ListIcon from '@mui/icons-material/List';
-import ThemeController from '@/components/themeController'
+const ThemeController = dynamic(() => import('@/components/themeController'), { ssr: false });
+
 
 interface PerfumeType {
     role: string;
@@ -72,8 +75,29 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
         $ul.toggleClass('hidden');
     };
 
+    useEffect(() => {
+        const header = $('#header');
+        const hideableElement = $('#header > .hideable');
+        const handleScroll = () => {
+            const headerHideableHeight = hideableElement.outerHeight();
+            const scrollTop = $(window).scrollTop();
+            if (scrollTop! < headerHideableHeight!) {
+                header.css('top', `-${scrollTop}px`);
+            } else {
+                header.css('top', `-${headerHideableHeight}px`);
+            }
+        };
+        $(window).on('scroll', handleScroll);
+        return () => {
+            $(window).off('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <div className="top-0 left-0 bg-base-100 fixed z-50 flex w-full flex-col border-b" id="header">
+        <header className="top-0 left-0 bg-base-100 fixed z-50 flex w-full flex-col border-b"
+            id="header"
+            style={{ transition: 'top 0.3s ease-in-out' }}
+        >
             <header className="navbar bg-base-100 border-b h-18 m-auto xl:container hideable" style={{
                 minHeight: '0px'
             }}>
@@ -110,7 +134,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                     </div>
                 </div>
             </header>
-            <header className="sm:block box-border hidden navbar bg-base-100 flex h-10 m-auto xl:container header-option relative" style={{
+            <header className="md:block box-border hidden navbar bg-base-100 flex h-10 m-auto xl:container header-option relative" style={{
                 minHeight: '0px',
                 padding: 0
             }}>
@@ -131,7 +155,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 position: "absolute",
                                 top: "50px",
                                 left: 0,
-                                maxWidth: "70vw",
+                                maxWidth: "90vw",
                                 maxHeight: "70vh",
                                 marginLeft: "15vw",
                                 marginRight: "15vw",
@@ -149,7 +173,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 }}>Trending</h2>
                                 <ul className="steps steps-vertical">
                                     {topBrandName ? topBrandName.map((brand: string, index: number) => (
-                                        <li key={index} className="step uppercase"><a>{brand}</a></li>
+                                        <li key={index} className="step uppercase"><a href={`/showroom?brand=${brand}`}>{brand}</a></li>
                                     )) : null}
                                 </ul>
                             </div>
@@ -190,10 +214,8 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 position: "absolute",
                                 top: "50px",
                                 left: 0,
-                                maxWidth: "50vw",
+                                maxWidth: "90vw",
                                 maxHeight: "70vh",
-                                marginLeft: "25vw",
-                                marginRight: "25vw",
                                 flexDirection: "row",
                                 justifyContent: "space-around",
                                 boxSizing: "border-box",
@@ -224,7 +246,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                         <details>
                             <summary><a href="/news">Tin tức</a></summary>
                         </details>
-                        <ul className="menu xl:menu-horizontal bg-base-100 lg:min-w-max w-full"
+                        <ul className="menu xl:menu-horizontal bg-base-100 w-max-[250px]"
                             style={{
                                 display: 'none',
                                 position: "absolute",
@@ -351,7 +373,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                     z-index: 1000;
                 }
             `}</style>
-        </div>
+        </header>
     )
 }
 
