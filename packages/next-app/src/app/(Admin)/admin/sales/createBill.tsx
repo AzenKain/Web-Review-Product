@@ -6,6 +6,7 @@ import { CreateOrderApi, makeRequestApi, SearchProductWithOptions } from '@/lib/
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 import { CreateOrderDto } from "@/lib/dtos/order";
+import DefaultUploadFile from '@/components/Input/defaultUploadFile'
 
 type FieldType = {
     firstName?: string;
