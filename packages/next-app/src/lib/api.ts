@@ -4,7 +4,7 @@ import { GetTempWarehouseDto, Perfume, ProductType, TagsDetailType, TempWareHous
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
 import { SearchProductDto, UpdateProductDto } from "./dtos/product";
-import { ProductData, ProductDetails } from '@/lib/dtos/product'
+import { ProductData, ProductDetails, CreateProductDto } from '@/lib/dtos/product'
 import { CreateOrderDto } from './dtos/order';
 import { ReadFileDto } from './dtos/media';
 import { CreateUserDto, UpdateUserDto } from './dtos/user';
@@ -1134,7 +1134,6 @@ export async function createProduct(dto: CreateProductDto, accessToken?: string)
         console.error('Error creating product:', error);
         throw error;
     }
-}
 }
 
 export async function getTopPerfume() {

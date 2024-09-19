@@ -3,7 +3,9 @@ import { useState, useEffect, ChangeEvent } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
 import { UpdateFilter } from '@/app/redux/features/filterSearch';
 import { SearchProductDto } from '@/lib/dtos/product'
-
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import $ from 'jquery'
+import { Divider } from 'antd';
 
 export default function FilterNavbar() {
     const dispatch = useAppDispatch()
@@ -48,38 +50,41 @@ export default function FilterNavbar() {
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === "Enter") { e.currentTarget.blur() } }
 
+    const openFilter = () => {
+        $("#filter-toggle").trigger('click');
+    }
 
     return (
-        <div className="flex flex-row justify-between">
-            <div className="flex flex-row join">
-                <select onChange={(e) => {
-                    handleSelect("count", e.target.value)
-                }}
-                    className="select select-bordered rounded-none w-24" value={filters.count}>
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="48">48</option>
-                    <option value="96">96</option>
-                </select>
-                <select onChange={(e) => {
-                    handleSelect("sort", e.target.value)
-                }}
-                    className="select select-bordered max-w-xs rounded-none" value={filters.sort}>
-                    <option value="created_at_asc">Cũ nhất</option>
-                    <option value="created_at_desc">Mới nhất</option>
-                    <option value="price_desc">Giá cao - thấp</option>
-                    <option value="price_asc">Giá thấp - cao</option>
-                </select>
-                <select onChange={(e) => {
-                    handleSelect("hotSales", e.target.value)
-                }}
-                    className="select select-bordered max-w-xs rounded-none" value="">
-                    <option value="">Bán chạy</option>
-                    <option value="week">Bán chạy trong tuần</option>
-                    <option value="month">Bán chạy trong tháng</option>
-                    <option value="year">Bán chạy trong năm</option>
-                </select>
-            </div>
+        <div className="flex flex-row flex-wrap justify-between">
+            <button className="join-item btn block xl:hidden" onClick={() => { openFilter() }}><FilterAltIcon fontSize="large" /></button>
+            <select onChange={(e) => {
+                handleSelect("count", e.target.value)
+            }}
+                className="select select-bordered rounded-none w-24" value={filters.count}>
+                <option value="12">12</option>
+                <option value="24">24</option>
+                <option value="48">48</option>
+                <option value="96">96</option>
+            </select>
+            <select onChange={(e) => {
+                handleSelect("sort", e.target.value)
+            }}
+                className="select select-bordered max-w-xs rounded-none" value={filters.sort}>
+                <option value="created_at_asc">Cũ nhất</option>
+                <option value="created_at_desc">Mới nhất</option>
+                <option value="price_desc">Giá cao - thấp</option>
+                <option value="price_asc">Giá thấp - cao</option>
+            </select>
+            <select onChange={(e) => {
+                handleSelect("hotSales", e.target.value)
+            }}
+                className="select select-bordered max-w-xs rounded-none" value="">
+                <option value="">Bán chạy</option>
+                <option value="week">Bán chạy trong tuần</option>
+                <option value="month">Bán chạy trong tháng</option>
+                <option value="year">Bán chạy trong năm</option>
+            </select>
+            <div className="flex-1"></div>
             <div className="join rounded-none">
                 <button className="join-item btn btn-outline" disabled={filters.index == 1} onClick={() => { handleClick(1) }}>&lt;&lt;</button>
                 <button className="join-item btn btn-outline" disabled={filters.index == 1} onClick={() => { handleClick(Number(filters.index) - 1) }}>&lt;</button>
