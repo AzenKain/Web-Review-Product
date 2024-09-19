@@ -17,8 +17,6 @@ type FieldType = {
     products?: ProductType[];
     productId?: string,
     quantity?: number,
-    address? : string
-    discount?: number
 };
 
 type ProductType = {
@@ -33,60 +31,23 @@ const App: React.FC = () => {
     const [editingProductIndex, setEditingProductIndex] = useState<number | null>(null);
     const [nameSuggest, setNameSuggest] = useState<{ name: string, id: string }[]>([]);
 
-    const { data: session } = useSession();
-    const dispatch = useDispatch();
+    const getName = async () => {
+        try {
+            const data = await SearchProductWithOptions(null);
+            setNameSuggest(data?.data || []);
+        } catch (error) {
+            console.error("Error fetching product names", error);
+        }
+    };
 
     useEffect(() => {
-        const getName = async () => {
-            try {
-                const data = await SearchProductWithOptions(null);
-                setNameSuggest(data?.data || []);
-            } catch (error) {
-                console.error("Error fetching product names", error);
-            }
-        };
         getName();
     }, []);
 
-    const onFinish = async (values: FieldType) => {
-        const { firstName, lastName, email, phoneNumber, notes, isPaid, address, discount } = values;
-
-    
-        const dto: CreateOrderDto = {
-            customerInfo: {
-                email: email || '',
-                firstName: firstName || '',
-                lastName: lastName || '',
-                phoneNumber: phoneNumber ? phoneNumber.toString() : '', 
-            },
-            deliveryInfo: {
-                address: address || '',
-                city: '', 
-                district: '',
-            },
-            notes: notes || '',
-            orderProducts: products?.map(product => ({
-                productId: Number(product.id), 
-                quantity: Number(product.quantity),
-                discount: discount ? Number(discount) : 0,
-            })) || [],
-            status: isPaid ? 'paid' : 'unpaid', 
-        };
-
-        try {
-            const response = await makeRequestApi(CreateOrderApi, dto, session?.refresh_token, session?.access_token);
-    
-            if (response) {
-
-                console.log("Bill created successfully:", response);
-
-            } else {
-                console.log("Bill creation failed.");
-            }
-        } catch (error) {
-            console.error("Error creating bill:", error);
-        }
+    const onFinish = (values: FieldType) => {
+        console.log("Success:", { ...values, products });
     };
+
     const onFinishFailed = (errorInfo: any) => {
         console.log("Failed:", errorInfo);
     };
@@ -186,11 +147,14 @@ const App: React.FC = () => {
             form={form}
         >
             <div className="m-8">
-                <Form.Item wrapperCol={{ offset: 8, span: 16, style: { textAlign: "right" } }}>
-                    <Button type="primary" htmlType="submit" style={{ marginRight: "12px" }}>
-                        Submit
-                    </Button>
-                    <Button htmlType="reset" onClick={resetTable}>Reset</Button>
+                <Form.Item wrapperCol={{ offset: 12, span: 16, style: { textAlign: "right" }}}>
+                    <div className="flex flex-row justify-end">
+                        <DefaultUploadFile/>
+                        <Button type="primary" htmlType="submit" style={{ marginRight: "12px", marginLeft: '12px' }}>
+                            Submit
+                        </Button>
+                        <Button htmlType="reset" onClick={resetTable}>Reset</Button>
+                    </div>
                 </Form.Item>
                 <div className="flex flex-row">
                     <div className="w-[40%] mr-[5%]">
@@ -214,12 +178,6 @@ const App: React.FC = () => {
                             <Input />
                         </Form.Item>
 
-                        <Form.Item<FieldType> label="address" name="address">
-                            <Input />
-                        </Form.Item>
-                        <Form.Item<FieldType> label="discount" name="discount">
-                                    <InputNumber style={{ width: "100%" }} />
-                            </Form.Item>
                         <Form.Item<FieldType> label="isPaid" name="isPaid"
                             rules={[{ required: true, message: 'Please input!' }]}
                         >

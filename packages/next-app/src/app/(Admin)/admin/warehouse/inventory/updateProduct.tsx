@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useEffect } from "react";
 import { Button, Form, Input, InputNumber } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
@@ -34,7 +34,7 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
 
     if (!dataEdit && dataEditId) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex min-h-screen items-center justify-center">
                 <span className="loading loading-spinner loading-lg"></span>
                 <h1 className="text-3xl font-bold">Loading Data ...</h1>
             </div>
@@ -215,14 +215,14 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
                     >
                         <Editor typeTag="tutorial" />
                     </Form.Item>
-                    <div className="flex flex-row">
-                        <Form.Item<ProductType>
-                            label="Thumbnail"
-                            name={['details', 'imgDisplay', 0]}
+                    <div className="flex flex row">
+                        <Form.Item<FieldType>
+                            label="thubnail"
+                            name="url"
                             labelCol={{ span: 24 }}
                             wrapperCol={{ span: 24 }}
                         >
-                            <UploadImage typeTag="url" isOpen={true} maxImage={1} />
+                            <UploadImage typeTag="url" maxImage={1} />
                         </Form.Item>
 
                         <Form.Item<ProductType>

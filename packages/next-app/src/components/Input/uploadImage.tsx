@@ -40,6 +40,7 @@ export const UploadImage: React.FC<{
     }, [value]);
 
     const handlePreview = async (file: UploadFile) => {
+        console.log("handlePreview")
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj as File);
         }
@@ -56,57 +57,6 @@ export const UploadImage: React.FC<{
         }
 
         setFileList(newFileList);
-
-
-    };
-
-    const customRequest: UploadProps['customRequest'] = async ({ file, onSuccess, onError }) => {
-
-        if (fileList.some(f => f.name === `image-${fileList.length}`)) {
-            message.error(`File image-${fileList.length} already exists.`);
-            if (onError) {
-                onError(new Error('Duplicate file detected.'));
-            }
-            return;
-        }
-
-        try {
-            const url = await makeRequestApi(uploadFile, file as RcFile, session?.refresh_token, session?.access_token);
-
-            const newFile: UploadFile = {
-                uid: `${fileList.length}`,
-                name: `image-${fileList.length}`,
-                status: 'done',
-                url: url,
-
-            };
-
-            setFileList(prevFileList => {
-                const newFileList = [...prevFileList, newFile];
-                if (onChange) {
-                    const filteredFileList = newFileList
-                        .map(file => ({
-                            url: file.url as string,
-                            link: []
-                        }))
-                        .filter(file => file.url != undefined);
-
-                    onChange(filteredFileList);
-                }
-                return newFileList;
-            });
-
-            onSuccess && onSuccess(url);
-        } catch (error) {
-            // Handle error
-            if (onError) {
-                const uploadError = {
-                    name: 'Upload Error',
-                    message: error as string
-                };
-                onError(uploadError);
-            }
-        }
     };
 
     const uploadButton = (
