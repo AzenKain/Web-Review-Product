@@ -1373,7 +1373,6 @@ export const createListOrder = async (dto: CreateOrderDto[], accessToken: string
         throw error;
     }
 }
-}
 
 export async function getTopPerfume() {
     const query = `
