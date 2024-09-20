@@ -33,7 +33,7 @@ export class ProductService {
 
     async GetReportProduct(dto: SearchProductDto) {
         const dataRequest: ProductEntity[] = (await this.SearchProductWithOptionsService(dto)).data;
-
+        console.log(dto)
         const requestBody = {
             data: dataRequest,
             type: 'ReportProduct'
@@ -208,18 +208,21 @@ export class ProductService {
         this.CheckRoleUser(user);
 
         const existingProduct = await this.productRepository.findOne({
-            where: { name: dto.name, category: dto.category },
+            where: { name: dto.name, category: dto.category, isDisplay: true },
         });
 
         if (existingProduct) {
             throw new ForbiddenException('Product already exists with the same name and category.');
         }
+        let savedImgDetails = []
 
+        if (dto.details.imgDisplay) {
+            const imgDetails = dto.details.imgDisplay.map((img) =>
+                this.imageDetailRepository.create({ url: img.url, link: img.link || [] })
+            );
+            savedImgDetails = await this.imageDetailRepository.save(imgDetails);
+        }
 
-        const imgDetails = dto.details.imgDisplay.map((img) =>
-            this.imageDetailRepository.create({ url: img.url, link: img.link || [] })
-        );
-        const savedImgDetails = await this.imageDetailRepository.save(imgDetails);
 
         const sizeTags = [];
 
@@ -257,7 +260,6 @@ export class ProductService {
 
         const savedProductDetail = await this.productDetailRepository.save(newProductDetail);
 
-        // Save product
         const newProduct = this.productRepository.create({
             name: dto.name,
             originCost: dto.originCost,

@@ -28,7 +28,7 @@ export default function Page() {
         {
             key: '1',
             label: <div onClick={() => {chageActiveKey('1')} }>Thêm sản phẩm</div>,
-            children: <AddNewProduct />,
+            children: <AddNewProduct changeTab={chageActiveKey}/>,
         },
         {
             key: '2',

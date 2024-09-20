@@ -1,16 +1,18 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
 import type { TableColumnsType, TableProps } from 'antd';
-import { Button, Space, Table, Input } from 'antd';
+import { Button, Space, Table, Input, message, Popconfirm } from 'antd';
 import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { InputRef, TableColumnType } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
-import { getAllProduct, deleteProductById } from '@/lib/api'
-import { ProductData } from '@/lib/dtos/product'
+import { getAllProduct, deleteProductById, makeRequestApi, exportOrdersToCSV } from '@/lib/api'
+import { ProductData, SearchProductDto } from '@/lib/dtos/product'
 import { useAppSelector, useAppDispatch } from "@/app/redux/hooks";
 import { DeleteProduct, UpdateListProduct, UpdateProductEdit, UpdateProductEditId } from '@/app/redux/features/iventoryData';
 import { ProductFormType } from '@/types';
-
+import { saveAs } from 'file-saver';
+import { useSession } from 'next-auth/react';
+import ExportProductModal from '@/components/Export/Product';
 type OnChange = NonNullable<TableProps<ProductFormType>['onChange']>;
 type Filters = Parameters<OnChange>[1];
 type GetSingle<T> = T extends (infer U)[] ? U : never;
@@ -34,12 +36,29 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
     const data = useAppSelector((state) => state.InventoryData.listProduct)
     const dispatch = useAppDispatch()
 
+    const handlerDeleteProduct = async (record: ProductFormType) => {
+        try {
+            const dataReturn = await makeRequestApi(deleteProductById, Number(record.id), session?.refresh_token, session?.access_token);
+            if (dataReturn && dataReturn.message == 'Product successfully soft deleted') {
+                deleteCell(record)
+                message.success('Delete product successfully.');
+            }
+            else {
+                message.error('Failed to delete.');
 
+            }
+        } catch (error) {
+            message.error('Failed to delete.');
+        }
+    }
 
     useEffect(() => {
         const fetchAndSetData = async () => {
             const products = (await getAllProduct()).data;
-            dispatch(UpdateListProduct(products))
+            if (products) {
+
+                dispatch(UpdateListProduct(products))
+            }
         };
 
         fetchAndSetData();
@@ -346,20 +365,39 @@ const App: React.FC<searchProductprops> = ({ setUpdateKey, changeTab }) => {
             key: 'delete',
             fixed: 'right' as 'right',
             render: (_, record) => (
-                <Button
-                    icon={<DeleteOutlined />}
-                    onClick={() => {
-                        deleteCell(record)
-                        deleteProductById(Number(record.id))
+                <Popconfirm
+                    title="Are you sure you want to delete this product?"
+                    onConfirm={() => {
+                        handlerDeleteProduct(record);
                     }}
-                />
+                    okText="Yes"
+                    cancelText="No"
+                >
+                    <Button
+                        icon={<DeleteOutlined />}
+                    />
+                </Popconfirm>
             ),
-        },
+        }
+        
     ];
+    const { data: session } = useSession();
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const showModal = () => {
+        setModalVisible(true);
+    };
+
+    const handleCancel = () => {
+        setModalVisible(false);
+    };
+
 
     return (
-        <div className="w-full">
-            <Table columns={columns} className="m-8" dataSource={data} onChange={handleChange} scroll={{ x: 1300 }} />
+        <div className="w-full mt-2">
+            <Button data-theme="light" className="btn btn-primary mx-8" onClick={showModal}>Export to CSV</Button>
+            <Table columns={columns} className="mx-8 my-4" dataSource={data} onChange={handleChange} scroll={{ x: 1300 }} />
+            <ExportProductModal visible={modalVisible} onCancel={handleCancel} />
         </div>
     );
 };
