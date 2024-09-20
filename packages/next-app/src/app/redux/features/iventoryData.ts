@@ -47,6 +47,27 @@ export const InventoryData = createSlice({
                 size: e.details?.size?.map(s => s?.value).filter(Boolean).join(', '),
             }));
         },
+        
+        AddListProduct: (state, action: PayloadAction<ProductData[]>) => {
+            state.listProduct.push(...action.payload.map((e: ProductData) => ({
+                id: e.id,
+                key: e.id,
+                name: e.name,
+                buyCount: e.buyCount,
+                created_at: e.created_at,
+                updated_at: e.updated_at,
+                displayCost: e.displayCost,
+                originCost: e.originCost?.toString(),
+                stockQuantity: e.stockQuantity,
+                brand: e.details?.brand?.value,
+                concentration: e.details?.concentration?.value,
+                fragranceNotes: e.details?.fragranceNotes?.value,
+                longevity: e.details?.longevity?.value,
+                sex: e.details?.sex?.value,
+                sillage: e.details?.sillage?.value,
+                size: e.details?.size?.map(s => s?.value).filter(Boolean).join(', '),
+            })));
+        },
         UpdateOneProduct: (state, action: PayloadAction<ProductType>) => {
  
             const selectProductIndex = state.listProduct.findIndex((e) => parseInt(e.id ? e.id : '-1') === action.payload.id);
@@ -87,6 +108,6 @@ export const InventoryData = createSlice({
 
 })
 
-export const { UpdateProductEdit,UpdateProductEditId, UpdateListProduct, DeleteProduct, UpdateOneProduct } = InventoryData.actions;
+export const { UpdateProductEdit,UpdateProductEditId, UpdateListProduct, DeleteProduct, UpdateOneProduct, AddListProduct } = InventoryData.actions;
 
 export default InventoryData.reducer;

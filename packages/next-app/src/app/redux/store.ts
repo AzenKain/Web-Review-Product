@@ -4,6 +4,7 @@ import AnalyticData from './features/analyticsData'
 import InventoryData  from './features/iventoryData'
 import TempWarehouse  from './features/tempWarehouse'
 import UserData from './features/userData'
+import OrderData from './features/orderData'
 
 export const makeStore = () => {
     return configureStore({
@@ -12,7 +13,8 @@ export const makeStore = () => {
             AnalyticData,
             InventoryData,
             TempWarehouse,
-            UserData
+            UserData,
+            OrderData 
         }
     })
 }

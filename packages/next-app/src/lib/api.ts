@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-import { GetTempWarehouseDto, Perfume, ProductType, TagsDetailType, TempWareHouseType, UpdateWarehouseDto, UserType } from "@/types";
+import { GetTempWarehouseDto, OrderType, Perfume, ProductType, TagsDetailType, TempWareHouseType, UpdateWarehouseDto, UserType } from "@/types";
 import { Backend_URL } from "./Constants";
 import { SignUpDto } from "./dtos/auth";
-import { SearchProductDto, UpdateProductDto } from "./dtos/product";
-import { ProductData, ProductDetails, CreateProductDto } from '@/lib/dtos/product'
-import { CreateOrderDto } from './dtos/order';
+import { CreateProductDto, SearchProductDto, UpdateProductDto } from "./dtos/product";
+import { ProductData, ProductDetails } from '@/lib/dtos/product'
+import { CreateOrderDto, SearchOrderDto, UpdateOrderDto } from './dtos/order';
 import { ReadFileDto } from './dtos/media';
 import { CreateUserDto, UpdateUserDto } from './dtos/user';
+
+
 
 
 async function refreshTokenApi(refreshToken: string): Promise<string | null> {
@@ -586,7 +588,81 @@ export async function getAllProduct() {
         throw error;
     }
 }
+export async function getAllOrder(dto: any, accessToken?: string) {
+    const query = `
+        query SearchOrderWithOption {
+            SearchOrderWithOption(SearchOrder: { index: 1.0 }) {
+                maxValue
+                data {
+                    created_at
+                    id
+                    isDisplay
+                    isPaid
+                    notes
+                    status
+                    totalAmount
+                    updated_at
+                    customerInfo {
+                        email
+                        firstName
+                        id
+                        lastName
+                        phoneNumber
+                    }
+                    deliveryInfo {
+                        address
+                        city
+                        district
+                        id
+                    }
+                    orderProducts {
+                        discount
+                        id
+                        orderId
+                        productId
+                        quantity
+                        unitPrice
+                        product {
+                            buyCount
+                            category
+                            created_at
+                            displayCost
+                            id
+                            isDisplay
+                            name
+                            originCost
+                            rating
+                            stockQuantity
+                            updated_at
+                        }
+                    }
+                }
+            }
+        }
 
+
+    `
+
+    try {
+        const response = await axios.post(Backend_URL + '/graphql',
+            { query },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${accessToken || ""}`,
+                },
+            }
+        );
+
+        const dataReturn: OrderType[] = response.data.data.SearchOrderWithOption.data;
+        const maxValue = response.data.data.SearchOrderWithOption.maxValue
+
+        return { maxValue: maxValue, data: dataReturn };
+    } catch (error) {
+        console.error('Error fetching: ', error);
+        throw error;
+    }
+}
 
 export async function getAnalyticsFavorite(dto: any, accessToken?: string) {
     const query = `
@@ -725,19 +801,25 @@ export async function deleteProductById(id: number, accessToken?: string) {
                 message
             }
         }
-    `
+    `;
+    
     try {
         const response = await axios.post(Backend_URL + '/graphql', {
             query: query,
+        }, {
+            headers: {
+                Authorization: accessToken ? `Bearer ${accessToken}` : '',
+            },
         });
 
-        const productData = response.data?.data?.GetProductById;
+        const productData = response.data?.data?.DeleteProduct;
         return productData;
     } catch (error) {
-        console.error('Error fetching product by id:', error);
+        console.error('Error deleting product by id:', error);
         throw error;
     }
 }
+
 
 
 export async function UpdateProductApi(dto: UpdateProductDto, accessToken?: string) {
@@ -995,7 +1077,7 @@ export async function createUser(dto: CreateUserDto, accessToken?: string) {
     try {
 
         const response = await axios.post(
-            `${Backend_URL}/graphql`, 
+            `${Backend_URL}/graphql`,
             {
                 query: mutation,
                 variables: { input: dto },
@@ -1045,7 +1127,7 @@ export async function updateUser(dto: UpdateUserDto, accessToken?: string) {
 
     try {
         const response = await axios.post(
-            `${Backend_URL}/graphql`, 
+            `${Backend_URL}/graphql`,
             {
                 query: mutation,
                 variables: { input: dto },
@@ -1134,6 +1216,163 @@ export async function createProduct(dto: CreateProductDto, accessToken?: string)
         console.error('Error creating product:', error);
         throw error;
     }
+}
+
+export async function updateOrder(dto: UpdateOrderDto, accessToken?: string) {
+    const mutation = `
+        mutation UpdateOrder {
+            UpdateOrder(UpdateOrder: {
+                orderId: ${dto.orderId},
+                ${dto.status !== undefined ? `status: "${dto.status}"` : ''}
+                ${dto.isPaid !== undefined ? `isPaid: ${dto.isPaid}` : ''}
+            }) {
+                created_at
+                id
+                isDisplay
+                isPaid
+                notes
+                status
+                totalAmount
+                updated_at
+            }
+        }
+    `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            {
+                query: mutation,
+                variables: { input: dto },
+            },
+            {
+                headers: {
+                    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data?.data?.UpdateOrder as OrderType;
+    } catch (error) {
+        console.error('Error updating user:', error);
+        throw error;
+    }
+}
+
+export const exportOrdersToCSV = async (dto: SearchOrderDto, accessToken: string | undefined) => {
+    try {
+        const response = await axios.post(
+            Backend_URL + '/order/export-file',
+            dto,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                responseType: 'blob',
+            }
+        );
+        return response
+
+    } catch (error) {
+        console.error('Error exporting orders to CSV:', error);
+
+    }
+};
+
+export const exportProductToCSV = async (dto: SearchProductDto, accessToken: string | undefined) => {
+    try {
+        const response = await axios.post(
+            Backend_URL + '/product/export-file',
+            dto,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                responseType: 'arraybuffer'
+            }
+        );
+        return response
+
+    } catch (error) {
+        console.error('Error exporting orders to CSV:', error);
+
+    }
+};
+
+export const createListOrder = async (dto: CreateOrderDto[], accessToken: string) => {
+    const query = `
+      mutation CreateListOrder($CreateOrder: [createOrderDto!]!) {
+        CreateListOrder(CreateOrder: $CreateOrder) {
+            created_at
+            id
+            isDisplay
+            isPaid
+            notes
+            status
+            totalAmount
+            updated_at
+            customerInfo {
+                email
+                firstName
+                id
+                lastName
+                phoneNumber
+            }
+            deliveryInfo {
+                address
+                city
+                district
+                id
+            }
+            orderProducts {
+                discount
+                id
+                orderId
+                productId
+                quantity
+                unitPrice
+                product {
+                    buyCount
+                    category
+                    created_at
+                    displayCost
+                    id
+                    isDisplay
+                    name
+                    originCost
+                    rating
+                    stockQuantity
+                    updated_at
+                }
+            }
+        }
+      }
+    `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            {
+                query: query,
+                variables: { CreateOrder: dto }
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        const data = response.data?.data?.CreateListOrder as OrderType[];
+        return data;
+    } catch (error) {
+        console.error('Error creating list order:', error);
+        throw error;
+    }
+}
 }
 
 export async function getTopPerfume() {

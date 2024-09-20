@@ -41,7 +41,7 @@ export const FileUpload: React.FC = () => {
                 
                 if (data2) {
                     onSuccess && onSuccess('ok');
-                    message.success(`file file uploaded successfully.`);
+                    message.success(`File uploaded successfully.`);
 
                     dispatch(UpdateTempWarehouser(data2))
                 }

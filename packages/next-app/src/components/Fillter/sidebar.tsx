@@ -125,7 +125,7 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
     return (
         <div className="block w-full">
             <div className="input-search hidden xl:block  w-[350px] p-4">
-                <button className="btn btn-outline btn-error">Error</button>
+                {/*<button className="btn btn-outline btn-error">Error</button>*/}
                 <div className="join w-full border rounded-none border-neutral">
                     <input type="text"
                         value={searchName}

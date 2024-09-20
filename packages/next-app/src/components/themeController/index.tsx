@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react';
 
 export default function App() {
     const [islight, setIslight] = useState(
-        JSON.parse(localStorage.getItem('islight'))
+        JSON.parse(localStorage.getItem('islight') as string)
     );
     useEffect(() => {
         localStorage.setItem('islight', JSON.stringify(islight));
+        console.log(islight)
     }, [islight]);
+
     return (
         <>
 

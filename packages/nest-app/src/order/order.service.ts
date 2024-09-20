@@ -31,8 +31,9 @@ export class OrderService {
         return dataReturn
     }
 
-    async GetReportOrder(dto: SearchOrderDto) {
-        const dataRequest: OrderEntity[] = (await this.SearchOrderWithOptionsServices(dto, new UserEntity())).data;
+    async GetReportOrder(dto: SearchOrderDto , user: UserEntity) {
+
+        const dataRequest: OrderEntity[] = (await this.SearchOrderWithOptionsServices(dto, user)).data;
 
         const requestBody = {
             data: dataRequest,
@@ -85,7 +86,7 @@ export class OrderService {
         }
     }
 
-    private async getProductDetail(productId: number): Promise<ProductEntity> {
+    private async getProductDetail(productId: number, quantity: number): Promise<ProductEntity> {
         const product = await this.productRepository.findOne({
             where: {
                 id: productId
@@ -94,7 +95,9 @@ export class OrderService {
         if (!product) {
             throw new NotFoundException(`Product with ID ${productId} not found`);
         }
-        return product
+        product.buyCount += quantity
+        product.stockQuantity -= quantity
+        return await this.productRepository.save(product)
     }
     async SearchOrderWithOptionsServices(dto: SearchOrderDto, user: UserEntity) {
         this.CheckRoleUser(user);
@@ -180,13 +183,14 @@ export class OrderService {
         const savedOrder = await this.orderRepository.save(order);
         let totalAmount = 0;
         for (const product of dto.orderProducts) {
-            const productData = await this.getProductDetail(product.productId);
+            const productData = await this.getProductDetail(product.productId, product.quantity);
             const orderProduct = this.orderProductRepository.create({
                 productId: productData.id,
                 orderId: savedOrder.id, 
                 quantity: product.quantity,
                 discount: product.discount ? product.discount : 0,
                 unitPrice: productData.displayCost,
+                product: productData
             });
     
             totalAmount += orderProduct.unitPrice * product.quantity;

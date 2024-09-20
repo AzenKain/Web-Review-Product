@@ -80,7 +80,7 @@ export class ProductEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: number;
 
-    @Column({ unique: true }) 
+    @Column() 
     name: string;
 
     @Column({ type: 'boolean' })

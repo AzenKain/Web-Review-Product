@@ -41,6 +41,7 @@ def extract_user_info(user: dict):
 
 
 def extract_order_info(order: dict):
+
     id = order['id'] if 'id' in order else ''
     isPaid = order['isPaid'] if 'isPaid' in order else False
     totalAmount = order['totalAmount'] if 'totalAmount' in order else 0
@@ -55,16 +56,18 @@ def extract_order_info(order: dict):
     phoneNumber = order["customerInfo"]["phoneNumber"] if isinstance(order.get("customerInfo"), dict) and "phoneNumber" in order["customerInfo"] else ""
     orderProducts = order['orderProducts'] if 'orderProducts' in order else []
 
+
     productIds = []
     unitPrices = []
     quantities = []
     discounts = []
 
     for product in orderProducts:
-        productIds.append(str(product.productId) if 'productId' in product else '0')
-        unitPrices.append(str(product.unitPrice) if 'unitPrice' in product else '0')
-        quantities.append(str(product.quantity) if 'quantity' in product else '0')
-        discounts.append(str(product.discount) if 'discount' in product else '0')  
+        productIds.append(str(product['productId']) if 'productId' in product else '')
+        unitPrices.append(str(product['unitPrice']) if 'unitPrice' in product else '')
+        quantities.append(str(product['quantity']) if 'quantity' in product else '')
+        discounts.append(str(product['discount']) if 'discount' in product else '')  
+        
 
     productIds_str = ', '.join(productIds)
     unitPrices_str = ', '.join(productIds)
@@ -182,9 +185,9 @@ async def analyze_file(file: UploadFile = File(...), typeFile = Form(...)):
             for _, row in df.iterrows():
                 product_json = {
                     "name": row['name'],
-                    "originCost": int(row['originCost']),
-                    "displayCost": int(row['displayCost']),
-                    "stockQuantity": int(row['stockQuantity']),
+                    'originCost' : row['originCost'], 
+                    'displayCost' : row['displayCost'], 
+                    'stockQuantity' :row['stockQuantity'], 
                     "category": row['category'],
                     "details": {
                         "brand": {
@@ -201,6 +204,7 @@ async def analyze_file(file: UploadFile = File(...), typeFile = Form(...)):
                         "tutorial": row['tutorial']
                     }
                 }
+
                 products.append(product_json)
             return products
 
@@ -266,6 +270,7 @@ async def analyze_file(file: UploadFile = File(...), typeFile = Form(...)):
             return warehouse
 
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
 
 

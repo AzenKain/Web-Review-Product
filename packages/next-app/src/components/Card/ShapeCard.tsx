@@ -8,7 +8,7 @@ export default function ShapeCard({ name, img, brand, cost, id }: Perfume) {
             <figure className="h-[60%] overflow-hidden">
                 <a href={`/product/${id}`} target="_blank" rel="noopener noreferrer">
                     <Image
-                        src={img as string}
+                        src={img as string || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                         alt={name}
                         style={{ backgroundColor: 'white' }}
                         width={500}

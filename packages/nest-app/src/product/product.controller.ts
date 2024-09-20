@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, StreamableFile, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, StreamableFile, UseGuards, Request } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dtos';
 import { createReadStream } from 'fs';
@@ -14,8 +14,10 @@ export class ProductController {
     @Post('export-file')
     async ExportFileController(
         @Body() dto : SearchProductDto,
+        @Request() req,
         @Res({ passthrough: true }) res: Response
     )  {
+
         const data : Uint8Array = await this.productService.GetReportProduct(dto)
         return new StreamableFile(data, {
             type: 'text/csv',

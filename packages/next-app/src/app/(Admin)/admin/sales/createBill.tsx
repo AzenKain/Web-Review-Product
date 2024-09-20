@@ -6,7 +6,7 @@ import { CreateOrderApi, makeRequestApi, SearchProductWithOptions } from '@/lib/
 import { useDispatch } from "react-redux";
 import { useSession } from "next-auth/react";
 import { CreateOrderDto } from "@/lib/dtos/order";
-import DefaultUploadFile from '@/components/Input/defaultUploadFile'
+import UploadFile from '@/components/Input/orderUploadFile'
 
 type FieldType = {
     firstName?: string;
@@ -28,8 +28,11 @@ type ProductType = {
     name: string;
     quantity: number;
 };
+interface AppProps {
+    changeTab: (tabKey: string) => void;
+}
 
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ changeTab }) => {
     const [form] = Form.useForm();
     const [products, setProducts] = useState<ProductType[]>([]);
     const [editingProductIndex, setEditingProductIndex] = useState<number | null>(null);
@@ -194,7 +197,7 @@ const App: React.FC = () => {
             <div className="m-8">
                 <Form.Item wrapperCol={{ offset: 12, span: 16, style: { textAlign: "right" } }}>
                     <div className="flex flex-row justify-end">
-                        <DefaultUploadFile />
+                        <UploadFile changeTab={changeTab}/>
                         <Button type="primary" htmlType="submit" style={{ marginRight: "12px", marginLeft: '12px' }}>
                             Submit
                         </Button>

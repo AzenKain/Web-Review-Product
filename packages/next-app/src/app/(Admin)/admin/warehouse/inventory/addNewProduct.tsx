@@ -2,7 +2,7 @@
 import React from "react";
 import { Button, Form, Input, InputNumber, message } from "antd";
 import { InputAdd, Editor, UploadImage } from "@/components/Input";
-import DefaultUploadFile from "@/components/Input/defaultUploadFile";
+import ProductUploadFile from "@/components/Input/productUploadFile";
 import { CreateProductDto, ImageDetailInp } from "@/lib/dtos/product";
 import { useSession } from "next-auth/react";
 import { createProduct, makeRequestApi } from "@/lib/api";
@@ -23,8 +23,11 @@ type FieldType = {
     stockQuantity: number;
     imgDisplay?: ImageDetailInp[];
 };
+interface AppProps {
+    changeTab: (tabKey: string) => void;
+}
 
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ changeTab }) => {
     const { data: session } = useSession();
     const [form] = Form.useForm();
     const onFinish = async (values: FieldType) => {
@@ -81,7 +84,7 @@ const App: React.FC = () => {
 
             <Form.Item wrapperCol={{ offset: 12, span: 16, style: { textAlign: "right" } }}>
                     <div className="flex flex-row justify-end">
-                        <DefaultUploadFile />
+                        <ProductUploadFile changeTab={changeTab} />
                         <Button type="primary" htmlType="submit" style={{ marginRight: "12px", marginLeft: '12px' }}> Submit </Button>
                         <Button htmlType="reset">reset</Button>
                     </div>

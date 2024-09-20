@@ -50,7 +50,7 @@ const ZoomOnHover: React.FC<ZoomOnHoverProps> = ({ src, zoomFactor = 2 }) => {
         <div style={{ position: 'relative' }}>
             <Zoom>
                 <img
-                    src={src}
+                    src={src || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                     alt="Zoomable"
                     style={{ width: '100%', height: 'auto' }}
                     onMouseMove={handleMouseMove}
