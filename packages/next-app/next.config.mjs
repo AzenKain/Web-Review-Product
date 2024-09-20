@@ -5,7 +5,7 @@ const nextConfig = {
       NEXTAUTH_SECRET:"the-king-also-has-to-cum",
     },
     images: {
-        domains: ['localhost', 'api.perfumedk.shop']
+        domains: ['localhost', 'api.perfumedk.shop', 'upload.wikimedia.org']
     },
     eslint: {
         ignoreDuringBuilds: true,

@@ -32,7 +32,7 @@ export default async function Page({
         <div className="bg-base-100">
             <div className="pt-8 m-auto flex flex-col md:flex-row xl:container flex-wrap">
                 <div className="sm:w-[300px] order-1 w-[95%]">
-                    <ImageGallery images={imageUrls ? imageUrls : []} />
+                    <ImageGallery images={imageUrls || []} />
                 </div>
                 <div className="flex-1 xl:hidden order-2"></div>
                 <div className="sumary-product xl:flex-1 p-6 order-4 xl:order-1 w-screen">

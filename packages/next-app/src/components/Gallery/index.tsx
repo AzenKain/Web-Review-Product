@@ -26,8 +26,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
                 {images.map((src, index) => (
                     <img
                         key={index}
-                        src={src}
+                        src={src || 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'}
                         alt={`Thumbnail ${index}`}
+                        loading='lazy'
                         style={{
                             width: '60px',
                             height: '60px',

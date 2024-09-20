@@ -1,0 +1,18 @@
+
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip3 install uvicorn
+
+RUN pip3 install "pandas"
+
+RUN pip3 install "xmltodict"
+
+RUN pip3 install "fastapi[standard]"
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8000"]
