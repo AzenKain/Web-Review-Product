@@ -17,7 +17,7 @@ export default async function Page({
     const brandFilter: SearchProductDto = {
         index: 1,
         count: 10,
-        brand: [{ type: "brand", value: product?.details?.brand && product.details.brand.value }]
+        brand: [{ type: "brand", value: product?.details?.brand && product.details.brand?.value }]
     }
 
     const linkedPerfume = (await GetProductForSearch(brandFilter)).data
@@ -37,14 +37,14 @@ export default async function Page({
                 <div className="flex-1 xl:hidden order-2"></div>
                 <div className="sumary-product xl:flex-1 p-6 order-4 xl:order-1 w-screen">
                     <div className="flex flex-row">
-                        <h1 className="text-3xl font-bold">{product.name}</h1>
+                        <h1 className="text-3xl font-bold">{product?.name}</h1>
                         <div className="badge badge-secondary ml-2 self-center">{product?.details?.sex?.value}</div>
                         <div className="flex-1"></div>
                     </div>
                     <div className="divider"></div>
                     <div className="flex flex-row justify-between">
                         <h3 className="text-[18px] mb-[4px]">Giá sản phẩm:</h3>
-                        <h3 className="text-red-500 font-bold text-[18px] mb-[4px]">{product.displayCost}</h3>
+                        <h3 className="text-red-500 font-bold text-[18px] mb-[4px]">{product?.displayCost}</h3>
                     </div>
                     <div className="flex flex-row justify-between">
                         <h3 className="text-[18px] mb-[4px]">Lượng hàng còn lại:</h3>
@@ -52,7 +52,7 @@ export default async function Page({
                     </div>
                     <div className="flex flex-row justify-between">
                         <h3 className="text-[18px] mb-[4px]">Số lượng đã bán:</h3>
-                        <h3 className="text-[18px] mb-[4px]">{product.buyCount}</h3>
+                        <h3 className="text-[18px] mb-[4px]">{product?.buyCount}</h3>
                     </div>
                     <div className="divider"></div>
                     <h3 className="text-[18px] mb-[4px]">Dung tích(mẫu thử miễn phí): </h3>
@@ -100,7 +100,7 @@ export default async function Page({
                                  (item?.value && (
                                     <a key={index} href={`/showroom?size=${item?.value}`}
                                     className="h-5 self-center underline">
-                                    {item.value}
+                                    {item?.value}
                                 </a>
                                  ))
 
