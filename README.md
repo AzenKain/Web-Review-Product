@@ -8,23 +8,6 @@ PerfumeDK is an e-commerce platform specializing in selling premium perfumes. Th
 - **MySQL**: A reliable relational database for storing and managing product, user, and order information.
 
 ## Getting Started
-
-To set up and run the application using Docker Compose:
-
-1. Navigate to the `nest-app` directory and build the backend:
-
-   ```bash
-   cd ./nest-app
-   npm run build
-   ```
-
-2. Navigate to the `next-app` directory and build the frontend:
-
-   ```bash
-   cd ./next-app
-   npm run build
-   ```
-
 3. Start all services using Docker Compose:
 
    ```bash
