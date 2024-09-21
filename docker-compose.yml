@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  mysql:
+  mysql1:
     image: mysql:8.4.2
     container_name: mysql_review_product
     environment:
@@ -14,9 +14,48 @@ services:
     networks:
       - review_network
 
-networks:
-  review_network:
-    driver: bridge
+  nestjs:
+    build:
+      context: .
+      dockerfile: nest-app/Dockerfile
+    container_name: nestjs_service
+    environment:
+      DATABASE_URL: mysql://root:super-secret-123@@mysql/review_product 
+    ports:
+      - '3434:3434'
+    networks:
+      - review_network
+    depends_on:
+      - mysql
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: python-module/Dockerfile
+    container_name: fastapi_service
+    ports:
+      - '8000:8000'
+    networks:
+      - review_network
+    depends_on:
+      - mysql
+
+  nextjs:
+    build:
+      context: .
+      dockerfile: next-app/Dockerfile
+    container_name: nextjs_service
+    ports:
+      - '3000:3000'
+    networks:
+      - review_network
+    depends_on:
+      - mysql
+
 
 volumes:
   mysql_data:
+
+networks:
+  review_network:
+    driver: bridge
