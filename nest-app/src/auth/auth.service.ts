@@ -72,6 +72,7 @@ export class AuthService {
         await this.updateRefreshToken(userLogin.secretKey, token.refresh_token)
         return token;
     }
+    
     async RefreshService(dto: JwtPayload) {
         const userLogin = await this.userRepository.findOne({
             where: {

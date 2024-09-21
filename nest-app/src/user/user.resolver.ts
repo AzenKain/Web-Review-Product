@@ -5,6 +5,7 @@ import { HttpCode, UseGuards } from '@nestjs/common';
 import { CurrentUserGraphql } from 'src/decorators';
 import { CreateUserDto, SearchUserDto, UpdateUserDto } from './dtos';
 import { JwtGuardGraphql } from 'src/auth/guard';
+import { ResponseType } from 'src/types/response.type';
 
 @UseGuards(JwtGuardGraphql)
 @Resolver()
@@ -44,12 +45,12 @@ export class UserResolver {
         return await this.userService.SearchUserWithOptionsServices(dto, user)
     }
 
-    @Mutation(() => UserType)
+    @Mutation(() => ResponseType)
     async DeleteUser(
         @CurrentUserGraphql() user: UserEntity,
-        @Args('DeleteUser') dto: CreateUserDto,
-    ): Promise<UserType> {
-        return await this.userService.CreateUserService(dto, user)
+        @Args('id') userId: string
+    ): Promise<ResponseType> {
+        return await this.userService.DeleteUserService(userId, user)
     }
 
     @Query(() => UserType)

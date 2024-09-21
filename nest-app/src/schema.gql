@@ -138,7 +138,7 @@ type Mutation {
   CreateUserByList(CreateUser: [CreateUserDto!]!): [UserType!]!
   DeleteBlog(DeleteBlog: DeleteBlogDto!): ResponseType!
   DeleteProduct(DeleteProduct: DeleteProductDto!): ResponseType!
-  DeleteUser(DeleteUser: CreateUserDto!): UserType!
+  DeleteUser(id: String!): ResponseType!
   UpdateBlog(UpdateBlog: UpdateBlogDto!): Blog!
   UpdateOrder(UpdateOrder: updateOrderDto!): Order!
   UpdateProduct(UpdateProduct: UpdateProductDto!): Product!

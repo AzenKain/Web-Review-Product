@@ -99,6 +99,7 @@ export class OrderService {
         product.stockQuantity -= quantity
         return await this.productRepository.save(product)
     }
+    
     async SearchOrderWithOptionsServices(dto: SearchOrderDto, user: UserEntity) {
         this.CheckRoleUser(user);
 
@@ -117,7 +118,7 @@ export class OrderService {
         }
 
         if (dto.firstName) {
-            query.andWhere('LOWER(customerInfo.firstName) LIKE :firstName', { firstName: `%${dto.firstName.toLowerCase()}%` });
+            query.andWhere('LOWER(customerInfo.firstName) LIKE :firstName', { firstName: `%${dto.firstName.toLowerCase()}%`});
         }
 
         if (dto.lastName) {

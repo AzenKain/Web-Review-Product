@@ -1393,3 +1393,68 @@ export async function getTopPerfume() {
         throw error;
     }
 }
+
+export const createProductByList = async (dto: CreateProductDto[], accessToken: string) => {
+    const query = `
+      mutation CreateProductByList($CreateProduct: [CreateProductDto!]!) {
+        CreateProductByList(CreateProduct: $CreateProduct) {
+            buyCount
+            category
+            created_at
+            displayCost
+            id
+            isDisplay
+            name
+            originCost
+            rating
+            stockQuantity
+            updated_at
+            details {
+                id
+                brand {
+                    value
+                }
+                concentration {
+                    value
+                }
+                fragranceNotes {
+                    value
+                }
+                longevity {
+                    value
+                }
+                sex {
+                    value
+                }
+                sillage {
+                    value
+                }
+                size {
+                    value
+                }
+            }
+        }
+      }
+    `;
+
+    try {
+        const response = await axios.post(
+            `${Backend_URL}/graphql`,
+            {
+                query: query,
+                variables: { CreateProduct: dto }
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            }
+        );
+
+        const data = response.data?.data?.CreateProductByList as ProductData[];
+        return data;
+    } catch (error) {
+        console.error('Error creating product list:', error);
+        throw error;
+    }
+}

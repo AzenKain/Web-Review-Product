@@ -12,6 +12,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import * as FormData from 'form-data';
 import { use } from 'passport';
+import { ResponseType } from 'src/types/response.type';
 
 @Injectable()
 export class UserService {
@@ -193,6 +194,24 @@ export class UserService {
 
         return await this.userRepository.save(user);
     }
+    async DeleteUserService(userId: string, userCurrent: UserEntity): Promise<ResponseType> {
+        this.CheckRoleUser(userCurrent)
+        const user = await this.userRepository.findOne({
+            where: {
+                secretKey: userId
+            }
+        })
+
+        if (user) {
+            throw new ForbiddenException(
+                'This user is not exist!',
+            );
+        }
+        user.isDisplay = false
+        await this.userRepository.save(user)
+        return {message : "Soft delete user is successfully!"} as ResponseType
+    }
+    
     async CreateUserService(dto: CreateUserDto, userCurrent: UserEntity): Promise<UserEntity> {
         this.CheckRoleUser(userCurrent)
 
