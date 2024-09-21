@@ -153,12 +153,12 @@ export default async function Page({
                     <div role="tablist" className="tabs tabs-lifted">
                         <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" value="haizz" aria-label="Mô tả sản phẩm" defaultChecked />
                         <div role="tabpanel" style={{ whiteSpace: 'pre-line' }} className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <div>{product?.details?.description}</div>
+                            <div dangerouslySetInnerHTML={{ __html: product?.details?.description || '' }}></div>
                         </div>
 
                         <input type="radio" style={{ width: "200px !important", height: "50px !important" }} name="my_tabs_2" role="tab" className="tab" aria-label="Sử dụng và Bảo quản" />
                         <div role="tabpanel" style={{ whiteSpace: 'pre-line' }} className="tab-content bg-base-100 border-base-300 rounded-box p-6">
-                            <div>{product?.details?.tutorial}</div>
+                            <div dangerouslySetInnerHTML={{ __html: product?.details?.tutorial || '' }}></div>
                         </div>
                     </div>
                 </div>

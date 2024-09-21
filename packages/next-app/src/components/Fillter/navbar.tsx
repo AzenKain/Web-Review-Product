@@ -86,11 +86,11 @@ export default function FilterNavbar() {
             </select>
             <div className="flex-1"></div>
             <div className="join rounded-none">
-                <button className="join-item btn btn-outline" disabled={filters.index == 1} onClick={() => { handleClick(1) }}>&lt;&lt;</button>
-                <button className="join-item btn btn-outline" disabled={filters.index == 1} onClick={() => { handleClick(Number(filters.index) - 1) }}>&lt;</button>
+                <button className="join-item btn btn-outline" disabled={filters.index === 1} onClick={() => { handleClick(1) }}>&lt;&lt;</button>
+                <button className="join-item btn btn-outline" disabled={filters.index === 1} onClick={() => { handleClick(Number(filters.index) - 1) }}>&lt;</button>
                 <input type="text" placeholder={String(filters.index)} onKeyDown={handleKeyDown} onBlur={handleChange} className="input w-20 btn-outline rounded-none text-center" />
-                <button className="join-item btn btn-outline" disabled={maxPage == filters.index} onClick={() => { handleClick(Number(filters.index) + 1) }}>&gt;</button>
-                <button className="join-item btn btn-outline" disabled={maxPage == filters.index} onClick={() => { handleClick(maxPage) }}>&gt;&gt;</button>
+                <button className="join-item btn btn-outline" disabled={maxPage === filters.index} onClick={() => { handleClick(Number(filters.index) + 1) }}>&gt;</button>
+                <button className="join-item btn btn-outline" disabled={maxPage === filters.index} onClick={() => { handleClick(maxPage) }}>&gt;&gt;</button>
             </div>
         </div>
     )

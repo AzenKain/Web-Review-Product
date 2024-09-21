@@ -10,7 +10,7 @@ type InitialState = {
     maxValue?: number
 }
 
-const initialState: InitialState = {
+export const initialState: InitialState = {
     value: {
         index: 1,
         count: 24,

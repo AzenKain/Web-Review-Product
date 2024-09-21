@@ -3,8 +3,8 @@ import { ChangeEvent, useEffect, useState, useRef } from 'react'
 import { Slider, ConfigProvider } from "antd";
 import { SearchProductDto } from "@/lib/dtos/product/"
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
-import { UpdateFilter } from '@/app/redux/features/filterSearch';
-import Link from 'next/link'
+import { UpdateFilter, initialState } from '@/app/redux/features/filterSearch';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 
 type FilterSidebarProps = {
@@ -108,6 +108,20 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
         });
     };
 
+    const resetFilter = () => {
+        $("input[type=checkbox]").prop('checked', false)
+        setSearchName('')
+        setPriceRange([0, 50000])
+        dispatch(UpdateFilter({
+            value: {
+                sort: filters.sort,
+                count: filters.count,
+                index: 1
+            }
+        }))
+        setFilterStorage({})
+    }
+
     useEffect(() => {
         const SM: SearchProductDto = {
             ...filters,
@@ -125,7 +139,8 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
     return (
         <div className="block w-full">
             <div className="input-search hidden xl:block  w-[350px] p-4">
-                {/*<button className="btn btn-outline btn-error">Error</button>*/}
+                <button onClick={resetFilter} className="btn btn-outline w-full rounded-none"><FilterAltOffIcon /></button>
+                <div className="divider"></div>
                 <div className="join w-full border rounded-none border-neutral">
                     <input type="text"
                         value={searchName}
@@ -135,7 +150,7 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
                         placeholder="Search by name"
                         className="input w-full max-w-xs rounded-none"
                     />
-                    <button className="join-item btn rounded-none" onClick={handleClear}>x</button>
+                    <button className="join-item btn rounded-none bg-base-100" onClick={handleClear}>x</button>
                 </div>
                 <div className="divider"></div>
                 <label className="form-control w-full max-w-xs">
@@ -273,6 +288,8 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
                 <div className="drawer-side">
                     <label htmlFor="filter-toggle" aria-label="close sidebar" className="drawer-overlay"></label>
                     <div className="input-search w-[350px] bg-base-100 p-4 mt-[112px]">
+                        <button onClick={resetFilter} className="btn btn-outline w-full rounded-none"><FilterAltOffIcon /></button>
+                        <div className="divider"></div>
                         <div className="join w-full border rounded-none border-neutral">
                             <input type="text"
                                 value={searchName}
