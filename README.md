@@ -7,6 +7,12 @@ PerfumeDK is an e-commerce platform specializing in selling premium perfumes. Th
 - **FastAPI**: A high-performance Python framework for building APIs, responsible for handling file uploads and processing order, user, and product data.
 - **MySQL**: A reliable relational database for storing and managing product, user, and order information.
 
+## Note
+1. BackEnd_URL:
+   ```bash
+   If you want public web in vps. U need change BackEnd_Url next-app\src\lib\Constants.ts
+   ```
+
 ## Start Auto with docker
 
 1. Start all services server using Docker Compose:
