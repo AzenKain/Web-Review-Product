@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useState, useRef } from 'react'
 import { Slider, ConfigProvider } from "antd";
 import { SearchProductDto } from "@/lib/dtos/product/"
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
-import { UpdateFilter, initialState } from '@/app/redux/features/filterSearch';
+import { UpdateFilter, initialState, UpdateLoadedState } from '@/app/redux/features/filterSearch';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 
@@ -25,19 +25,41 @@ type filterStorageDto = {
 }
 
 export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps) {
-    const staticRender = useRef<number>(0)
+    const staticRender = useRef<boolean>(false)
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000])
     const [searchName, setSearchName] =  useState<string>('')
     const [brandStorage, setBrandStorage] = useState<string[]>([])
     const [filterStorage, setFilterStorage] = useState<filterStorageDto>({})
     const dispatch = useAppDispatch()
-    const filters = useAppSelector((state) => state.filterSearch.value);
+    const filters = useAppSelector((state) => state.filterSearch.value)
+    const loaded = useAppSelector((state) => state.filterSearch.loaded)
 
     useEffect(() => { setBrandStorage(brand); }, [brand]) 
 
     useEffect(() => {
-        if (staticRender.current < 2) {
-            staticRender.current++
+        console.log("staticrender: ", staticRender)
+        console.log("pass1")
+        if (!loaded) return;
+        console.log("pass2")
+        if (!staticRender.current) return;
+        console.log("pass3")
+        const SM: SearchProductDto = {
+            ...filters,
+            index: 1,
+            brand: filterStorage.brand?.map(item => ({ type: "brand", value: item })),
+            sex: filterStorage.sex?.map(item => ({ type: "sex", value: item })),
+            concentration: filterStorage.concentration?.map(item => ({ type: "concentration", value: item })),
+            fragranceNotes: filterStorage.fragranceNotes?.map(item => ({ type: "fragranceNotes", value: item })),
+            size: filterStorage.size?.map(item => ({ type: "size", value: item })),
+            rangeMoney: filterStorage.rangeMoney,
+        }
+        dispatch(UpdateFilter({ value: SM }))
+    }, [filterStorage])
+
+    useEffect(() => {
+        if (!loaded) return;
+        if (!staticRender.current) { staticRender.current = true; return}
+        else {
             setFilterStorage({
                 brand: filters.brand?.map(e => e.value!),
                 concentration: filters.concentration?.map(e => e.value!),
@@ -53,7 +75,7 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
             ]);
             setSearchName(filters.name!)
         }
-    }, [filters])
+    }, [loaded])
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const SM: SearchProductDto = {
@@ -122,19 +144,6 @@ export default function FilterSidebar({ brand, perfumeType }: FilterSidebarProps
         setFilterStorage({})
     }
 
-    useEffect(() => {
-        const SM: SearchProductDto = {
-            ...filters,
-            index: 1,
-            brand: filterStorage.brand?.map(item => ({ type: "brand", value: item })),
-            sex: filterStorage.sex?.map(item => ({ type: "sex", value: item})),
-            concentration: filterStorage.concentration?.map(item => ({ type: "concentration", value: item })),
-            fragranceNotes: filterStorage.fragranceNotes?.map(item => ({ type: "fragranceNotes", value: item })),
-            size: filterStorage.size?.map(item => ({ type: "size", value: item })),
-            rangeMoney: filterStorage.rangeMoney,
-        }
-        dispatch(UpdateFilter({ value: SM }))
-    }, [filterStorage])
 
     return (
         <div className="block w-full">

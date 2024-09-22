@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Carousel from '@/components/Carousel';
 import { GetTagsProduct, getTopPerfume } from '@/lib/api'
 import { perfumeType } from '@/types'
+export const revalidate = 86400;
 
 export default async function HomeTemplate({
     children

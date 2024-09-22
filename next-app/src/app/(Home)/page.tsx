@@ -5,6 +5,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import About from './about'
 import { Perfume } from "@/types";
 import { GetHotSaleProductForHome } from "@/lib/api";
+export const revalidate = 86400;
 
 
 export default async function Page() {

@@ -5,7 +5,7 @@ import ShapeCard from '@/components/Card/ShapeCard'
 import { Perfume } from '@/types/Perfume'
 import { GetProductForSearch } from "@/lib/api"
 import { useAppDispatch, useAppSelector } from '@/app/redux/hooks';
-import { UpdatePerfume, UpdateMaxValue, UpdateFilter } from '@/app/redux/features/filterSearch';
+import { UpdatePerfume, UpdateMaxValue, UpdateFilter, UpdateLoadedState } from '@/app/redux/features/filterSearch';
 import { SearchProductDto } from '@/lib/dtos/product'
 import { encodeDto, encodeParams, decodeParams } from '@/lib/helper/urlHandler'
 
@@ -59,9 +59,11 @@ export default function Page() {
     }
 
     useEffect(() => {
+        console.log('block page')
         if (staticRender.current) {
             staticRender.current = false
             decodeMount();
+            dispatch(UpdateLoadedState({ value: true }))
         } else {
             console.log("filters: ", filters)
             const newPath: encodeDto = {
@@ -82,7 +84,7 @@ export default function Page() {
             router.push(`/showroom${encodeParams(newPath)}`)
             fetchData();
         }
-    }, [filters, dispatch])
+    }, [filters])
 
     return (
         <>
