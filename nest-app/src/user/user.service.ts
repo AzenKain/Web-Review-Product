@@ -194,6 +194,7 @@ export class UserService {
 
         return await this.userRepository.save(user);
     }
+    
     async DeleteUserService(userId: string, userCurrent: UserEntity): Promise<ResponseType> {
         this.CheckRoleUser(userCurrent)
         const user = await this.userRepository.findOne({

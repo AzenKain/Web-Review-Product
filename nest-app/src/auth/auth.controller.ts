@@ -32,7 +32,6 @@ export class AuthController {
     async RefreshController(
         @CurrentUserRest() user: JwtPayload
     ) {
-        console.log(user)
         return await this.authService.RefreshService(user)
     }
 }

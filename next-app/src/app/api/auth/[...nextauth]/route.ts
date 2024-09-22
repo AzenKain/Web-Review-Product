@@ -25,7 +25,7 @@ async function refreshToken(token: JWT): Promise<JWT> {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${refreshToken}`
+            "Authorization": `Bearer ${token.refresh_token}`
         },
     });
 

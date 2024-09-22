@@ -24,6 +24,7 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
         const fetchData = async () => {
             if (dataEditId) { 
                 const data = await GetProductById(dataEditId);
+                console.log(data.details?.imgDisplay)
                 if (data) {
                     dispatch(UpdateProductEdit(data));
                 }
@@ -76,11 +77,13 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
                 })) : undefined
             } : undefined
         };
+        console.log(dto.details?.imgDisplay)
 
         try {
-            const response = await makeRequestApi(UpdateProductApi, dto, session?.refresh_token, session?.access_token);
+            const response : ProductType = await makeRequestApi(UpdateProductApi, dto, session?.refresh_token, session?.access_token);
     
             if (response) {
+
                 dispatch(UpdateOneProduct(response))
                 dispatch(UpdateProductEdit(null))
                 dispatch(UpdateProductEditId(null))
