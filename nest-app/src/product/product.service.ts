@@ -332,11 +332,11 @@ export class ProductService {
             const imgDetails = [];
             for (const img of dtoDetails.imgDisplay) {
 
-                const existingImageDetails = await this.imageDetailRepository.find({
+                const existingImageDetails = await this.imageDetailRepository.findOne({
                     where: { url: img.url }
                 });
     
-                if (!existingImageDetails.length) {
+                if (!existingImageDetails) {
                     const newImageDetail = this.imageDetailRepository.create({
                         url: img.url,
                         link: img?.link || []

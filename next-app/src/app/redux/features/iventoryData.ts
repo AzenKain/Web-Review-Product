@@ -70,15 +70,16 @@ export const InventoryData = createSlice({
         },
         UpdateOneProduct: (state, action: PayloadAction<ProductType>) => {
  
-            const selectProductIndex = state.listProduct.findIndex((e) => parseInt(e.id ? e.id : '-1') === action.payload.id);
-        
+            const selectProductIndex = state.listProduct.findIndex((e) =>Number(e.id ? e.id : '-1') === Number(action.payload.id));
+
             if (selectProductIndex !== -1) {
     
                 const selectProduct = state.listProduct[selectProductIndex];
         
 
                 const updatedProduct: ProductFormType = {
-                    ...selectProduct,
+                    id: selectProduct.id,
+                    key: selectProduct.key,
                     name: action.payload.name,
                     buyCount: action.payload.buyCount,
                     created_at: action.payload.created_at ? new Date(action.payload.created_at).toISOString() : '',

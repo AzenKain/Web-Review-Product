@@ -5,7 +5,38 @@ const nextConfig = {
       NEXTAUTH_SECRET:"the-king-also-has-to-cum",
     },
     images: {
-        domains: ['localhost', 'api.perfumedk.shop', 'upload.wikimedia.org']
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'localhost',
+                pathname: '**',
+            },
+            {
+                protocol: 'http',
+                hostname: 'localhost',
+                pathname: '**',
+            },
+            {
+                protocol: 'http',
+                hostname: 'api.perfumedk.shop',
+                pathname: '**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'api.perfumedk.shop',
+                pathname: '**',
+            },
+            {
+                protocol: 'http',
+                hostname: 'upload.wikimedia.org',
+                pathname: '**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'upload.wikimedia.org',
+                pathname: '**',
+            },
+        ],
     },
     eslint: {
         ignoreDuringBuilds: true,

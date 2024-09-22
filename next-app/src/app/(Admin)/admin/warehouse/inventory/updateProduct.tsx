@@ -24,6 +24,7 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
         const fetchData = async () => {
             if (dataEditId) { 
                 const data = await GetProductById(dataEditId);
+                console.log(data.details?.imgDisplay)
                 if (data) {
                     dispatch(UpdateProductEdit(data));
                 }
@@ -56,6 +57,7 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
             name: values.name,
             originCost: Number(values.originCost),
             displayCost: Number(values.displayCost),
+            stockQuantity: Number(values.stockQuantity),
             details: values.details ? {
                 brand: values.details?.brand ? { value: values.details?.brand.value as string, type: 'brand' } : undefined,
                 longevity: values.details?.longevity ? { value: values.details.longevity.value as string,  type: 'longevity'} : undefined,
@@ -75,11 +77,13 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
                 })) : undefined
             } : undefined
         };
+        console.log(dto.details?.imgDisplay)
 
         try {
-            const response = await makeRequestApi(UpdateProductApi, dto, session?.refresh_token, session?.access_token);
+            const response : ProductType = await makeRequestApi(UpdateProductApi, dto, session?.refresh_token, session?.access_token);
     
             if (response) {
+
                 dispatch(UpdateOneProduct(response))
                 dispatch(UpdateProductEdit(null))
                 dispatch(UpdateProductEditId(null))

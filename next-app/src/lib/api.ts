@@ -833,6 +833,8 @@ export async function UpdateProductApi(dto: UpdateProductDto, accessToken?: stri
             stockQuantity
             category
             buyCount
+            created_at
+            updated_at
             rating
             details {
                 brand {

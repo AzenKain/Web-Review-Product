@@ -133,10 +133,6 @@ def extract_product_info(product: dict):
 def clean_and_split(text: str) -> List[str]:
     return [item.strip() for item in text.split(',') if item.strip()]
 
-@app.get("/health")
-def read_health():
-    return {"status": "ok"}
-
 @app.post("/export-file")
 async def export_csv(request: Request):
     try:

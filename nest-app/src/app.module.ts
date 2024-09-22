@@ -17,6 +17,7 @@ import { BlogModule } from './blog/blog.module';
 import { BlogEntity } from './types/blog';
 import { MediaModule } from './media/media.module';
 import { AnalyticModule } from './analytic/analytic.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [    
@@ -32,11 +33,11 @@ import { AnalyticModule } from './analytic/analytic.module';
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
-      envFilePath: ['./setup/.env']
+      envFilePath: ['./.env.docker']
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'src/schema.gql',
+      autoSchemaFile: './schema.gql',
       sortSchema: true,
     }),
     AuthModule,
@@ -73,6 +74,7 @@ import { AnalyticModule } from './analytic/analytic.module';
     BlogModule,
     MediaModule,
     AnalyticModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],

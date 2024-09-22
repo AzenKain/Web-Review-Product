@@ -89,8 +89,17 @@ export default function AddByFile() {
                         >
                             <Button type="primary" htmlType="button">
                                 Submit
-                            </Button>
+                        </Button>
+
                         </Popconfirm>
+                        <a
+                            href="https://api.perfumedk.shop/media/uploads/TemplateWarehouse.csv"
+                            download
+                            className="btn ml-2"
+                            data-theme='light'
+                            >
+                            Template.csv
+                            </a>
                     </Form.Item>
                     <FileUpload />
                     <EditableTable />

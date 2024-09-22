@@ -235,7 +235,9 @@ export class AnalyticService {
                 }
         
                 productStats[productId].totalQuantity += orderProduct.quantity;
-                productStats[productId].totalProfit += orderProduct.quantity * (orderProduct.unitPrice - (orderProduct.unitPrice * orderProduct?.discount ? orderProduct.discount : 0)) - orderProduct.quantity * orderProduct.product.originCost
+                productStats[productId].totalProfit += orderProduct.quantity * (orderProduct.unitPrice 
+                    - (orderProduct.unitPrice * orderProduct?.discount ? orderProduct.discount : 0))
+                    - orderProduct.quantity * orderProduct.product.originCost
             });
         });
         

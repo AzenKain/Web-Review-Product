@@ -20,7 +20,7 @@ export default async function RootLayout({
                 <meta name='description' content='Description' />
                 <link rel="apple-touch-icon.png" sizes="180x180" href="/apple-touch-icon.png" />
                 <link rel="icon" type="x-icon" sizes="16x16" href="/favicon.ico" />
-                <link rel="manifest" href="/site.webmanifest"></link>
+                <link rel="manifest" crossOrigin="use-credentials" href="/manifest.json"/>
                 <script src="/js/jquery-3.7.1.min.js"></script>
             </head>
             <body className={`${inter.className} selection:bg-base-content selection:text-base-100`}>
