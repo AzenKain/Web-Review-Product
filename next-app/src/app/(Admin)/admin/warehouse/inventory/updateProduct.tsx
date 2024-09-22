@@ -56,6 +56,7 @@ const App: React.FC<updateProductprops> = ({ updateKey, changeTab }) => {
             name: values.name,
             originCost: Number(values.originCost),
             displayCost: Number(values.displayCost),
+            stockQuantity: Number(values.stockQuantity),
             details: values.details ? {
                 brand: values.details?.brand ? { value: values.details?.brand.value as string, type: 'brand' } : undefined,
                 longevity: values.details?.longevity ? { value: values.details.longevity.value as string,  type: 'longevity'} : undefined,
