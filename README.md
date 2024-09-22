@@ -35,12 +35,6 @@ PerfumeDK is an e-commerce platform specializing in selling premium perfumes. Th
    ```bash
    Change ./.env.docker to ./.env.manually in src/app.module.ts
    ```
-
-1. Change ENV:
-
-   ```bash
-   Change ./.env.docker to ./.env.manually in src/app.module.ts
-   ```
 2. Start nest-app
 
    ```bash
