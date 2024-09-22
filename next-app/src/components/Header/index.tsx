@@ -282,7 +282,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                 </details>
                                 <ul className="hidden">
                                     {brandName ? brandName.map((brand: string, index: number) => (
-                                        <li key={index} className="uppercase mt-1"><a>{brand}</a></li>
+                                        <li key={index} className="uppercase mt-1"><a href={`/showroom?brand=${brand}`}>{brand}</a></li>
                                     )) : null}
                                 </ul>
                             </li>
@@ -300,7 +300,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                                 <ul className="hidden">
                                                     {item.type.map((subItem, subIndex) => (
                                                         <li key={subIndex} className="uppercase">
-                                                            <a>{subItem}</a>
+                                                            <a href={`/showroom?${item.role}=${subItem}`}>{subItem}</a>
                                                         </li>
                                                     ))}
                                                 </ul>
