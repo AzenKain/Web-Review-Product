@@ -28,7 +28,7 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
                     file: convertedFile,
                     type: "CreateOrder",
                 };
-                const data1 : CreateOrderDto[] = await makeRequestApi(readFileApi, dto1, session?.refresh_token, session?.access_token);
+                const data1: CreateOrderDto[] = await makeRequestApi(readFileApi, dto1, session?.refresh_token, session?.access_token);
                 if (!data1) {
                     message.error(`File format is incorrect!`);
                     onError && onError(new Error('Upload failed.'));
@@ -37,8 +37,8 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
                 data1.forEach(item => {
                     item.customerInfo.phoneNumber = `+84${item.customerInfo.phoneNumber.toString()}`;
                 });
-                  
-                const data2 : OrderType[] = await makeRequestApi(createListOrder, data1, session?.refresh_token, session?.access_token);
+
+                const data2: OrderType[] = await makeRequestApi(createListOrder, data1, session?.refresh_token, session?.access_token);
                 if (!data2) {
                     message.error(`Create list order failed!`);
                     onError && onError(new Error('Upload failed.'));
@@ -70,9 +70,18 @@ const App: React.FC<AppProps> = ({ changeTab }) => {
 
 
     return (
-        <Upload {...props}>
-            <Button icon={<UploadOutlined />}>Upload Csv</Button>
-        </Upload>
+        <div className="flex flex-col justify-center content-center items-center ">
+            <Upload {...props}>
+            <Button icon={<UploadOutlined />}>Upload CSV</Button>
+            </Upload>
+            <a
+            href="https://api.perfumedk.shop/media/uploads/TemplateOrder.csv"
+            download
+            className="text-blue-500 underline hover:text-blue-700 transition-colors duration-200"
+            >
+            Template.csv
+            </a>
+      </div>
     )
 };
 
