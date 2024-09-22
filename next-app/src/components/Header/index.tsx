@@ -240,7 +240,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                             )) : null}
                         </ul>
                     </li>
-                    <li className="pesudo-class relative"
+                    {/*<li className="pesudo-class relative"
                         onMouseOver={openNavbarOptionLg}
                         onMouseOut={closeNavbarOptionLg}>
                         <details>
@@ -261,7 +261,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                             <li><a>Giới thiệu nước hoa</a></li>
                             <li><a>Kinh nghiệm chọn nước hoa</a></li>
                         </ul>
-                    </li>
+                    </li>*/}
                     <li><a href="/#contact">Liên hệ</a></li>
                 </ul>
             </header>
@@ -309,7 +309,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                     )) : null}
                                 </ul>
                             </li>
-                            <li>
+{/*                            <li>
                                 <details onClick={handleDrawerDropdown}>
                                     <summary><a href="/news" className="uppercase">Tin tức</a></summary>
                                 </details>
@@ -317,7 +317,7 @@ const Header: React.FC<HeaderProps> = ({ brandName, topBrandName, perfumeType })
                                     <li><a href="/news/review" className="uppercase">Giới thiệu nước hoa</a></li>
                                     <li><a href="/news/tips" className="uppercase">Kinh nghiệm chọn nước hoa</a></li>
                                 </ul>
-                            </li>
+                            </li>*/}
                             <li><a href="/#contact" className="uppercase">Liên hệ</a></li>
                         </ul>
                     </div>
